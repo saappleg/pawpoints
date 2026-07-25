@@ -138,37 +138,50 @@
                     </button>
                 </div>
 
-                <!-- 🐾 PET PROFILES & VET DETAILS (TOP SECTION) -->
+                <!-- 🐾 PET PROFILES & VET DETAILS SECTION -->
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+                    
+                    <!-- Panel Header -->
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
                         <div>
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                                 <span>🐶 Pet Profiles & Care Details</span>
                             </h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Keep your pet photos and instructions up-to-date for sitting visits.</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
-                                + Add Pet
-                            </button>
-                            <button @click="savePetDetails()" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
-                                Save Profiles
-                            </button>
+                            <!-- STATIC VIEW ACTION -->
+                            <template x-if="!isEditingPets">
+                                <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                    ✏️ Edit Information
+                                </button>
+                            </template>
+
+                            <!-- EDITING MODE ACTIONS -->
+                            <template x-if="isEditingPets">
+                                <div class="flex items-center space-x-2">
+                                    <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                        Cancel
+                                    </button>
+                                    <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                        + Add Pet
+                                    </button>
+                                    <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                        💾 Save Profiles
+                                    </button>
+                                </div>
+                            </template>
                         </div>
                     </div>
 
-                    <!-- Pet Cards Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <template x-for="(pet, index) in userData.pets" :key="index">
-                            <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
-                                <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
-                                    ✕ Remove
-                                </button>
-
-                                <div class="flex items-center space-x-4">
-                                    <!-- Pet Photo Avatar -->
-                                    <div class="relative group">
-                                        <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                    <!-- 1. STATIC DISPLAY MODE (SAVED VIEW) -->
+                    <div x-show="!isEditingPets" class="space-y-6">
+                        <!-- Pet Cards Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <template x-for="(pet, index) in userData.pets" :key="index">
+                                <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
                                             <template x-if="pet.photo">
                                                 <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
                                             </template>
@@ -176,40 +189,93 @@
                                                 <span class="text-2xl">🐾</span>
                                             </template>
                                         </div>
-                                        <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
-                                            <span>Edit Photo</span>
-                                            <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
-                                        </label>
+                                        <div>
+                                            <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
+                                            <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
+                                        </div>
                                     </div>
 
-                                    <div class="flex-grow">
-                                        <label class="block text-xs font-bold text-gray-500 mb-1">Pet Name</label>
-                                        <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
+                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
+                                        <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
                                     </div>
                                 </div>
+                            </template>
+                        </div>
 
+                        <!-- Static Emergency Vet Info Banner -->
+                        <div class="border-t dark:border-gray-700 pt-4">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">Special Care Notes / Breed / Routine</label>
-                                    <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                    <span class="block text-xs font-medium text-gray-400">Clinic Name</span>
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
                                 </div>
-                            </div>
-                        </template>
-                    </div>
-
-                    <!-- Vet Info Banner -->
-                    <div class="border-t dark:border-gray-700 pt-4 mt-4">
-                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
-                                <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
-                                <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                <div>
+                                    <span class="block text-xs font-medium text-gray-400">Vet Phone Number</span>
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetPhone || 'Not specified'"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 2. EDITABLE PANEL MODE (TEXTBOX VIEW) -->
+                    <div x-show="isEditingPets" class="space-y-6" x-cloak>
+                        <!-- Pet Cards Inputs Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <template x-for="(pet, index) in userData.pets" :key="index">
+                                <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
+                                    <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
+                                        ✕ Remove
+                                    </button>
+
+                                    <div class="flex items-center space-x-4">
+                                        <!-- Pet Photo Avatar Input -->
+                                        <div class="relative group flex-shrink-0">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                                <template x-if="pet.photo">
+                                                    <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!pet.photo">
+                                                    <span class="text-2xl">🐾</span>
+                                                </template>
+                                            </div>
+                                            <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
+                                                <span>Upload</span>
+                                                <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
+                                            </label>
+                                        </div>
+
+                                        <div class="flex-grow">
+                                            <label class="block text-xs font-bold text-gray-500 mb-1">Pet Name</label>
+                                            <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 mb-1">Special Care Notes / Breed / Routine</label>
+                                        <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Vet Info Input Banner -->
+                        <div class="border-t dark:border-gray-700 pt-4 mt-4">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
+                                    <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
+                                    <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Active Coupons Section -->
@@ -346,6 +412,7 @@
                 user: null,
                 userData: {},
                 isAdmin: false,
+                isEditingPets: false,
                 authMode: 'login',
                 authError: '',
                 authForm: { name: '', email: '', password: '' },
@@ -427,6 +494,7 @@
                 addPet() {
                     if (!this.userData.pets) this.userData.pets = [];
                     this.userData.pets.push({ name: '', notes: '', photo: '' });
+                    this.isEditingPets = true;
                 },
 
                 removePet(index) {
@@ -445,7 +513,7 @@
                     reader.onload = (e) => {
                         img.src = e.target.result;
                         img.onload = () => {
-                            // Canvas image compression to keep Firestore payloads under limits
+                            // Canvas image compression to keep Firestore payloads light
                             const canvas = document.createElement('canvas');
                             const MAX_WIDTH = 300;
                             const MAX_HEIGHT = 300;
@@ -469,7 +537,6 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
 
-                            // Save optimized JPEG base64 string
                             this.userData.pets[index].photo = canvas.toDataURL('image/jpeg', 0.7);
                         };
                     };
@@ -483,7 +550,6 @@
                     }
 
                     try {
-                        // Clean pet array before saving to ensure valid fields
                         const cleanedPets = (this.userData.pets || []).map(p => ({
                             name: p.name || '',
                             notes: p.notes || '',
@@ -496,11 +562,19 @@
                             vetPhone: this.userData.vetPhone || ''
                         }, { merge: true });
 
+                        this.isEditingPets = false;
                         alert('Pet profiles & vet details saved successfully!');
                     } catch (err) {
                         console.error('Failed to save pet details:', err);
                         alert(`Error saving profile: ${err.message}`);
                     }
+                },
+
+                async cancelPetEdit() {
+                    if (this.user) {
+                        await this.fetchUserData(this.user.uid);
+                    }
+                    this.isEditingPets = false;
                 },
 
                 async openAdminModal() {
@@ -572,7 +646,6 @@
                         const qrDiv = document.getElementById("qrcode");
                         qrDiv.innerHTML = "";
                         
-                        // Encodes full GitHub Pages URL + target client parameter
                         const clientUrl = `${window.location.origin}${window.location.pathname}?client=${this.user.uid}`;
                         
                         if (typeof QRCode !== 'undefined') {
