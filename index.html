@@ -34,7 +34,7 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- QR Code Generator Library (With Integrity Hash to fix CodeQL Warning) -->
+    <!-- QR Code Generator Library (With Integrity Hash) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7BobhLK1BLQX0axhRi1DpSEvjfvqSpf54qo5YJkY9808URfc+AGmzpZp50E+8icT6xoj6251nqE1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Firebase Web SDKs (Compat Version) -->
@@ -315,7 +315,7 @@
                     try {
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
-                            await db.collection('users').doc(res.user.uid).set({
+                            await db.collection('clients').doc(res.user.uid).set({
                                 name: this.authForm.name,
                                 email: this.authForm.email,
                                 points: 0,
@@ -331,7 +331,7 @@
                 },
 
                 async fetchUserData(uid) {
-                    const doc = await db.collection('users').doc(uid).get();
+                    const doc = await db.collection('clients').doc(uid).get();
                     if (doc.exists) {
                         this.userData = doc.data();
                         this.isAdmin = !!this.userData.isAdmin;
@@ -340,7 +340,7 @@
 
                 async savePetDetails() {
                     if (!this.user) return;
-                    await db.collection('users').doc(this.user.uid).update({
+                    await db.collection('clients').doc(this.user.uid).update({
                         petName: this.userData.petName || '',
                         petNotes: this.userData.petNotes || '',
                         vetClinic: this.userData.vetClinic || '',
@@ -353,7 +353,7 @@
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
                         const newBalance = this.userData.points - cost;
-                        await db.collection('users').doc(this.user.uid).update({ points: newBalance });
+                        await db.collection('clients').doc(this.user.uid).update({ points: newBalance });
                         this.userData.points = newBalance;
                         alert(`Reward Redeemed! Show this to your sitter.`);
                     }
@@ -374,7 +374,7 @@
 
                 async updateClientPoints() {
                     if (!this.adminForm.targetUid) return alert('Enter a valid User ID');
-                    const targetRef = db.collection('users').doc(this.adminForm.targetUid);
+                    const targetRef = db.collection('clients').doc(this.adminForm.targetUid);
                     const doc = await targetRef.get();
                     
                     if (!doc.exists) return alert('Client not found!');
