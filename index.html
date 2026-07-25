@@ -34,7 +34,7 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- QR Code Generator Library (With Integrity Hash) -->
+    <!-- QR Code Generator Library (With SRI Hash) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7BobhLK1BLQX0axhRi1DpSEvjfvqSpf54qo5YJkY9808URfc+AGmzpZp50E+8icT6xoj6251nqE1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Firebase Web SDKs (Compat Version) -->
@@ -123,7 +123,7 @@
         <template x-if="!loading && user">
             <div class="space-y-6">
 
-                <!-- Admin Notice -->
+                <!-- Admin Notice Banner -->
                 <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
                     <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
                     <button @click="showAdminModal = true" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
@@ -252,14 +252,15 @@
 
     <!-- Application JavaScript Logic -->
     <script>
-        // 1. Firebase Configuration
+        // 1. Firebase Configuration (REPLACE THESE KEYS WITH YOUR ACTUAL FIREBASE CONFIG)
         const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
+            authDomain: "paw-points-app.firebaseapp.com",
+            projectId: "paw-points-app",
+            storageBucket: "paw-points-app.firebasestorage.app",
+            messagingSenderId: "252239990659",
+            appId: "1:252239990659:web:627f4bd85785e0bdcfb0b6",
+            measurementId: "G-6MPSER0Z6L"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -315,6 +316,7 @@
                     try {
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                            // Saved into 'clients' collection
                             await db.collection('clients').doc(res.user.uid).set({
                                 name: this.authForm.name,
                                 email: this.authForm.email,
@@ -331,6 +333,7 @@
                 },
 
                 async fetchUserData(uid) {
+                    // Updated to query 'clients' collection
                     const doc = await db.collection('clients').doc(uid).get();
                     if (doc.exists) {
                         this.userData = doc.data();
@@ -340,6 +343,7 @@
 
                 async savePetDetails() {
                     if (!this.user) return;
+                    // Updated to update 'clients' collection
                     await db.collection('clients').doc(this.user.uid).update({
                         petName: this.userData.petName || '',
                         petNotes: this.userData.petNotes || '',
@@ -353,6 +357,7 @@
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
                         const newBalance = this.userData.points - cost;
+                        // Updated to update 'clients' collection
                         await db.collection('clients').doc(this.user.uid).update({ points: newBalance });
                         this.userData.points = newBalance;
                         alert(`Reward Redeemed! Show this to your sitter.`);
@@ -374,6 +379,7 @@
 
                 async updateClientPoints() {
                     if (!this.adminForm.targetUid) return alert('Enter a valid User ID');
+                    // Updated to target 'clients' collection
                     const targetRef = db.collection('clients').doc(this.adminForm.targetUid);
                     const doc = await targetRef.get();
                     
