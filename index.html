@@ -116,15 +116,15 @@
     <template x-if="user">
       <div class="space-y-6">
 
-        <!-- Balance Card: Deep Blue with High-Contrast White/Cyan Text -->
-        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-6 text-white shadow-lg flex justify-between items-center">
+        <!-- Balance Card: Fixed High-Contrast Dark Blue Box in Light Mode, Slate-900 in Dark Mode -->
+        <div class="bg-blue-950 dark:bg-slate-900 rounded-2xl p-6 text-white shadow-xl flex justify-between items-center border border-blue-900 dark:border-slate-800 transition-colors duration-200">
           <div>
-            <p class="text-blue-200 text-xs font-semibold uppercase tracking-wider">Account Balance</p>
+            <p class="text-blue-300 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">Account Balance</p>
             <h3 class="text-4xl font-black mt-1 text-white tracking-tight" x-text="(userData?.points || 0).toLocaleString() + ' 🐾'"></h3>
-            <p class="text-blue-200 text-xs mt-1 font-medium" x-text="'10 points per $1 spent'"></p>
+            <p class="text-blue-200 dark:text-slate-400 text-xs mt-1 font-medium" x-text="'10 points per $1 spent'"></p>
           </div>
           <div class="text-right">
-            <span class="text-xs bg-white/10 border border-white/20 text-white px-4 py-1.5 rounded-full font-semibold shadow-inner" x-text="userData?.name || 'Valued Client'"></span>
+            <span class="text-xs bg-blue-900 dark:bg-slate-800 border border-blue-700 dark:border-slate-700 text-white px-4 py-1.5 rounded-full font-semibold shadow-sm" x-text="userData?.name || 'Valued Client'"></span>
           </div>
         </div>
 
@@ -183,7 +183,7 @@
               <button 
                 @click="redeemReward(5000, '$10 Off')"
                 :disabled="(userData?.points || 0) < 5000"
-                :class="(userData?.points || 0) >= 5000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'"
+                :class="(userData?.points || 0) >= 5000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'"
                 class="mt-4 w-full py-2.5 rounded-lg font-semibold text-xs transition-colors">
                 Redeem Reward
               </button>
@@ -201,7 +201,7 @@
               <button 
                 @click="redeemReward(8000, '$20 Off')"
                 :disabled="(userData?.points || 0) < 8000"
-                :class="(userData?.points || 0) >= 8000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'"
+                :class="(userData?.points || 0) >= 8000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'"
                 class="mt-4 w-full py-2.5 rounded-lg font-semibold text-xs transition-colors">
                 Redeem Reward
               </button>
