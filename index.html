@@ -138,6 +138,80 @@
                     </button>
                 </div>
 
+                <!-- 🐾 PET PROFILES & VET DETAILS (MOVED TO TOP) -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <span>🐶 Pet Profiles & Care Details</span>
+                            </h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Keep your pet photos and instructions up-to-date for sitting visits.</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                + Add Pet
+                            </button>
+                            <button @click="savePetDetails()" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                Save Profiles
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pet Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <template x-for="(pet, index) in userData.pets" :key="index">
+                            <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
+                                <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
+                                    ✕ Remove
+                                </button>
+
+                                <div class="flex items-center space-x-4">
+                                    <!-- Pet Photo Avatar -->
+                                    <div class="relative group">
+                                        <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                            <template x-if="pet.photo">
+                                                <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
+                                            </template>
+                                            <template x-if="!pet.photo">
+                                                <span class="text-2xl">🐾</span>
+                                            </template>
+                                        </div>
+                                        <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
+                                            <span>Edit Photo</span>
+                                            <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
+                                        </label>
+                                    </div>
+
+                                    <div class="flex-grow">
+                                        <label class="block text-xs font-bold text-gray-500 mb-1">Pet Name</label>
+                                        <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 mb-1">Special Care Notes / Breed / Routine</label>
+                                    <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Vet Info Banner -->
+                    <div class="border-t dark:border-gray-700 pt-4 mt-4">
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
+                                <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
+                                <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Active Coupons Section -->
                 <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <h3 class="font-bold text-base mb-3">Your Redeemed Coupons</h3>
@@ -185,42 +259,6 @@
                             <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
                                 Redeem
                             </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pet & Vet Profile Section -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-base">Pet & Vet Details</h3>
-                        <button @click="savePetDetails()" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-medium px-3 py-1.5 rounded-lg transition">
-                            Save Info
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-3">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pet Profile</h4>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Pet Name(s)</label>
-                                <input type="text" x-model="userData.petName" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Special Care Notes</label>
-                                <textarea x-model="userData.petNotes" rows="3" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Emergency Vet Info</h4>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
-                                <input type="text" x-model="userData.vetClinic" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
-                                <input type="text" x-model="userData.vetPhone" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -344,6 +382,7 @@
                                 email: this.authForm.email,
                                 points: 0,
                                 coupons: [],
+                                pets: [{ name: '', notes: '', photo: '' }],
                                 isAdmin: false,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
@@ -360,8 +399,50 @@
                     if (doc.exists) {
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
+
+                        // Ensure pets array exists, or migrate legacy single-pet fields
+                        if (!this.userData.pets || this.userData.pets.length === 0) {
+                            this.userData.pets = [{
+                                name: this.userData.petName || '',
+                                notes: this.userData.petNotes || '',
+                                photo: ''
+                            }];
+                        }
                         this.isAdmin = !!this.userData.isAdmin;
                     }
+                },
+
+                addPet() {
+                    if (!this.userData.pets) this.userData.pets = [];
+                    this.userData.pets.push({ name: '', notes: '', photo: '' });
+                },
+
+                removePet(index) {
+                    if (this.userData.pets.length > 1) {
+                        this.userData.pets.splice(index, 1);
+                    }
+                },
+
+                uploadPetPhoto(event, index) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    // Convert image to lightweight base64 string
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.userData.pets[index].photo = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                async savePetDetails() {
+                    if (!this.user) return;
+                    await db.collection('clients').doc(this.user.uid).update({
+                        pets: this.userData.pets,
+                        vetClinic: this.userData.vetClinic || '',
+                        vetPhone: this.userData.vetPhone || ''
+                    });
+                    alert('Pet profiles & vet details saved successfully!');
                 },
 
                 async openAdminModal() {
@@ -379,17 +460,6 @@
                     } catch (err) {
                         console.error('Failed to load clients list:', err);
                     }
-                },
-
-                async savePetDetails() {
-                    if (!this.user) return;
-                    await db.collection('clients').doc(this.user.uid).update({
-                        petName: this.userData.petName || '',
-                        petNotes: this.userData.petNotes || '',
-                        vetClinic: this.userData.vetClinic || '',
-                        vetPhone: this.userData.vetPhone || ''
-                    });
-                    alert('Pet & Vet details saved successfully!');
                 },
 
                 async redeemReward(cost, title) {
