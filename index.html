@@ -138,7 +138,7 @@
                     </button>
                 </div>
 
-                <!-- 🐾 PET PROFILES & VET DETAILS (MOVED TO TOP) -->
+                <!-- 🐾 PET PROFILES & VET DETAILS (TOP SECTION) -->
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
                         <div>
@@ -359,6 +359,18 @@
                         this.user = u;
                         if (u) {
                             await this.fetchUserData(u.uid);
+
+                            // Detect URL search params from scanned QR code links
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const targetClientUid = urlParams.get('client');
+
+                            if (targetClientUid) {
+                                if (this.isAdmin) {
+                                    await this.fetchClientsList();
+                                    this.adminForm.targetUid = targetClientUid;
+                                    this.showAdminModal = true;
+                                }
+                            }
                         } else {
                             this.userData = {};
                             this.isAdmin = false;
@@ -400,7 +412,7 @@
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
 
-                        // Ensure pets array exists, or migrate legacy single-pet fields
+                        // Ensure pets array exists or migrate legacy single-pet fields
                         if (!this.userData.pets || this.userData.pets.length === 0) {
                             this.userData.pets = [{
                                 name: this.userData.petName || '',
@@ -427,7 +439,6 @@
                     const file = event.target.files[0];
                     if (!file) return;
 
-                    // Convert image to lightweight base64 string
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         this.userData.pets[index].photo = e.target.result;
@@ -513,9 +524,13 @@
                     this.$nextTick(() => {
                         const qrDiv = document.getElementById("qrcode");
                         qrDiv.innerHTML = "";
+                        
+                        // Encodes full GitHub Pages URL + target client parameter
+                        const clientUrl = `${window.location.origin}${window.location.pathname}?client=${this.user.uid}`;
+                        
                         if (typeof QRCode !== 'undefined') {
                             new QRCode(qrDiv, {
-                                text: this.user.uid,
+                                text: clientUrl,
                                 width: 160,
                                 height: 160
                             });
