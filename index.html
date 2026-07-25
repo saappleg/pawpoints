@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Paw Points 🐾 | Pet Sitting Loyalty</title>
   
-  <!-- Favicon -->
+  <!-- Add Logo as Favicon -->
   <link rel="icon" type="image/png" href="logo.png">
 
-  <!-- Tailwind CSS & Alpine.js -->
+  <!-- Tailwind CSS & Configuration for Dark Mode -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -17,6 +17,9 @@
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   
+  <!-- Free QR Code Generator Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <!-- Firebase Web SDKs (Compat Version) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -54,6 +57,7 @@
     <!-- AUTHENTICATION & PASSWORD RESET FORMS -->
     <template x-if="!user">
       <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 max-w-md mx-auto transition-colors duration-200">
+        
         <img src="logo.png" alt="Paw Points Logo" class="w-20 h-20 object-contain mx-auto mb-6" />
 
         <div class="text-center mb-6">
@@ -66,6 +70,7 @@
           <p x-show="isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Enter your email to receive a password reset link</p>
         </div>
 
+        <!-- MAIN LOGIN / SIGN UP FORM -->
         <form x-show="!isForgotPassword" @submit.prevent="handleAuth()" class="space-y-4">
           <template x-if="isSignUp">
             <div>
@@ -90,6 +95,7 @@
           <button type="submit" class="w-full btn-primary text-sm transition-colors" x-text="isSignUp ? 'Register Account' : 'Log In'"></button>
         </form>
 
+        <!-- PASSWORD RESET FORM -->
         <form x-show="isForgotPassword" @submit.prevent="handlePasswordReset()" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Account Email</label>
@@ -119,8 +125,54 @@
             <h3 class="text-4xl font-black mt-1 text-white tracking-tight" x-text="(userData?.points || 0).toLocaleString() + ' 🐾'"></h3>
             <p class="text-blue-200 dark:text-slate-400 text-xs mt-1 font-medium" x-text="'10 points per $1 spent'"></p>
           </div>
-          <div class="text-right">
-            <span class="text-xs bg-blue-900 dark:bg-slate-800 border border-blue-700 dark:border-slate-700 text-white px-4 py-1.5 rounded-full font-semibold shadow-sm" x-text="userData?.name || 'Valued Client'"></span>
+          <div class="text-right space-y-2">
+            <div>
+              <span class="text-xs bg-blue-900 dark:bg-slate-800 border border-blue-700 dark:border-slate-700 text-white px-4 py-1.5 rounded-full font-semibold shadow-sm" x-text="userData?.name || 'Valued Client'"></span>
+            </div>
+            <!-- View Digital Pass Button -->
+            <button @click="openPassModal()" class="inline-flex items-center gap-1.5 text-xs bg-white text-blue-950 font-bold px-3 py-1.5 rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
+              <span>💳</span>
+              <span>Digital Pass</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- DIGITAL WALLET PASS MODAL -->
+        <div x-show="showPassModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm" x-cloak>
+          <div @click.away="showPassModal = false" class="bg-blue-950 text-white rounded-3xl max-w-sm w-full p-6 border-2 border-blue-800 shadow-2xl relative overflow-hidden space-y-6">
+            
+            <!-- Pass Header -->
+            <div class="flex justify-between items-center pb-4 border-b border-blue-800/80">
+              <div class="flex items-center space-x-2">
+                <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain" />
+                <span class="font-extrabold tracking-wide text-sm">PAW POINTS PASS</span>
+              </div>
+              <button @click="showPassModal = false" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            </div>
+
+            <!-- Pass Body -->
+            <div class="text-center space-y-2">
+              <p class="text-xs text-blue-300 uppercase tracking-widest font-semibold">Member</p>
+              <h4 class="text-xl font-bold text-white" x-text="userData?.name"></h4>
+              
+              <div class="pt-2">
+                <p class="text-3xl font-black text-amber-400" x-text="(userData?.points || 0).toLocaleString() + ' PTS'"></p>
+              </div>
+            </div>
+
+            <!-- Dynamic QR Code Container -->
+            <div class="bg-white p-4 rounded-2xl flex justify-center items-center shadow-inner">
+              <div id="qrcode"></div>
+            </div>
+
+            <div class="text-center space-y-1">
+              <p class="text-[10px] text-blue-300 font-mono" x-text="'ID: ' + user?.uid"></p>
+              <p class="text-[11px] text-blue-200 italic">Scan QR code at appointment to earn points!</p>
+            </div>
+
+            <button @click="showPassModal = false" class="w-full bg-blue-900 hover:bg-blue-800 text-white py-2 rounded-xl text-xs font-semibold">
+              Close Pass
+            </button>
           </div>
         </div>
 
@@ -137,74 +189,61 @@
 
           <!-- Add Pet Form -->
           <div x-show="showAddPet" class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-200 dark:border-slate-700 mb-5 space-y-4">
-            <h4 class="font-semibold text-sm text-slate-700 dark:text-slate-300">New Pet Details</h4>
-            
             <div class="grid md:grid-cols-2 gap-3">
               <input type="text" x-model="newPet.name" placeholder="Pet Name (e.g. Fizz)" class="form-input text-sm" />
               <input type="text" x-model="newPet.type" placeholder="Type / Breed (e.g. Cat, Tabby)" class="form-input text-sm" />
             </div>
+            
+            <input type="url" x-model="newPet.photoUrl" placeholder="Photo Link/URL (e.g. https://example.com/pet.jpg)" class="form-input text-sm" />
 
-            <!-- Pet Photo Upload -->
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Pet Photo</label>
-              <input type="file" @change="handlePhotoUpload($event)" accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 dark:file:bg-slate-800 dark:file:text-blue-300 hover:file:bg-blue-100" />
-            </div>
-
-            <!-- Vet Information -->
-            <div class="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-3">
-              <h5 class="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Veterinarian Info</h5>
-              <div class="grid md:grid-cols-3 gap-3">
-                <input type="text" x-model="newPet.vetName" placeholder="Vet Name (e.g. Dr. Smith)" class="form-input text-sm" />
-                <input type="text" x-model="newPet.vetClinic" placeholder="Clinic / Hospital Name" class="form-input text-sm" />
-                <input type="tel" x-model="newPet.vetPhone" placeholder="Clinic Phone Number" class="form-input text-sm" />
-              </div>
+            <!-- Vet Info Inputs -->
+            <div class="grid md:grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+              <input type="text" x-model="newPet.vetName" placeholder="Vet Clinic / Doctor Name" class="form-input text-sm" />
+              <input type="tel" x-model="newPet.vetPhone" placeholder="Vet Phone Number" class="form-input text-sm" />
             </div>
 
             <textarea x-model="newPet.notes" placeholder="Care notes, dietary info, or fun quirks..." class="w-full form-input text-sm" rows="2"></textarea>
-            
-            <button @click="savePet()" class="btn-primary px-5 py-2 text-xs font-medium">Save Pet Profile</button>
+            <button @click="savePet()" class="btn-primary px-5 py-2 text-xs font-medium">Save Pet</button>
           </div>
 
           <!-- Pet Cards List -->
           <div class="grid md:grid-cols-2 gap-4">
             <template x-for="(pet, index) in userData?.pets || []" :key="index">
-              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 flex gap-4 items-start transition-colors relative group">
+              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 flex flex-col justify-between transition-colors relative">
                 
-                <!-- Pet Image Thumbnail -->
-                <div class="w-20 h-20 rounded-lg bg-slate-200 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-600 flex items-center justify-center">
-                  <template x-if="pet.photo">
-                    <img :src="pet.photo" :alt="pet.name" class="w-full h-full object-cover" />
-                  </template>
-                  <template x-if="!pet.photo">
-                    <span class="text-2xl">🐾</span>
-                  </template>
-                </div>
+                <div>
+                  <div class="flex items-center space-x-3 mb-3">
+                    <template x-if="pet.photoUrl">
+                      <img :src="pet.photoUrl" :alt="pet.name" class="w-12 h-12 rounded-full object-cover border-2 border-blue-600 shadow-sm" />
+                    </template>
+                    <template x-if="!pet.photoUrl">
+                      <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-700 flex items-center justify-center text-xl">
+                        🐾
+                      </div>
+                    </template>
 
-                <!-- Pet Info -->
-                <div class="flex-1 min-w-0 pr-6">
-                  <h4 class="font-bold text-base text-slate-800 dark:text-slate-100 truncate" x-text="pet.name"></h4>
-                  <p class="text-xs text-blue-700 dark:text-blue-400 font-semibold" x-text="pet.type"></p>
-                  
-                  <!-- Vet Info Display -->
-                  <template x-if="pet.vetClinic || pet.vetName || pet.vetPhone">
-                    <div class="mt-2 p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 text-xs space-y-0.5">
-                      <p class="font-semibold text-slate-700 dark:text-slate-300">🏥 Vet Info:</p>
-                      <p class="text-slate-600 dark:text-slate-400" x-text="(pet.vetName ? pet.vetName + ' - ' : '') + (pet.vetClinic || '')"></p>
-                      <template x-if="pet.vetPhone">
-                        <a :href="'tel:' + pet.vetPhone" class="text-blue-600 dark:text-blue-400 hover:underline font-medium block" x-text="'📞 ' + pet.vetPhone"></a>
-                      </template>
+                    <div>
+                      <h4 class="font-bold text-base text-slate-800 dark:text-slate-100" x-text="pet.name"></h4>
+                      <p class="text-xs text-blue-700 dark:text-blue-400 font-semibold" x-text="pet.type"></p>
+                    </div>
+                  </div>
+
+                  <template x-if="pet.vetName || pet.vetPhone">
+                    <div class="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs mb-2 space-y-0.5">
+                      <p class="font-bold text-slate-700 dark:text-slate-300">🏥 Vet Info:</p>
+                      <p class="text-slate-600 dark:text-slate-400" x-text="pet.vetName || 'No clinic listed'"></p>
+                      <p class="text-blue-600 dark:text-blue-400 font-semibold" x-text="pet.vetPhone ? '📞 ' + pet.vetPhone : ''"></p>
                     </div>
                   </template>
 
-                  <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 italic" x-text="pet.notes || 'No notes added.'"></p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400 italic" x-text="pet.notes || 'No notes added.'"></p>
                 </div>
 
-                <!-- Remove Pet Button -->
-                <button @click="removePet(index)" title="Remove Pet" class="absolute top-3 right-3 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors p-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
+                <div class="mt-4 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                  <button @click="deletePet(index)" class="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold flex items-center gap-1">
+                    🗑️ Remove Pet
+                  </button>
+                </div>
 
               </div>
             </template>
@@ -265,6 +304,7 @@
   </main>
 
   <style>
+    [x-cloak] { display: none !important; }
     @layer components {
       .form-input {
         @apply w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors duration-200;
@@ -298,11 +338,12 @@
         userData: null,
         isSignUp: false,
         isForgotPassword: false,
+        showPassModal: false,
         authName: '',
         authEmail: '',
         authPassword: '',
         showAddPet: false,
-        newPet: { name: '', type: '', notes: '', vetName: '', vetClinic: '', vetPhone: '', photo: '' },
+        newPet: { name: '', type: '', photoUrl: '', vetName: '', vetPhone: '', notes: '' },
 
         init() {
           auth.onAuthStateChanged(async (u) => {
@@ -325,6 +366,22 @@
           if (doc.exists) {
             this.userData = doc.data();
           }
+        },
+
+        openPassModal() {
+          this.showPassModal = true;
+          this.$nextTick(() => {
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = ""; // Clear old QR
+            new QRCode(qrContainer, {
+              text: `https://paw-points-app.firebaseapp.com/?clientUid=${this.user.uid}`,
+              width: 160,
+              height: 160,
+              colorDark : "#0f172a",
+              colorLight : "#ffffff",
+              correctLevel : QRCode.CorrectLevel.H
+            });
+          });
         },
 
         async handleAuth() {
@@ -356,25 +413,6 @@
           }
         },
 
-        // Convert uploaded photo to Base64 data URL for easy database storage
-        handlePhotoUpload(event) {
-          const file = event.target.files[0];
-          if (!file) return;
-
-          // Limit file size to 1MB to keep Firestore responses fast
-          if (file.size > 1024 * 1024) {
-            alert('Please choose an image under 1MB.');
-            event.target.value = '';
-            return;
-          }
-
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.newPet.photo = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        },
-
         async savePet() {
           if (!this.newPet.name) return alert('Pet name is required.');
           const pets = this.userData.pets || [];
@@ -382,20 +420,17 @@
 
           await db.collection('clients').doc(this.user.uid).update({ pets });
           this.userData.pets = pets;
-          this.newPet = { name: '', type: '', notes: '', vetName: '', vetClinic: '', vetPhone: '', photo: '' };
+          this.newPet = { name: '', type: '', photoUrl: '', vetName: '', vetPhone: '', notes: '' };
           this.showAddPet = false;
         },
 
-        // Remove pet profile
-        async removePet(index) {
-          const petName = this.userData.pets[index]?.name || 'this pet';
-          if (!confirm(`Are you sure you want to remove ${petName}?`)) return;
-
-          const pets = [...this.userData.pets];
-          pets.splice(index, 1);
-
-          await db.collection('clients').doc(this.user.uid).update({ pets });
-          this.userData.pets = pets;
+        async deletePet(index) {
+          if (confirm(`Are you sure you want to remove ${this.userData.pets[index].name}?`)) {
+            const pets = [...this.userData.pets];
+            pets.splice(index, 1);
+            await db.collection('clients').doc(this.user.uid).update({ pets });
+            this.userData.pets = pets;
+          }
         },
 
         async redeemReward(cost, rewardName) {
