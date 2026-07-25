@@ -1,471 +1,403 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="pawApp()" :class="{ 'dark': darkMode }">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paw Points 🐾 | Pet Sitting Loyalty</title>
-  
-  <!-- Add Logo as Favicon -->
-  <link rel="icon" type="image/png" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paw Points 🐾 Loyalty & Pet Care</title>
 
-  <!-- PWA Manifest & App Tags -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#172554">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Paw Points">
-  <link rel="apple-touch-icon" href="logo.png">
+    <!-- PWA Manifest & Theme Color -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="apple-touch-icon" href="logo.png">
 
-  <!-- Register Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(() => console.log('Service Worker Registered'))
-          .catch(err => console.log('Service Worker Failed', err));
-      });
-    }
-  </script>
-
-  <!-- Tailwind CSS & Configuration for Dark Mode -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  
-  <!-- Free QR Code Generator Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-  <!-- Firebase Web SDKs (Compat Version) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-</head>
-<body x-data="pawPointsApp()" :class="{ 'dark': darkMode }" class="bg-slate-100 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200">
-
-  <!-- Navigation -->
-  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm sticky top-0 z-10 transition-colors duration-200">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <img src="logo.png" alt="Paw Points Logo" class="w-10 h-10 object-contain" />
-        <h1 class="text-2xl font-extrabold text-blue-900 dark:text-blue-400">Paw Points</h1>
-      </div>
-      
-      <div class="flex items-center space-x-4">
-        <!-- Theme Toggle Button -->
-        <button @click="toggleTheme()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-          <span x-show="!darkMode" class="text-xl">☀️</span>
-          <span x-show="darkMode" class="text-xl">🌙</span>
-        </button>
-
-        <template x-if="user">
-          <div class="flex items-center space-x-3">
-            <span class="text-xs bg-blue-50 dark:bg-slate-800 text-blue-900 dark:text-blue-300 font-semibold px-3 py-1 rounded-full border border-blue-200 dark:border-slate-700" x-text="user.email"></span>
-            <button @click="logout()" class="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold">Log Out</button>
-          </div>
-        </template>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-4xl mx-auto px-4 py-8">
-
-    <!-- AUTHENTICATION & PASSWORD RESET FORMS -->
-    <template x-if="!user">
-      <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 max-w-md mx-auto transition-colors duration-200">
-        
-        <img src="logo.png" alt="Paw Points Logo" class="w-20 h-20 object-contain mx-auto mb-6" />
-
-        <div class="text-center mb-6">
-          <h2 x-show="isSignUp" class="text-2xl font-bold text-slate-800 dark:text-slate-100">Create Account</h2>
-          <h2 x-show="!isSignUp && !isForgotPassword" class="text-2xl font-bold text-slate-800 dark:text-slate-100">Welcome Back</h2>
-          <h2 x-show="isForgotPassword" class="text-2xl font-bold text-slate-800 dark:text-slate-100">Reset Password</h2>
-          
-          <p x-show="isSignUp" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Sign up to start earning Paw Points</p>
-          <p x-show="!isSignUp && !isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Log in to view your balance and pets</p>
-          <p x-show="isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Enter your email to receive a password reset link</p>
-        </div>
-
-        <!-- MAIN LOGIN / SIGN UP FORM -->
-        <form x-show="!isForgotPassword" @submit.prevent="handleAuth()" class="space-y-4">
-          <template x-if="isSignUp">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Your Full Name</label>
-              <input type="text" x-model="authName" required class="form-input" placeholder="e.g. Alex Smith" />
-            </div>
-          </template>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Email Address</label>
-            <input type="email" x-model="authEmail" required class="form-input" placeholder="you@example.com" />
-          </div>
-
-          <div>
-            <div class="flex justify-between items-center mb-1">
-              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">Password</label>
-              <button x-show="!isSignUp" @click="isForgotPassword = true" type="button" class="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline">Forgot?</button>
-            </div>
-            <input type="password" x-model="authPassword" required class="form-input" placeholder="••••••••" />
-          </div>
-
-          <button type="submit" class="w-full btn-primary text-sm transition-colors" x-text="isSignUp ? 'Register Account' : 'Log In'"></button>
-        </form>
-
-        <!-- PASSWORD RESET FORM -->
-        <form x-show="isForgotPassword" @submit.prevent="handlePasswordReset()" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Account Email</label>
-            <input type="email" x-model="authEmail" required class="form-input" placeholder="your-account@example.com" />
-          </div>
-          <button type="submit" class="w-full btn-primary text-sm transition-colors">Send Reset Link</button>
-          <div class="text-center mt-3">
-            <button @click="isForgotPassword = false" type="button" class="text-xs text-slate-500 hover:underline">Back to Login</button>
-          </div>
-        </form>
-
-        <div x-show="!isForgotPassword" class="text-xs text-center text-slate-500 mt-6">
-          <span x-text="isSignUp ? 'Already have an account?' : 'Need an account?'"></span>
-          <button @click="isSignUp = !isSignUp" class="text-blue-600 dark:text-blue-400 font-bold hover:underline ml-1" x-text="isSignUp ? 'Log In' : 'Sign Up'"></button>
-        </div>
-      </div>
-    </template>
-
-    <!-- CLIENT DASHBOARD (Logged In View) -->
-    <template x-if="user">
-      <div class="space-y-6">
-
-        <!-- Balance Card -->
-        <div class="bg-blue-950 dark:bg-slate-900 rounded-2xl p-6 text-white shadow-xl flex justify-between items-center border border-blue-900 dark:border-slate-800 transition-colors duration-200">
-          <div>
-            <p class="text-blue-300 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">Account Balance</p>
-            <h3 class="text-4xl font-black mt-1 text-white tracking-tight" x-text="(userData?.points || 0).toLocaleString() + ' 🐾'"></h3>
-            <p class="text-blue-200 dark:text-slate-400 text-xs mt-1 font-medium" x-text="'10 points per $1 spent'"></p>
-          </div>
-          <div class="text-right space-y-2">
-            <div>
-              <span class="text-xs bg-blue-900 dark:bg-slate-800 border border-blue-700 dark:border-slate-700 text-white px-4 py-1.5 rounded-full font-semibold shadow-sm" x-text="userData?.name || 'Valued Client'"></span>
-            </div>
-            <!-- View Digital Pass Button -->
-            <button @click="openPassModal()" class="inline-flex items-center gap-1.5 text-xs bg-white text-blue-950 font-bold px-3 py-1.5 rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
-              <span>💳</span>
-              <span>Digital Pass</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- DIGITAL WALLET PASS MODAL -->
-        <div x-show="showPassModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm" x-cloak>
-          <div @click.away="showPassModal = false" class="bg-blue-950 text-white rounded-3xl max-w-sm w-full p-6 border-2 border-blue-800 shadow-2xl relative overflow-hidden space-y-6">
-            
-            <!-- Pass Header -->
-            <div class="flex justify-between items-center pb-4 border-b border-blue-800/80">
-              <div class="flex items-center space-x-2">
-                <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain" />
-                <span class="font-extrabold tracking-wide text-sm">PAW POINTS PASS</span>
-              </div>
-              <button @click="showPassModal = false" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
-            </div>
-
-            <!-- Pass Body -->
-            <div class="text-center space-y-2">
-              <p class="text-xs text-blue-300 uppercase tracking-widest font-semibold">Member</p>
-              <h4 class="text-xl font-bold text-white" x-text="userData?.name"></h4>
-              
-              <div class="pt-2">
-                <p class="text-3xl font-black text-amber-400" x-text="(userData?.points || 0).toLocaleString() + ' PTS'"></p>
-              </div>
-            </div>
-
-            <!-- Dynamic QR Code Container -->
-            <div class="bg-white p-4 rounded-2xl flex justify-center items-center shadow-inner">
-              <div id="qrcode"></div>
-            </div>
-
-            <div class="text-center space-y-1">
-              <p class="text-[10px] text-blue-300 font-mono" x-text="'ID: ' + user?.uid"></p>
-              <p class="text-[11px] text-blue-200 italic">Scan QR code at appointment to earn points!</p>
-            </div>
-
-            <button @click="showPassModal = false" class="w-full bg-blue-900 hover:bg-blue-800 text-white py-2 rounded-xl text-xs font-semibold">
-              Close Pass
-            </button>
-          </div>
-        </div>
-
-        <!-- PET INFORMATION SECTION -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
-          <div class="flex justify-between items-center mb-5">
-            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
-              <span>🐶🐱 My Pets</span>
-            </h3>
-            <button @click="showAddPet = !showAddPet" class="text-xs bg-blue-50 dark:bg-slate-800 text-blue-900 dark:text-blue-300 font-semibold px-4 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors border border-blue-200 dark:border-slate-700">
-              <span x-text="showAddPet ? 'Cancel' : '+ Add Pet'"></span>
-            </button>
-          </div>
-
-          <!-- Add Pet Form -->
-          <div x-show="showAddPet" class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-200 dark:border-slate-700 mb-5 space-y-4">
-            <div class="grid md:grid-cols-2 gap-3">
-              <input type="text" x-model="newPet.name" placeholder="Pet Name (e.g. Fizz)" class="form-input text-sm" />
-              <input type="text" x-model="newPet.type" placeholder="Type / Breed (e.g. Cat, Tabby)" class="form-input text-sm" />
-            </div>
-            
-            <input type="url" x-model="newPet.photoUrl" placeholder="Photo Link/URL (e.g. https://example.com/pet.jpg)" class="form-input text-sm" />
-
-            <!-- Vet Info Inputs -->
-            <div class="grid md:grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
-              <input type="text" x-model="newPet.vetName" placeholder="Vet Clinic / Doctor Name" class="form-input text-sm" />
-              <input type="tel" x-model="newPet.vetPhone" placeholder="Vet Phone Number" class="form-input text-sm" />
-            </div>
-
-            <textarea x-model="newPet.notes" placeholder="Care notes, dietary info, or fun quirks..." class="w-full form-input text-sm" rows="2"></textarea>
-            <button @click="savePet()" class="btn-primary px-5 py-2 text-xs font-medium">Save Pet</button>
-          </div>
-
-          <!-- Pet Cards List -->
-          <div class="grid md:grid-cols-2 gap-4">
-            <template x-for="(pet, index) in userData?.pets || []" :key="index">
-              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 flex flex-col justify-between transition-colors relative">
-                
-                <div>
-                  <div class="flex items-center space-x-3 mb-3">
-                    <template x-if="pet.photoUrl">
-                      <img :src="pet.photoUrl" :alt="pet.name" class="w-12 h-12 rounded-full object-cover border-2 border-blue-600 shadow-sm" />
-                    </template>
-                    <template x-if="!pet.photoUrl">
-                      <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-700 flex items-center justify-center text-xl">
-                        🐾
-                      </div>
-                    </template>
-
-                    <div>
-                      <h4 class="font-bold text-base text-slate-800 dark:text-slate-100" x-text="pet.name"></h4>
-                      <p class="text-xs text-blue-700 dark:text-blue-400 font-semibold" x-text="pet.type"></p>
-                    </div>
-                  </div>
-
-                  <template x-if="pet.vetName || pet.vetPhone">
-                    <div class="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs mb-2 space-y-0.5">
-                      <p class="font-bold text-slate-700 dark:text-slate-300">🏥 Vet Info:</p>
-                      <p class="text-slate-600 dark:text-slate-400" x-text="pet.vetName || 'No clinic listed'"></p>
-                      <p class="text-blue-600 dark:text-blue-400 font-semibold" x-text="pet.vetPhone ? '📞 ' + pet.vetPhone : ''"></p>
-                    </div>
-                  </template>
-
-                  <p class="text-xs text-slate-600 dark:text-slate-400 italic" x-text="pet.notes || 'No notes added.'"></p>
-                </div>
-
-                <div class="mt-4 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-end">
-                  <button @click="deletePet(index)" class="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold flex items-center gap-1">
-                    🗑️ Remove Pet
-                  </button>
-                </div>
-
-              </div>
-            </template>
-
-            <template x-if="!userData?.pets?.length">
-              <p class="text-xs text-slate-500 dark:text-slate-400 italic py-2">No pets added yet. Click "+ Add Pet" to tell us about your furry friends!</p>
-            </template>
-          </div>
-        </div>
-
-        <!-- REWARD REDEMPTION -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
-          <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-5">Available Rewards</h3>
-          <div class="grid md:grid-cols-2 gap-4">
-            
-            <!-- $10 Off -->
-            <div class="border border-slate-200 dark:border-slate-700 p-5 rounded-xl flex flex-col justify-between" :class="{'border-blue-500 bg-blue-50/50 dark:bg-slate-800': (userData?.points || 0) >= 5000}">
-              <div>
-                <div class="flex justify-between items-center mb-1">
-                  <span class="font-bold text-slate-800 dark:text-slate-100">$10 Off Next Sit</span>
-                  <span class="text-xs bg-blue-100 dark:bg-blue-900/60 text-blue-900 dark:text-blue-300 px-2.5 py-1 rounded-full font-bold">5,000 pts</span>
-                </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Requires $500 total spent in Walkies.</p>
-              </div>
-              <button 
-                @click="redeemReward(5000, '$10 Off')"
-                :disabled="(userData?.points || 0) < 5000"
-                :class="(userData?.points || 0) >= 5000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'"
-                class="mt-4 w-full py-2.5 rounded-lg font-semibold text-xs transition-colors">
-                Redeem Reward
-              </button>
-            </div>
-
-            <!-- $20 Off -->
-            <div class="border border-slate-200 dark:border-slate-700 p-5 rounded-xl flex flex-col justify-between" :class="{'border-blue-500 bg-blue-50/50 dark:bg-slate-800': (userData?.points || 0) >= 8000}">
-              <div>
-                <div class="flex justify-between items-center mb-1">
-                  <span class="font-bold text-slate-800 dark:text-slate-100">$20 Off Next Sit</span>
-                  <span class="text-xs bg-blue-100 dark:bg-blue-900/60 text-blue-900 dark:text-blue-300 px-2.5 py-1 rounded-full font-bold">8,000 pts</span>
-                </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Best value! Requires $800 total spent.</p>
-              </div>
-              <button 
-                @click="redeemReward(8000, '$20 Off')"
-                :disabled="(userData?.points || 0) < 8000"
-                :class="(userData?.points || 0) >= 8000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'"
-                class="mt-4 w-full py-2.5 rounded-lg font-semibold text-xs transition-colors">
-                Redeem Reward
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </template>
-
-  </main>
-
-  <style>
-    [x-cloak] { display: none !important; }
-    @layer components {
-      .form-input {
-        @apply w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors duration-200;
-      }
-      .btn-primary {
-        @apply bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 rounded-xl transition-colors duration-200 shadow-sm;
-      }
-    }
-  </style>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
-      authDomain: "paw-points-app.firebaseapp.com",
-      projectId: "paw-points-app",
-      storageBucket: "paw-points-app.firebasestorage.app",
-      messagingSenderId: "252239990659",
-      appId: "1:252239990659:web:627f4bd85785e0bdcfb0b6",
-      measurementId: "G-6MPSER0Z6L"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    function pawPointsApp() {
-      return {
-        darkMode: localStorage.getItem('theme') === 'dark',
-        user: null,
-        userData: null,
-        isSignUp: false,
-        isForgotPassword: false,
-        showPassModal: false,
-        authName: '',
-        authEmail: '',
-        authPassword: '',
-        showAddPet: false,
-        newPet: { name: '', type: '', photoUrl: '', vetName: '', vetPhone: '', notes: '' },
-
-        init() {
-          auth.onAuthStateChanged(async (u) => {
-            this.user = u;
-            if (u) {
-              this.fetchUserData();
-            } else {
-              this.userData = null;
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
             }
-          });
-        },
-
-        toggleTheme() {
-          this.darkMode = !this.darkMode;
-          localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-        },
-
-        async fetchUserData() {
-          const doc = await db.collection('clients').doc(this.user.uid).get();
-          if (doc.exists) {
-            this.userData = doc.data();
-          }
-        },
-
-        openPassModal() {
-          this.showPassModal = true;
-          this.$nextTick(() => {
-            const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = ""; // Clear old QR
-            new QRCode(qrContainer, {
-              text: `https://paw-points-app.firebaseapp.com/?clientUid=${this.user.uid}`,
-              width: 160,
-              height: 160,
-              colorDark : "#0f172a",
-              colorLight : "#ffffff",
-              correctLevel : QRCode.CorrectLevel.H
-            });
-          });
-        },
-
-        async handleAuth() {
-          try {
-            if (this.isSignUp) {
-              const res = await auth.createUserWithEmailAndPassword(this.authEmail, this.authPassword);
-              await db.collection('clients').doc(res.user.uid).set({
-                name: this.authName,
-                email: this.authEmail,
-                points: 0,
-                pets: []
-              });
-            } else {
-              await auth.signInWithEmailAndPassword(this.authEmail, this.authPassword);
-            }
-          } catch (err) {
-            alert("Error: " + err.message);
-          }
-        },
-
-        async handlePasswordReset() {
-          if (!this.authEmail) return alert('Please enter your email first.');
-          try {
-            await auth.sendPasswordResetEmail(this.authEmail);
-            alert(`A password reset link has been sent to ${this.authEmail}. Please check your inbox.`);
-            this.isForgotPassword = false;
-          } catch (err) {
-            alert("Reset Error: " + err.message);
-          }
-        },
-
-        async savePet() {
-          if (!this.newPet.name) return alert('Pet name is required.');
-          const pets = this.userData.pets || [];
-          pets.push({ ...this.newPet });
-
-          await db.collection('clients').doc(this.user.uid).update({ pets });
-          this.userData.pets = pets;
-          this.newPet = { name: '', type: '', photoUrl: '', vetName: '', vetPhone: '', notes: '' };
-          this.showAddPet = false;
-        },
-
-        async deletePet(index) {
-          if (confirm(`Are you sure you want to remove ${this.userData.pets[index].name}?`)) {
-            const pets = [...this.userData.pets];
-            pets.splice(index, 1);
-            await db.collection('clients').doc(this.user.uid).update({ pets });
-            this.userData.pets = pets;
-          }
-        },
-
-        async redeemReward(cost, rewardName) {
-          if (this.userData.points >= cost) {
-            const newPoints = this.userData.points - cost;
-            await db.collection('clients').doc(this.user.uid).update({ points: newPoints });
-            this.userData.points = newPoints;
-            alert(`Successfully redeemed ${rewardName}!`);
-          }
-        },
-
-        logout() {
-          auth.signOut();
         }
-      };
-    }
-  </script>
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- QR Code Generator Library (With Integrity Hash to fix CodeQL Warning) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7BobhLK1BLQX0axhRi1DpSEvjfvqSpf54qo5YJkY9808URfc+AGmzpZp50E+8icT6xoj6251nqE1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Firebase Web SDKs (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Navigation Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="logo.png" alt="Paw Points Logo" class="h-10 w-10 object-contain rounded-full bg-brand-50 p-1" onerror="this.src='https://via.placeholder.com/40?text=🐾'">
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Paw Points 🐾</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Walkies Loyalty & Care</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <!-- Dark Mode Toggle -->
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                    <span x-show="!darkMode">🌙</span>
+                    <span x-show="darkMode" x-cloak>☀️</span>
+                </button>
+
+                <!-- Auth Buttons -->
+                <template x-if="user">
+                    <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-2 rounded-lg font-medium transition">
+                        Log Out
+                    </button>
+                </template>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 space-y-6">
+
+        <!-- Loading Spinner -->
+        <div x-show="loading" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading your profile...</p>
+        </div>
+
+        <!-- AUTHENTICATION VIEW -->
+        <div x-show="!loading && !user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+            <h2 class="text-xl font-bold mb-4 text-center" x-text="authMode === 'login' ? 'Welcome Back' : 'Create Account'"></h2>
+            
+            <form @submit.prevent="handleAuth()" class="space-y-4">
+                <template x-if="authMode === 'signup'">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                        <input type="text" x-model="authForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </template>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                    <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <input type="password" x-model="authForm.password" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+
+                <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
+
+                <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
+            </form>
+
+            <div class="mt-4 text-center text-xs text-gray-500">
+                <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''" class="text-brand-600 hover:underline">
+                    <span x-text="authMode === 'login' ? 'Need an account? Sign up' : 'Already have an account? Log in'"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- LOGGED-IN DASHBOARD -->
+        <template x-if="!loading && user">
+            <div class="space-y-6">
+
+                <!-- Admin Notice -->
+                <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
+                    <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
+                    <button @click="showAdminModal = true" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
+                </div>
+
+                <!-- Points Banner & Digital Pass Trigger -->
+                <div class="bg-gradient-to-r from-brand-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-wider opacity-80 font-semibold">Your Balance</p>
+                        <h2 class="text-4xl font-extrabold mt-1"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal opacity-90">Pts</span></h2>
+                        <p class="text-xs mt-2 opacity-90">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                    </div>
+                    <button @click="openDigitalPass()" class="w-full md:w-auto bg-white text-brand-600 hover:bg-brand-50 px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                        <span>📱 Show Digital Pass</span>
+                    </button>
+                </div>
+
+                <!-- Rewards Section -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="font-bold text-base mb-4">Available Rewards</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Reward 1 -->
+                        <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
+                                <p class="text-xs text-gray-500">5,000 Points</p>
+                            </div>
+                            <button @click="redeemReward(5000, '$10 Off')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                                Redeem
+                            </button>
+                        </div>
+                        <!-- Reward 2 -->
+                        <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
+                                <p class="text-xs text-gray-500">8,000 Points</p>
+                            </div>
+                            <button @click="redeemReward(8000, '$20 Off')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                                Redeem
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pet & Vet Profile Section -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-base">Pet & Vet Details</h3>
+                        <button @click="savePetDetails()" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-medium px-3 py-1.5 rounded-lg transition">
+                            Save Info
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Pet Info -->
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pet Profile</h4>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Pet Name(s)</label>
+                                <input type="text" x-model="userData.petName" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Special Care Notes</label>
+                                <textarea x-model="userData.petNotes" rows="3" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Vet Info -->
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Emergency Vet Info</h4>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
+                                <input type="text" x-model="userData.vetClinic" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
+                                <input type="text" x-model="userData.vetPhone" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </template>
+    </main>
+
+    <!-- Digital Pass QR Modal -->
+    <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showQRModal = false" class="bg-white dark:bg-gray-800 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4">
+            <h3 class="font-bold text-lg">Your Paw Pass</h3>
+            <p class="text-xs text-gray-500">Scan this code at checkout or visits to quickly access your account.</p>
+            
+            <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200">
+                <div id="qrcode"></div>
+            </div>
+
+            <p class="text-xs font-mono text-gray-400" x-text="user?.uid"></p>
+
+            <button @click="showQRModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-sm font-medium rounded-lg">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-4">
+            <h3 class="font-bold text-lg">Admin: Adjust Client Points</h3>
+            
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Client User ID (UID)</label>
+                <input type="text" x-model="adminForm.targetUid" placeholder="Paste Client UID here" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Points to Add / Subtract</label>
+                <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+            </div>
+
+            <div class="flex space-x-2 pt-2">
+                <button @click="showAdminModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
+                <button @click="updateClientPoints()" class="flex-1 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">Update Points</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // 1. Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // 2. Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered successfully!'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+
+        // 3. Alpine.js State Management
+        function pawApp() {
+            return {
+                darkMode: localStorage.getItem('theme') === 'dark',
+                loading: true,
+                user: null,
+                userData: {},
+                isAdmin: false,
+                authMode: 'login',
+                authError: '',
+                authForm: { name: '', email: '', password: '' },
+                showQRModal: false,
+                showAdminModal: false,
+                adminForm: { targetUid: '', pointsDelta: 0 },
+                qrInstance: null,
+
+                init() {
+                    // Auth state observer
+                    auth.onAuthStateChanged(async (u) => {
+                        this.user = u;
+                        if (u) {
+                            await this.fetchUserData(u.uid);
+                        } else {
+                            this.userData = {};
+                            this.isAdmin = false;
+                        }
+                        this.loading = false;
+                    });
+                },
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+                },
+
+                async handleAuth() {
+                    this.authError = '';
+                    try {
+                        if (this.authMode === 'signup') {
+                            const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                            await db.collection('users').doc(res.user.uid).set({
+                                name: this.authForm.name,
+                                email: this.authForm.email,
+                                points: 0,
+                                isAdmin: false,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        } else {
+                            await auth.signInWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                        }
+                    } catch (err) {
+                        this.authError = err.message;
+                    }
+                },
+
+                async fetchUserData(uid) {
+                    const doc = await db.collection('users').doc(uid).get();
+                    if (doc.exists) {
+                        this.userData = doc.data();
+                        this.isAdmin = !!this.userData.isAdmin;
+                    }
+                },
+
+                async savePetDetails() {
+                    if (!this.user) return;
+                    await db.collection('users').doc(this.user.uid).update({
+                        petName: this.userData.petName || '',
+                        petNotes: this.userData.petNotes || '',
+                        vetClinic: this.userData.vetClinic || '',
+                        vetPhone: this.userData.vetPhone || ''
+                    });
+                    alert('Pet & Vet details saved successfully!');
+                },
+
+                async redeemReward(cost, title) {
+                    if ((this.userData.points || 0) < cost) return;
+                    if (confirm(`Redeem ${cost} points for ${title}?`)) {
+                        const newBalance = this.userData.points - cost;
+                        await db.collection('users').doc(this.user.uid).update({ points: newBalance });
+                        this.userData.points = newBalance;
+                        alert(`Reward Redeemed! Show this to your sitter.`);
+                    }
+                },
+
+                openDigitalPass() {
+                    this.showQRModal = true;
+                    this.$nextTick(() => {
+                        const qrDiv = document.getElementById("qrcode");
+                        qrDiv.innerHTML = "";
+                        new QRCode(qrDiv, {
+                            text: this.user.uid,
+                            width: 160,
+                            height: 160
+                        });
+                    });
+                },
+
+                async updateClientPoints() {
+                    if (!this.adminForm.targetUid) return alert('Enter a valid User ID');
+                    const targetRef = db.collection('users').doc(this.adminForm.targetUid);
+                    const doc = await targetRef.get();
+                    
+                    if (!doc.exists) return alert('Client not found!');
+                    
+                    const currentPts = doc.data().points || 0;
+                    const newPts = currentPts + parseInt(this.adminForm.pointsDelta || 0);
+                    
+                    await targetRef.update({ points: newPts });
+                    alert(`Updated client points from ${currentPts} to ${newPts}!`);
+                    
+                    if (this.adminForm.targetUid === this.user.uid) {
+                        this.userData.points = newPts;
+                    }
+                    
+                    this.showAdminModal = false;
+                    this.adminForm = { targetUid: '', pointsDelta: 0 };
+                },
+
+                async logout() {
+                    await auth.signOut();
+                }
+            }
+        }
+    </script>
 </body>
 </html>
