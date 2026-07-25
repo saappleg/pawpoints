@@ -1,0 +1,21 @@
+{
+  "name": "Paw Points Loyalty",
+  "short_name": "Paw Points 🐾",
+  "description": "Pet Sitting Loyalty Program and Pet Care Portal",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#172554",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
