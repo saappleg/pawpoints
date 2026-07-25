@@ -34,7 +34,7 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- QR Code Generator Library (With SRI Hash) -->
+    <!-- QR Code Generator Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7BobhLK1BLQX0axhRi1DpSEvjfvqSpf54qo5YJkY9808URfc+AGmzpZp50E+8icT6xoj6251nqE1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Firebase Web SDKs (Compat Version) -->
@@ -55,7 +55,7 @@
                 <img src="logo.png" alt="Paw Points Logo" class="h-10 w-10 object-contain rounded-full bg-brand-50 p-1" onerror="this.src='https://via.placeholder.com/40?text=🐾'">
                 <div>
                     <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Paw Points 🐾</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Walkies Loyalty & Care</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Pet Care by Steven</p>
                 </div>
             </div>
 
@@ -126,17 +126,17 @@
                 <!-- Admin Notice Banner -->
                 <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
                     <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
-                    <button @click="showAdminModal = true" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
+                    <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
                 </div>
 
-                <!-- Points Banner & Digital Pass Trigger -->
-                <div class="bg-gradient-to-r from-brand-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+                <!-- Points Banner -->
+                <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
                     <div>
-                        <p class="text-xs uppercase tracking-wider opacity-80 font-semibold">Your Balance</p>
-                        <h2 class="text-4xl font-extrabold mt-1"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal opacity-90">Pts</span></h2>
-                        <p class="text-xs mt-2 opacity-90">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                        <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
+                        <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
+                        <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
                     </div>
-                    <button @click="openDigitalPass()" class="w-full md:w-auto bg-white text-brand-600 hover:bg-brand-50 px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                    <button @click="openDigitalPass()" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
                         <span>📱 Show Digital Pass</span>
                     </button>
                 </div>
@@ -234,8 +234,13 @@
             <h3 class="font-bold text-lg">Admin: Adjust Client Points</h3>
             
             <div>
-                <label class="block text-xs text-gray-500 mb-1">Client User ID (UID)</label>
-                <input type="text" x-model="adminForm.targetUid" placeholder="Paste Client UID here" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                <label class="block text-xs text-gray-500 mb-1">Select Client</label>
+                <select x-model="adminForm.targetUid" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                    <option value="">-- Choose a Client --</option>
+                    <template x-for="c in clientList" :key="c.id">
+                        <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Current: ${c.points || 0} Pts`"></option>
+                    </template>
+                </select>
             </div>
 
             <div>
@@ -252,7 +257,6 @@
 
     <!-- Application JavaScript Logic -->
     <script>
-        // 1. Firebase Configuration (REPLACE THESE KEYS WITH YOUR ACTUAL FIREBASE CONFIG)
         const firebaseConfig = {
             apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
             authDomain: "paw-points-app.firebaseapp.com",
@@ -267,16 +271,14 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // 2. Service Worker Registration for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered successfully!'))
-                    .catch(err => console.log('Service Worker registration failed:', err));
+                    .then(reg => console.log('Service Worker registered!'))
+                    .catch(err => console.log('Service Worker failed:', err));
             });
         }
 
-        // 3. Alpine.js State Management
         function pawApp() {
             return {
                 darkMode: localStorage.getItem('theme') === 'dark',
@@ -289,11 +291,10 @@
                 authForm: { name: '', email: '', password: '' },
                 showQRModal: false,
                 showAdminModal: false,
+                clientList: [],
                 adminForm: { targetUid: '', pointsDelta: 0 },
-                qrInstance: null,
 
                 init() {
-                    // Auth state observer
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
                         if (u) {
@@ -316,7 +317,6 @@
                     try {
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
-                            // Saved into 'clients' collection
                             await db.collection('clients').doc(res.user.uid).set({
                                 name: this.authForm.name,
                                 email: this.authForm.email,
@@ -333,7 +333,6 @@
                 },
 
                 async fetchUserData(uid) {
-                    // Updated to query 'clients' collection
                     const doc = await db.collection('clients').doc(uid).get();
                     if (doc.exists) {
                         this.userData = doc.data();
@@ -341,9 +340,25 @@
                     }
                 },
 
+                async openAdminModal() {
+                    this.showAdminModal = true;
+                    await this.fetchClientsList();
+                },
+
+                async fetchClientsList() {
+                    try {
+                        const snapshot = await db.collection('clients').get();
+                        this.clientList = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+                    } catch (err) {
+                        console.error('Failed to load clients list:', err);
+                    }
+                },
+
                 async savePetDetails() {
                     if (!this.user) return;
-                    // Updated to update 'clients' collection
                     await db.collection('clients').doc(this.user.uid).update({
                         petName: this.userData.petName || '',
                         petNotes: this.userData.petNotes || '',
@@ -357,7 +372,6 @@
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
                         const newBalance = this.userData.points - cost;
-                        // Updated to update 'clients' collection
                         await db.collection('clients').doc(this.user.uid).update({ points: newBalance });
                         this.userData.points = newBalance;
                         alert(`Reward Redeemed! Show this to your sitter.`);
@@ -378,8 +392,8 @@
                 },
 
                 async updateClientPoints() {
-                    if (!this.adminForm.targetUid) return alert('Enter a valid User ID');
-                    // Updated to target 'clients' collection
+                    if (!this.adminForm.targetUid) return alert('Please select a client from the list.');
+                    
                     const targetRef = db.collection('clients').doc(this.adminForm.targetUid);
                     const doc = await targetRef.get();
                     
