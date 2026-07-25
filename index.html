@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Paw Points 🐾 | Pet Sitting Loyalty</title>
   
-  <!-- Add Logo as Favicon -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png">
 
-  <!-- Tailwind CSS & Configuration for Dark Mode -->
+  <!-- Tailwind CSS & Alpine.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -54,8 +54,6 @@
     <!-- AUTHENTICATION & PASSWORD RESET FORMS -->
     <template x-if="!user">
       <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 max-w-md mx-auto transition-colors duration-200">
-        
-        <!-- Logo on login screen -->
         <img src="logo.png" alt="Paw Points Logo" class="w-20 h-20 object-contain mx-auto mb-6" />
 
         <div class="text-center mb-6">
@@ -68,7 +66,6 @@
           <p x-show="isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Enter your email to receive a password reset link</p>
         </div>
 
-        <!-- MAIN LOGIN / SIGN UP FORM -->
         <form x-show="!isForgotPassword" @submit.prevent="handleAuth()" class="space-y-4">
           <template x-if="isSignUp">
             <div>
@@ -93,7 +90,6 @@
           <button type="submit" class="w-full btn-primary text-sm transition-colors" x-text="isSignUp ? 'Register Account' : 'Log In'"></button>
         </form>
 
-        <!-- PASSWORD RESET FORM -->
         <form x-show="isForgotPassword" @submit.prevent="handlePasswordReset()" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Account Email</label>
@@ -116,7 +112,7 @@
     <template x-if="user">
       <div class="space-y-6">
 
-        <!-- Balance Card: Fixed High-Contrast Dark Blue Box in Light Mode, Slate-900 in Dark Mode -->
+        <!-- Balance Card -->
         <div class="bg-blue-950 dark:bg-slate-900 rounded-2xl p-6 text-white shadow-xl flex justify-between items-center border border-blue-900 dark:border-slate-800 transition-colors duration-200">
           <div>
             <p class="text-blue-300 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">Account Balance</p>
@@ -141,25 +137,78 @@
 
           <!-- Add Pet Form -->
           <div x-show="showAddPet" class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-200 dark:border-slate-700 mb-5 space-y-4">
-            <div class="grid grid-cols-2 gap-3">
+            <h4 class="font-semibold text-sm text-slate-700 dark:text-slate-300">New Pet Details</h4>
+            
+            <div class="grid md:grid-cols-2 gap-3">
               <input type="text" x-model="newPet.name" placeholder="Pet Name (e.g. Fizz)" class="form-input text-sm" />
               <input type="text" x-model="newPet.type" placeholder="Type / Breed (e.g. Cat, Tabby)" class="form-input text-sm" />
             </div>
+
+            <!-- Pet Photo Upload -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Pet Photo</label>
+              <input type="file" @change="handlePhotoUpload($event)" accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 dark:file:bg-slate-800 dark:file:text-blue-300 hover:file:bg-blue-100" />
+            </div>
+
+            <!-- Vet Information -->
+            <div class="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-3">
+              <h5 class="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Veterinarian Info</h5>
+              <div class="grid md:grid-cols-3 gap-3">
+                <input type="text" x-model="newPet.vetName" placeholder="Vet Name (e.g. Dr. Smith)" class="form-input text-sm" />
+                <input type="text" x-model="newPet.vetClinic" placeholder="Clinic / Hospital Name" class="form-input text-sm" />
+                <input type="tel" x-model="newPet.vetPhone" placeholder="Clinic Phone Number" class="form-input text-sm" />
+              </div>
+            </div>
+
             <textarea x-model="newPet.notes" placeholder="Care notes, dietary info, or fun quirks..." class="w-full form-input text-sm" rows="2"></textarea>
-            <button @click="savePet()" class="btn-primary px-5 py-2 text-xs font-medium">Save Pet</button>
+            
+            <button @click="savePet()" class="btn-primary px-5 py-2 text-xs font-medium">Save Pet Profile</button>
           </div>
 
           <!-- Pet Cards List -->
           <div class="grid md:grid-cols-2 gap-4">
-            <template x-for="pet in userData?.pets || []" :key="pet.name">
-              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 flex justify-between items-start transition-colors">
-                <div>
-                  <h4 class="font-bold text-base text-slate-800 dark:text-slate-100" x-text="pet.name"></h4>
+            <template x-for="(pet, index) in userData?.pets || []" :key="index">
+              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 flex gap-4 items-start transition-colors relative group">
+                
+                <!-- Pet Image Thumbnail -->
+                <div class="w-20 h-20 rounded-lg bg-slate-200 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-600 flex items-center justify-center">
+                  <template x-if="pet.photo">
+                    <img :src="pet.photo" :alt="pet.name" class="w-full h-full object-cover" />
+                  </template>
+                  <template x-if="!pet.photo">
+                    <span class="text-2xl">🐾</span>
+                  </template>
+                </div>
+
+                <!-- Pet Info -->
+                <div class="flex-1 min-w-0 pr-6">
+                  <h4 class="font-bold text-base text-slate-800 dark:text-slate-100 truncate" x-text="pet.name"></h4>
                   <p class="text-xs text-blue-700 dark:text-blue-400 font-semibold" x-text="pet.type"></p>
+                  
+                  <!-- Vet Info Display -->
+                  <template x-if="pet.vetClinic || pet.vetName || pet.vetPhone">
+                    <div class="mt-2 p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 text-xs space-y-0.5">
+                      <p class="font-semibold text-slate-700 dark:text-slate-300">🏥 Vet Info:</p>
+                      <p class="text-slate-600 dark:text-slate-400" x-text="(pet.vetName ? pet.vetName + ' - ' : '') + (pet.vetClinic || '')"></p>
+                      <template x-if="pet.vetPhone">
+                        <a :href="'tel:' + pet.vetPhone" class="text-blue-600 dark:text-blue-400 hover:underline font-medium block" x-text="'📞 ' + pet.vetPhone"></a>
+                      </template>
+                    </div>
+                  </template>
+
                   <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 italic" x-text="pet.notes || 'No notes added.'"></p>
                 </div>
+
+                <!-- Remove Pet Button -->
+                <button @click="removePet(index)" title="Remove Pet" class="absolute top-3 right-3 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors p-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+
               </div>
             </template>
+
             <template x-if="!userData?.pets?.length">
               <p class="text-xs text-slate-500 dark:text-slate-400 italic py-2">No pets added yet. Click "+ Add Pet" to tell us about your furry friends!</p>
             </template>
@@ -253,7 +302,7 @@
         authEmail: '',
         authPassword: '',
         showAddPet: false,
-        newPet: { name: '', type: '', notes: '' },
+        newPet: { name: '', type: '', notes: '', vetName: '', vetClinic: '', vetPhone: '', photo: '' },
 
         init() {
           auth.onAuthStateChanged(async (u) => {
@@ -307,6 +356,25 @@
           }
         },
 
+        // Convert uploaded photo to Base64 data URL for easy database storage
+        handlePhotoUpload(event) {
+          const file = event.target.files[0];
+          if (!file) return;
+
+          // Limit file size to 1MB to keep Firestore responses fast
+          if (file.size > 1024 * 1024) {
+            alert('Please choose an image under 1MB.');
+            event.target.value = '';
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.newPet.photo = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        },
+
         async savePet() {
           if (!this.newPet.name) return alert('Pet name is required.');
           const pets = this.userData.pets || [];
@@ -314,8 +382,20 @@
 
           await db.collection('clients').doc(this.user.uid).update({ pets });
           this.userData.pets = pets;
-          this.newPet = { name: '', type: '', notes: '' };
+          this.newPet = { name: '', type: '', notes: '', vetName: '', vetClinic: '', vetPhone: '', photo: '' };
           this.showAddPet = false;
+        },
+
+        // Remove pet profile
+        async removePet(index) {
+          const petName = this.userData.pets[index]?.name || 'this pet';
+          if (!confirm(`Are you sure you want to remove ${petName}?`)) return;
+
+          const pets = [...this.userData.pets];
+          pets.splice(index, 1);
+
+          await db.collection('clients').doc(this.user.uid).update({ pets });
+          this.userData.pets = pets;
         },
 
         async redeemReward(cost, rewardName) {
