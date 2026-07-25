@@ -149,8 +149,13 @@
                                     <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
                                     <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
                                 </div>
-                                <button @click="toggleCouponUsed(index)" class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" :class="coupon.used ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
-                                    <span x-text="coupon.used ? '✓ Marked Used' : 'Mark as Used'"></span>
+                                
+                                <button 
+                                    @click="toggleCouponUsed(index)" 
+                                    :disabled="coupon.used"
+                                    class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" 
+                                    :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
+                                    <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
                                 </button>
                             </div>
                         </template>
@@ -288,7 +293,10 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered!'))
+                    .then(reg => {
+                        reg.update();
+                        console.log('Service Worker registered!');
+                    })
                     .catch(err => console.log('Service Worker failed:', err));
             });
         }
@@ -389,7 +397,6 @@
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
                         const newBalance = this.userData.points - cost;
                         
-                        // Generate random 8-character coupon code
                         const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
                         const newCoupon = {
                             code: couponCode,
@@ -414,11 +421,21 @@
 
                 async toggleCouponUsed(index) {
                     if (!this.user) return;
-                    this.userData.coupons[index].used = !this.userData.coupons[index].used;
-                    
-                    await db.collection('clients').doc(this.user.uid).update({
-                        coupons: this.userData.coupons
-                    });
+
+                    const coupon = this.userData.coupons[index];
+
+                    if (coupon.used) {
+                        alert('This coupon has already been used and cannot be changed.');
+                        return;
+                    }
+
+                    if (confirm(`Are you sure you want to mark "${coupon.title}" (${coupon.code}) as USED?\n\nThis cannot be undone.`)) {
+                        this.userData.coupons[index].used = true;
+                        
+                        await db.collection('clients').doc(this.user.uid).update({
+                            coupons: this.userData.coupons
+                        });
+                    }
                 },
 
                 openDigitalPass() {
