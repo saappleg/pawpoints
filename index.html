@@ -12,17 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class', // Enable dark mode by class
-      theme: {
-        extend: {
-          colors: {
-            amber: {
-              50: '#fffbf0',
-              // Add other amber shades as needed, but standard work well
-            },
-          },
-        },
-      },
+      darkMode: 'class',
     }
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -32,29 +22,27 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
-<!-- Alpine handles the theme state in local storage -->
-<body x-data="pawPointsApp()" :class="{ 'dark': darkMode }" class="bg-amber-50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200">
+<body x-data="pawPointsApp()" :class="{ 'dark': darkMode }" class="bg-slate-100 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200">
 
   <!-- Navigation -->
-  <header class="bg-white dark:bg-slate-900 border-b border-amber-200 dark:border-slate-800 shadow-sm sticky top-0 z-10 transition-colors duration-200">
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm sticky top-0 z-10 transition-colors duration-200">
     <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
-        <!-- Logo Image - must be named 'logo.png' -->
         <img src="logo.png" alt="Paw Points Logo" class="w-10 h-10 object-contain" />
-        <h1 class="text-2xl font-extrabold text-amber-900 dark:text-amber-500">Paw Points</h1>
+        <h1 class="text-2xl font-extrabold text-blue-900 dark:text-blue-400">Paw Points</h1>
       </div>
       
       <div class="flex items-center space-x-4">
         <!-- Theme Toggle Button -->
-        <button @click="toggleTheme()" class="p-2 rounded-full hover:bg-amber-100 dark:hover:bg-slate-800 transition-colors">
+        <button @click="toggleTheme()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
           <span x-show="!darkMode" class="text-xl">☀️</span>
           <span x-show="darkMode" class="text-xl">🌙</span>
         </button>
 
         <template x-if="user">
           <div class="flex items-center space-x-3">
-            <span class="text-xs bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-400 font-medium px-3 py-1 rounded-full" x-text="user.email"></span>
-            <button @click="logout()" class="text-xs text-rose-600 hover:underline font-semibold">Log Out</button>
+            <span class="text-xs bg-blue-50 dark:bg-slate-800 text-blue-900 dark:text-blue-300 font-semibold px-3 py-1 rounded-full border border-blue-200 dark:border-slate-700" x-text="user.email"></span>
+            <button @click="logout()" class="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold">Log Out</button>
           </div>
         </template>
       </div>
@@ -65,12 +53,11 @@
 
     <!-- AUTHENTICATION & PASSWORD RESET FORMS -->
     <template x-if="!user">
-      <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg border border-amber-100 dark:border-slate-800 max-w-md mx-auto transition-colors duration-200">
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 max-w-md mx-auto transition-colors duration-200">
         
         <!-- Logo on login screen -->
         <img src="logo.png" alt="Paw Points Logo" class="w-20 h-20 object-contain mx-auto mb-6" />
 
-        <!-- Form titles -->
         <div class="text-center mb-6">
           <h2 x-show="isSignUp" class="text-2xl font-bold text-slate-800 dark:text-slate-100">Create Account</h2>
           <h2 x-show="!isSignUp && !isForgotPassword" class="text-2xl font-bold text-slate-800 dark:text-slate-100">Welcome Back</h2>
@@ -78,7 +65,7 @@
           
           <p x-show="isSignUp" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Sign up to start earning Paw Points</p>
           <p x-show="!isSignUp && !isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Log in to view your balance and pets</p>
-          <p x-show="isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Enter your email and we'll send you a link to reset your password</p>
+          <p x-show="isForgotPassword" class="text-slate-500 dark:text-slate-400 text-xs mt-1">Enter your email to receive a password reset link</p>
         </div>
 
         <!-- MAIN LOGIN / SIGN UP FORM -->
@@ -98,8 +85,7 @@
           <div>
             <div class="flex justify-between items-center mb-1">
               <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">Password</label>
-              <!-- Forgot Password Link -->
-              <button x-show="!isSignUp" @click="isForgotPassword = true" type="button" class="text-xs text-amber-700 dark:text-amber-500 font-medium hover:underline">Forgot?</button>
+              <button x-show="!isSignUp" @click="isForgotPassword = true" type="button" class="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline">Forgot?</button>
             </div>
             <input type="password" x-model="authPassword" required class="form-input" placeholder="••••••••" />
           </div>
@@ -119,10 +105,9 @@
           </div>
         </form>
 
-        <!-- Footer links for switching between login/signup -->
         <div x-show="!isForgotPassword" class="text-xs text-center text-slate-500 mt-6">
           <span x-text="isSignUp ? 'Already have an account?' : 'Need an account?'"></span>
-          <button @click="isSignUp = !isSignUp" class="text-amber-700 dark:text-amber-500 font-bold hover:underline ml-1" x-text="isSignUp ? 'Log In' : 'Sign Up'"></button>
+          <button @click="isSignUp = !isSignUp" class="text-blue-600 dark:text-blue-400 font-bold hover:underline ml-1" x-text="isSignUp ? 'Log In' : 'Sign Up'"></button>
         </div>
       </div>
     </template>
@@ -131,31 +116,31 @@
     <template x-if="user">
       <div class="space-y-6">
 
-        <!-- Balance Card -->
-        <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-6 text-white shadow-xl flex justify-between items-center">
+        <!-- Balance Card: Deep Blue with High-Contrast White/Cyan Text -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-6 text-white shadow-lg flex justify-between items-center">
           <div>
-            <p class="text-amber-100 text-xs font-medium uppercase tracking-wider">Account Balance</p>
-            <h3 class="text-4xl font-extrabold mt-1" x-text="(userData?.points || 0).toLocaleString() + ' 🐾'"></h3>
-            <p class="text-amber-100 text-xs mt-1" x-text="'10 points per $1 spent'"></p>
+            <p class="text-blue-200 text-xs font-semibold uppercase tracking-wider">Account Balance</p>
+            <h3 class="text-4xl font-black mt-1 text-white tracking-tight" x-text="(userData?.points || 0).toLocaleString() + ' 🐾'"></h3>
+            <p class="text-blue-200 text-xs mt-1 font-medium" x-text="'10 points per $1 spent'"></p>
           </div>
           <div class="text-right">
-            <span class="text-xs bg-white/20 text-white px-4 py-1.5 rounded-full font-semibold" x-text="userData?.name || 'Valued Client'"></span>
+            <span class="text-xs bg-white/10 border border-white/20 text-white px-4 py-1.5 rounded-full font-semibold shadow-inner" x-text="userData?.name || 'Valued Client'"></span>
           </div>
         </div>
 
         <!-- PET INFORMATION SECTION -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow border border-amber-100 dark:border-slate-800 transition-colors duration-200">
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
           <div class="flex justify-between items-center mb-5">
             <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <span>🐶🐱 My Pets</span>
             </h3>
-            <button @click="showAddPet = !showAddPet" class="text-xs bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-400 font-semibold px-4 py-2 rounded-lg hover:bg-amber-200 dark:hover:bg-slate-700 transition-colors">
+            <button @click="showAddPet = !showAddPet" class="text-xs bg-blue-50 dark:bg-slate-800 text-blue-900 dark:text-blue-300 font-semibold px-4 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors border border-blue-200 dark:border-slate-700">
               <span x-text="showAddPet ? 'Cancel' : '+ Add Pet'"></span>
             </button>
           </div>
 
           <!-- Add Pet Form -->
-          <div x-show="showAddPet" class="bg-amber-50/60 dark:bg-slate-800 p-5 rounded-xl border border-amber-200 dark:border-slate-700 mb-5 space-y-4">
+          <div x-show="showAddPet" class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-200 dark:border-slate-700 mb-5 space-y-4">
             <div class="grid grid-cols-2 gap-3">
               <input type="text" x-model="newPet.name" placeholder="Pet Name (e.g. Fizz)" class="form-input text-sm" />
               <input type="text" x-model="newPet.type" placeholder="Type / Breed (e.g. Cat, Tabby)" class="form-input text-sm" />
@@ -165,33 +150,33 @@
           </div>
 
           <!-- Pet Cards List -->
-          <div class="grid md:grid-cols-2 gap-5">
+          <div class="grid md:grid-cols-2 gap-4">
             <template x-for="pet in userData?.pets || []" :key="pet.name">
-              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 bg-slate-50/50 dark:bg-slate-800 flex justify-between items-start transition-colors">
+              <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 flex justify-between items-start transition-colors">
                 <div>
-                  <h4 class="font-bold text-lg text-slate-800 dark:text-slate-100" x-text="pet.name"></h4>
-                  <p class="text-xs text-amber-800 dark:text-amber-400 font-medium" x-text="pet.type"></p>
-                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 italic" x-text="pet.notes || 'No notes added.'"></p>
+                  <h4 class="font-bold text-base text-slate-800 dark:text-slate-100" x-text="pet.name"></h4>
+                  <p class="text-xs text-blue-700 dark:text-blue-400 font-semibold" x-text="pet.type"></p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 italic" x-text="pet.notes || 'No notes added.'"></p>
                 </div>
               </div>
             </template>
             <template x-if="!userData?.pets?.length">
-              <p class="text-xs text-slate-400 dark:text-slate-500 italic py-3">No pets added yet. Click "+ Add Pet" to tell us about your furry friends!</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 italic py-2">No pets added yet. Click "+ Add Pet" to tell us about your furry friends!</p>
             </template>
           </div>
         </div>
 
         <!-- REWARD REDEMPTION -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow border border-amber-100 dark:border-slate-800 transition-colors duration-200">
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
           <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-5">Available Rewards</h3>
-          <div class="grid md:grid-cols-2 gap-5">
+          <div class="grid md:grid-cols-2 gap-4">
             
             <!-- $10 Off -->
-            <div class="border border-slate-200 dark:border-slate-700 p-5 rounded-xl flex flex-col justify-between" :class="{'border-amber-500 bg-amber-50/40 dark:bg-slate-800': (userData?.points || 0) >= 5000}">
+            <div class="border border-slate-200 dark:border-slate-700 p-5 rounded-xl flex flex-col justify-between" :class="{'border-blue-500 bg-blue-50/50 dark:bg-slate-800': (userData?.points || 0) >= 5000}">
               <div>
                 <div class="flex justify-between items-center mb-1">
                   <span class="font-bold text-slate-800 dark:text-slate-100">$10 Off Next Sit</span>
-                  <span class="text-xs bg-amber-200 dark:bg-slate-700 text-amber-900 dark:text-amber-400 px-2.5 py-1 rounded-full font-semibold">5,000 pts</span>
+                  <span class="text-xs bg-blue-100 dark:bg-blue-900/60 text-blue-900 dark:text-blue-300 px-2.5 py-1 rounded-full font-bold">5,000 pts</span>
                 </div>
                 <p class="text-xs text-slate-500 dark:text-slate-400">Requires $500 total spent in Walkies.</p>
               </div>
@@ -199,17 +184,17 @@
                 @click="redeemReward(5000, '$10 Off')"
                 :disabled="(userData?.points || 0) < 5000"
                 :class="(userData?.points || 0) >= 5000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'"
-                class="mt-4 w-full py-2.5 rounded-lg font-medium text-xs transition-colors">
+                class="mt-4 w-full py-2.5 rounded-lg font-semibold text-xs transition-colors">
                 Redeem Reward
               </button>
             </div>
 
             <!-- $20 Off -->
-            <div class="border border-slate-200 dark:border-slate-700 p-5 rounded-xl flex flex-col justify-between" :class="{'border-amber-500 bg-amber-50/40 dark:bg-slate-800': (userData?.points || 0) >= 8000}">
+            <div class="border border-slate-200 dark:border-slate-700 p-5 rounded-xl flex flex-col justify-between" :class="{'border-blue-500 bg-blue-50/50 dark:bg-slate-800': (userData?.points || 0) >= 8000}">
               <div>
                 <div class="flex justify-between items-center mb-1">
                   <span class="font-bold text-slate-800 dark:text-slate-100">$20 Off Next Sit</span>
-                  <span class="text-xs bg-amber-200 dark:bg-slate-700 text-amber-900 dark:text-amber-400 px-2.5 py-1 rounded-full font-semibold">8,000 pts</span>
+                  <span class="text-xs bg-blue-100 dark:bg-blue-900/60 text-blue-900 dark:text-blue-300 px-2.5 py-1 rounded-full font-bold">8,000 pts</span>
                 </div>
                 <p class="text-xs text-slate-500 dark:text-slate-400">Best value! Requires $800 total spent.</p>
               </div>
@@ -217,7 +202,7 @@
                 @click="redeemReward(8000, '$20 Off')"
                 :disabled="(userData?.points || 0) < 8000"
                 :class="(userData?.points || 0) >= 8000 ? 'btn-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'"
-                class="mt-4 w-full py-2.5 rounded-lg font-medium text-xs transition-colors">
+                class="mt-4 w-full py-2.5 rounded-lg font-semibold text-xs transition-colors">
                 Redeem Reward
               </button>
             </div>
@@ -230,20 +215,18 @@
 
   </main>
 
-  <!-- Tailwind Component Classes for consistency across modes -->
   <style>
     @layer components {
       .form-input {
-        @apply w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-200;
+        @apply w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors duration-200;
       }
       .btn-primary {
-        @apply bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 rounded-xl transition-colors duration-200;
+        @apply bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 rounded-xl transition-colors duration-200 shadow-sm;
       }
     }
   </style>
 
   <script>
-    // *** REPLACE THIS OBJECT WITH YOUR FIREBASE CONFIG FROM FIREBASE CONSOLE ***
     const firebaseConfig = {
       apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
       authDomain: "paw-points-app.firebaseapp.com",
@@ -261,12 +244,11 @@
 
     function pawPointsApp() {
       return {
-        // Theme state initialization from localStorage
         darkMode: localStorage.getItem('theme') === 'dark',
         user: null,
         userData: null,
         isSignUp: false,
-        isForgotPassword: false, // New state for password reset form
+        isForgotPassword: false,
         authName: '',
         authEmail: '',
         authPassword: '',
@@ -284,7 +266,6 @@
           });
         },
 
-        // Theme switching logic
         toggleTheme() {
           this.darkMode = !this.darkMode;
           localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
@@ -315,13 +296,12 @@
           }
         },
 
-        // New feature: Handle password reset emails via Firebase
         async handlePasswordReset() {
           if (!this.authEmail) return alert('Please enter your email first.');
           try {
             await auth.sendPasswordResetEmail(this.authEmail);
-            alert(`A password reset link has been sent to ${this.authEmail}. Please check your inbox (and spam folder).`);
-            this.isForgotPassword = false; // Go back to login screen
+            alert(`A password reset link has been sent to ${this.authEmail}. Please check your inbox.`);
+            this.isForgotPassword = false;
           } catch (err) {
             alert("Reset Error: " + err.message);
           }
@@ -343,7 +323,7 @@
             const newPoints = this.userData.points - cost;
             await db.collection('clients').doc(this.user.uid).update({ points: newPoints });
             this.userData.points = newPoints;
-            alert(`Successfully redeemed ${rewardName}! We've deducted the points. We'll apply this discount to your next Walkies invoice automatically!`);
+            alert(`Successfully redeemed ${rewardName}!`);
           }
         },
 
