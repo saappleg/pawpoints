@@ -439,21 +439,68 @@
                     const file = event.target.files[0];
                     if (!file) return;
 
+                    const img = new Image();
                     const reader = new FileReader();
+
                     reader.onload = (e) => {
-                        this.userData.pets[index].photo = e.target.result;
+                        img.src = e.target.result;
+                        img.onload = () => {
+                            // Canvas image compression to keep Firestore payloads under limits
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 300;
+                            const MAX_HEIGHT = 300;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // Save optimized JPEG base64 string
+                            this.userData.pets[index].photo = canvas.toDataURL('image/jpeg', 0.7);
+                        };
                     };
                     reader.readAsDataURL(file);
                 },
 
                 async savePetDetails() {
-                    if (!this.user) return;
-                    await db.collection('clients').doc(this.user.uid).update({
-                        pets: this.userData.pets,
-                        vetClinic: this.userData.vetClinic || '',
-                        vetPhone: this.userData.vetPhone || ''
-                    });
-                    alert('Pet profiles & vet details saved successfully!');
+                    if (!this.user) {
+                        alert('You must be logged in to save pet details.');
+                        return;
+                    }
+
+                    try {
+                        // Clean pet array before saving to ensure valid fields
+                        const cleanedPets = (this.userData.pets || []).map(p => ({
+                            name: p.name || '',
+                            notes: p.notes || '',
+                            photo: p.photo || ''
+                        }));
+
+                        await db.collection('clients').doc(this.user.uid).set({
+                            pets: cleanedPets,
+                            vetClinic: this.userData.vetClinic || '',
+                            vetPhone: this.userData.vetPhone || ''
+                        }, { merge: true });
+
+                        alert('Pet profiles & vet details saved successfully!');
+                    } catch (err) {
+                        console.error('Failed to save pet details:', err);
+                        alert(`Error saving profile: ${err.message}`);
+                    }
                 },
 
                 async openAdminModal() {
