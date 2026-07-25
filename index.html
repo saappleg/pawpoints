@@ -34,8 +34,8 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- QR Code Generator Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7BobhLK1BLQX0axhRi1DpSEvjfvqSpf54qo5YJkY9808URfc+AGmzpZp50E+8icT6xoj6251nqE1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Reliable QR Code Generator CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
     <!-- Firebase Web SDKs (Compat Version) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -60,13 +60,11 @@
             </div>
 
             <div class="flex items-center space-x-2">
-                <!-- Dark Mode Toggle -->
                 <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                     <span x-show="!darkMode">🌙</span>
                     <span x-show="darkMode" x-cloak>☀️</span>
                 </button>
 
-                <!-- Auth Buttons -->
                 <template x-if="user">
                     <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-2 rounded-lg font-medium transition">
                         Log Out
@@ -79,7 +77,6 @@
     <!-- Main Content Area -->
     <main class="flex-grow max-w-4xl w-full mx-auto p-4 space-y-6">
 
-        <!-- Loading Spinner -->
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading your profile...</p>
@@ -141,6 +138,25 @@
                     </button>
                 </div>
 
+                <!-- Active Coupons Section -->
+                <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="font-bold text-base mb-3">Your Redeemed Coupons</h3>
+                    <div class="space-y-3">
+                        <template x-for="(coupon, index) in userData.coupons" :key="index">
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
+                                <div>
+                                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
+                                    <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
+                                    <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
+                                </div>
+                                <button @click="toggleCouponUsed(index)" class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" :class="coupon.used ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
+                                    <span x-text="coupon.used ? '✓ Marked Used' : 'Mark as Used'"></span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
                 <!-- Rewards Section -->
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <h3 class="font-bold text-base mb-4">Available Rewards</h3>
@@ -151,7 +167,7 @@
                                 <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
                                 <p class="text-xs text-gray-500">5,000 Points</p>
                             </div>
-                            <button @click="redeemReward(5000, '$10 Off')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                            <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
                                 Redeem
                             </button>
                         </div>
@@ -161,7 +177,7 @@
                                 <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
                                 <p class="text-xs text-gray-500">8,000 Points</p>
                             </div>
-                            <button @click="redeemReward(8000, '$20 Off')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                            <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
                                 Redeem
                             </button>
                         </div>
@@ -178,7 +194,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Pet Info -->
                         <div class="space-y-3">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pet Profile</h4>
                             <div>
@@ -191,7 +206,6 @@
                             </div>
                         </div>
 
-                        <!-- Vet Info -->
                         <div class="space-y-3">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Emergency Vet Info</h4>
                             <div>
@@ -216,7 +230,7 @@
             <h3 class="font-bold text-lg">Your Paw Pass</h3>
             <p class="text-xs text-gray-500">Scan this code at checkout or visits to quickly access your account.</p>
             
-            <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200">
+            <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200 min-h-[192px] items-center">
                 <div id="qrcode"></div>
             </div>
 
@@ -321,6 +335,7 @@
                                 name: this.authForm.name,
                                 email: this.authForm.email,
                                 points: 0,
+                                coupons: [],
                                 isAdmin: false,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
@@ -336,6 +351,7 @@
                     const doc = await db.collection('clients').doc(uid).get();
                     if (doc.exists) {
                         this.userData = doc.data();
+                        this.userData.coupons = this.userData.coupons || [];
                         this.isAdmin = !!this.userData.isAdmin;
                     }
                 },
@@ -372,10 +388,37 @@
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
                         const newBalance = this.userData.points - cost;
-                        await db.collection('clients').doc(this.user.uid).update({ points: newBalance });
+                        
+                        // Generate random 8-character coupon code
+                        const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                        const newCoupon = {
+                            code: couponCode,
+                            title: title,
+                            used: false,
+                            createdAt: new Date().toISOString()
+                        };
+
+                        const updatedCoupons = [...(this.userData.coupons || []), newCoupon];
+
+                        await db.collection('clients').doc(this.user.uid).update({ 
+                            points: newBalance,
+                            coupons: updatedCoupons
+                        });
+
                         this.userData.points = newBalance;
-                        alert(`Reward Redeemed! Show this to your sitter.`);
+                        this.userData.coupons = updatedCoupons;
+
+                        alert(`Reward Redeemed!\n\nYour Coupon Code is: ${couponCode}`);
                     }
+                },
+
+                async toggleCouponUsed(index) {
+                    if (!this.user) return;
+                    this.userData.coupons[index].used = !this.userData.coupons[index].used;
+                    
+                    await db.collection('clients').doc(this.user.uid).update({
+                        coupons: this.userData.coupons
+                    });
                 },
 
                 openDigitalPass() {
@@ -383,11 +426,15 @@
                     this.$nextTick(() => {
                         const qrDiv = document.getElementById("qrcode");
                         qrDiv.innerHTML = "";
-                        new QRCode(qrDiv, {
-                            text: this.user.uid,
-                            width: 160,
-                            height: 160
-                        });
+                        if (typeof QRCode !== 'undefined') {
+                            new QRCode(qrDiv, {
+                                text: this.user.uid,
+                                width: 160,
+                                height: 160
+                            });
+                        } else {
+                            qrDiv.innerHTML = "<p class='text-xs text-red-500'>Failed to load QR generator.</p>";
+                        }
                     });
                 },
 
