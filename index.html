@@ -8,6 +8,25 @@
   <!-- Add Logo as Favicon -->
   <link rel="icon" type="image/png" href="logo.png">
 
+  <!-- PWA Manifest & App Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#172554">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Paw Points">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Register Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('Service Worker Registered'))
+          .catch(err => console.log('Service Worker Failed', err));
+      });
+    }
+  </script>
+
   <!-- Tailwind CSS & Configuration for Dark Mode -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
