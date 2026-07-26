@@ -146,27 +146,27 @@
                 </div>
 
                 <!-- 🎁 REFERRAL REWARDS CARD -->
-                <div class="bg-gradient-to-r from-purple-600 to-brand-600 text-white p-6 rounded-2xl shadow-md space-y-4">
+                <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-[10px] uppercase font-extrabold tracking-widest bg-white/20 px-2.5 py-1 rounded-full text-white">Earn Free Care</span>
-                            <h3 class="font-extrabold text-xl mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
-                            <p class="text-xs text-purple-100 mt-1 max-w-lg leading-relaxed">
-                                Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive **1,000 Paw Points** toward your next reward.
+                            <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
+                            <h3 class="font-extrabold text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
+                            <p class="text-xs text-indigo-100 mt-1 max-w-lg leading-relaxed">
+                                Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
                             </p>
                         </div>
                         <div class="hidden sm:block text-right">
-                            <span class="text-2xl font-black" x-text="userData.referralsCount || 0">0</span>
-                            <p class="text-[10px] text-purple-200 uppercase font-bold tracking-wider">Friends Referred</p>
+                            <span class="text-2xl font-black text-white" x-text="userData.referralsCount || 0">0</span>
+                            <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Friends Referred</p>
                         </div>
                     </div>
 
-                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/20">
-                        <div class="text-center sm:text-left">
-                            <p class="text-[10px] uppercase tracking-wider text-purple-200 font-bold">Your Personal Referral Link</p>
-                            <p class="font-mono text-sm font-bold text-white truncate max-w-xs sm:max-w-md" x-text="getReferralLink()"></p>
+                    <div class="bg-indigo-800/80 dark:bg-indigo-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-indigo-500/40">
+                        <div class="text-center sm:text-left w-full sm:w-auto">
+                            <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Your Personal Referral Link</p>
+                            <p class="font-mono text-xs font-bold text-white truncate max-w-xs sm:max-w-md mt-0.5 select-all" x-text="getReferralLink()"></p>
                         </div>
-                        <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-brand-700 font-bold rounded-lg text-xs hover:bg-purple-50 transition shadow-sm flex items-center justify-center gap-1">
+                        <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-indigo-900 font-bold rounded-lg text-xs hover:bg-indigo-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
                             <span x-text="copiedRef ? '✓ Copied!' : '📋 Copy Link'"></span>
                         </button>
                     </div>
