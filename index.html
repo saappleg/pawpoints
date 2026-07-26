@@ -119,19 +119,7 @@
         </div>
 
         <!-- VIEW 1: BUSINESS HOME PAGE -->
-        <div x-show="!loading && currentView === 'home'" class="space-y-8">
-            
-            <!-- GOOGLE OAUTH COMPLIANCE BANNER: EXPLICIT APPLICATION PURPOSE -->
-            <section class="bg-gradient-to-r from-brand-600 to-indigo-700 text-white p-6 rounded-2xl shadow-md space-y-2">
-                <div class="flex items-center gap-2">
-                    <span class="text-xl">🐾</span>
-                    <h2 class="text-lg font-bold">About Pet Care by Steven</h2>
-                </div>
-                <p class="text-xs md:text-sm leading-relaxed text-indigo-50">
-                    <strong>Pet Care by Steven</strong> is a dedicated client portal designed for managing pet care routines, scheduling dog walking and sitting visits, and earning client loyalty Paw Points. Log in to update your pet’s profile, access your digital pass, and redeem service rewards.
-                </p>
-            </section>
-
+        <div x-show="!loading && currentView === 'home'" class="space-y-10">
             <!-- Hero Section -->
             <section class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -635,14 +623,26 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
-        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p>© Pet Care by Steven. All rights reserved.</p>
-            <div class="flex space-x-4 font-medium">
-                <button @click="currentView = 'home'" class="hover:underline">Home</button>
-                <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
-                <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
-                <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500">
+        <div class="max-w-5xl mx-auto px-4 space-y-4">
+            
+            <!-- GOOGLE OAUTH COMPLIANCE (NATURALLY INTEGRATED IN FOOTER) -->
+            <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
+                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                    Pet Care by Steven is an official client management portal designed to help clients schedule dog walking and pet sitting services, manage care routines, view digital client passes, and track Paw Points loyalty rewards.
+                </p>
+            </div>
+
+            <!-- Standard Navigation & Copyright -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                <p>© Pet Care by Steven. All rights reserved.</p>
+                <div class="flex space-x-4 font-medium">
+                    <button @click="currentView = 'home'" class="hover:underline">Home</button>
+                    <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
+                    <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
+                    <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
+                </div>
             </div>
         </div>
     </footer>
