@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven 🐾 | Professional Pet Sitting & Loyalty</title>
-
+    
     <!-- PWA Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
@@ -68,13 +68,12 @@
                 </button>
                 <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
                     <span>🐾 Paw Points</span>
-                    <span x-show="user" class="bg-brand-600 text-white text-[10px] px-1.5 py-0.2 rounded-full" x-text="userData.points || 0"></span>
+                    <span x-show="user && isVerified" class="bg-brand-600 text-white text-[10px] px-1.5 py-0.2 rounded-full" x-text="userData.points || 0"></span>
                 </button>
             </nav>
 
             <!-- Actions Bar -->
             <div class="flex items-center space-x-2">
-                <!-- Walkies Booking Link -->
                 <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <span>🐕</span>
                     <span class="hidden sm:inline">Book Service</span>
@@ -87,7 +86,7 @@
 
                 <template x-if="user">
                     <div class="flex items-center space-x-2">
-                        <button @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                             <span>👤 Profile</span>
                         </button>
                         <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-2 rounded-lg font-medium transition">
@@ -207,6 +206,7 @@
 
         <!-- VIEW 2: PAW POINTS LOYALTY & CLIENT DASHBOARD -->
         <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
+            
             <!-- AUTHENTICATION VIEW -->
             <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
                 <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
@@ -261,6 +261,7 @@
                     </template>
 
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
+                    <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
@@ -288,8 +289,29 @@
                 </div>
             </div>
 
-            <!-- LOGGED-IN DASHBOARD -->
-            <template x-if="user">
+            <!-- UNVERIFIED EMAIL BANNER (IF LOGGED IN BUT UNVERIFIED) -->
+            <template x-if="user && !isVerified">
+                <div class="max-w-md mx-auto p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl shadow-sm text-amber-900 dark:text-amber-200 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">✉️</span>
+                        <h3 class="font-bold text-sm">Verify Your Email Address</h3>
+                    </div>
+                    <p class="text-xs leading-relaxed">
+                        We sent a verification email to <strong x-text="user.email"></strong>. Please click the link inside your email to unlock your account features.
+                    </p>
+                    <div class="flex items-center justify-between pt-2 border-t border-amber-200/60 dark:border-amber-800/60">
+                        <button @click="resendVerificationEmail()" class="text-xs font-bold underline hover:no-underline">
+                            Resend Verification Email
+                        </button>
+                        <button @click="checkVerificationStatus()" class="text-xs bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 font-bold px-3 py-1.5 rounded-lg">
+                            I've Verified
+                        </button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- LOGGED-IN & VERIFIED DASHBOARD -->
+            <template x-if="user && isVerified">
                 <div class="space-y-6">
 
                     <!-- Admin Notice Banner -->
@@ -483,7 +505,7 @@
                                         <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
                                         <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
                                     </div>
-                                    
+                                                                        
                                     <button 
                                         @click="toggleCouponUsed(index)" 
                                         :disabled="coupon.used"
@@ -640,7 +662,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Enable default language detection for Auth popups
         auth.useDeviceLanguage();
 
         if ('serviceWorker' in navigator) {
@@ -661,6 +682,7 @@
                 loading: true,
                 user: null,
                 userData: {},
+                isVerified: false,
                 isAdmin: false,
                 isEditingPets: false,
                 copiedRef: false,
@@ -680,22 +702,28 @@
                 init() {
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
-                        
                         const urlParams = new URLSearchParams(window.location.search);
                         const refParam = urlParams.get('ref');
                         const targetClientUid = urlParams.get('client');
 
                         if (u) {
-                            await this.fetchUserData(u.uid);
+                            await u.reload(); // Refresh verification status token
+                            const isGoogleUser = u.providerData.some(p => p.providerId === 'google.com');
+                            this.isVerified = u.emailVerified || isGoogleUser;
 
-                            if (targetClientUid && this.isAdmin) {
-                                this.currentView = 'loyalty';
-                                await this.fetchClientsList();
-                                this.adminForm.targetUid = targetClientUid;
-                                this.showAdminModal = true;
+                            if (this.isVerified) {
+                                await this.fetchUserData(u.uid);
+
+                                if (targetClientUid && this.isAdmin) {
+                                    this.currentView = 'loyalty';
+                                    await this.fetchClientsList();
+                                    this.adminForm.targetUid = targetClientUid;
+                                    this.showAdminModal = true;
+                                }
                             }
                         } else {
                             this.userData = {};
+                            this.isVerified = false;
                             this.isAdmin = false;
 
                             if (refParam) {
@@ -716,11 +744,7 @@
                 async handleGoogleAuth() {
                     this.authError = '';
                     const provider = new firebase.auth.GoogleAuthProvider();
-                    
-                    // Forces selection of account to avoid invalid session tokens
-                    provider.setCustomParameters({
-                        prompt: 'select_account'
-                    });
+                    provider.setCustomParameters({ prompt: 'select_account' });
 
                     try {
                         const res = await auth.signInWithPopup(provider);
@@ -760,6 +784,9 @@
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
                             
+                            // Send verification email right after account creation
+                            await res.user.sendEmailVerification();
+
                             const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
                             let initialCoupons = [];
                             let referredByUid = null;
@@ -800,11 +827,49 @@
                                 referralsCount: 0,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
+
+                            this.authSuccess = 'Account created! Please check your email to verify your address.';
+                            this.authMode = 'login';
                         } else {
-                            await auth.signInWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                            const res = await auth.signInWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                            await res.user.reload();
+                            
+                            const isGoogleUser = res.user.providerData.some(p => p.providerId === 'google.com');
+                            this.isVerified = res.user.emailVerified || isGoogleUser;
+
+                            if (!this.isVerified) {
+                                this.authError = 'Please verify your email address to access the dashboard.';
+                            }
                         }
                     } catch (err) {
                         this.authError = err.message;
+                    }
+                },
+
+                async resendVerificationEmail() {
+                    this.authError = '';
+                    this.authSuccess = '';
+                    if (auth.currentUser) {
+                        try {
+                            await auth.currentUser.sendEmailVerification();
+                            alert('Verification email resent! Please check your inbox.');
+                        } catch (err) {
+                            alert('Error sending verification email: ' + err.message);
+                        }
+                    }
+                },
+
+                async checkVerificationStatus() {
+                    if (auth.currentUser) {
+                        await auth.currentUser.reload();
+                        const isGoogleUser = auth.currentUser.providerData.some(p => p.providerId === 'google.com');
+                        this.isVerified = auth.currentUser.emailVerified || isGoogleUser;
+
+                        if (this.isVerified) {
+                            await this.fetchUserData(auth.currentUser.uid);
+                        } else {
+                            alert('Email not verified yet. Please click the link sent to your email.');
+                        }
                     }
                 },
 
@@ -861,6 +926,7 @@
                     try {
                         if (this.profileForm.email !== this.user.email) {
                             await this.user.updateEmail(this.profileForm.email);
+                            await this.user.sendEmailVerification();
                         }
 
                         await db.collection('clients').doc(this.user.uid).update({
@@ -1091,6 +1157,9 @@
 
                 async logout() {
                     await auth.signOut();
+                    this.user = null;
+                    this.userData = {};
+                    this.isVerified = false;
                 }
             }
         }
