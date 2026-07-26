@@ -117,11 +117,8 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <!-- ================================================================= -->
-        <!-- VIEW 1: BUSINESS HOME PAGE                                         -->
-        <!-- ================================================================= -->
+        <!-- VIEW 1: BUSINESS HOME PAGE -->
         <div x-show="!loading && currentView === 'home'" class="space-y-10">
-            
             <!-- Hero Section -->
             <section class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -152,7 +149,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Service 1 -->
                     <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🐕‍🦺</div>
                         <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dog Walking</h4>
@@ -160,8 +156,6 @@
                             Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
                         </p>
                     </div>
-
-                    <!-- Service 2 -->
                     <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🏡</div>
                         <h4 class="font-bold text-lg text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
@@ -169,8 +163,6 @@
                             Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
                         </p>
                     </div>
-
-                    <!-- Service 3 -->
                     <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🎁</div>
                         <h4 class="font-bold text-lg text-gray-900 dark:text-white">Paw Points Loyalty</h4>
@@ -213,12 +205,8 @@
             </section>
         </div>
 
-
-        <!-- ================================================================= -->
-        <!-- VIEW 2: PAW POINTS LOYALTY & CLIENT DASHBOARD (SUB-PAGE)           -->
-        <!-- ================================================================= -->
+        <!-- VIEW 2: PAW POINTS LOYALTY & CLIENT DASHBOARD -->
         <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
-
             <!-- AUTHENTICATION VIEW -->
             <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
                 <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
@@ -240,7 +228,7 @@
                         <div class="relative flex justify-center text-xs"><span class="bg-white dark:bg-gray-800 px-2 text-gray-400">or use email</span></div>
                     </div>
                 </div>
-                
+
                 <!-- EMAIL LOGIN / SIGNUP FORM -->
                 <form x-show="authMode !== 'forgot'" @submit.prevent="handleAuth()" class="space-y-4">
                     <template x-if="authMode === 'signup'">
@@ -273,7 +261,6 @@
                     </template>
 
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
-
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
@@ -328,7 +315,7 @@
                         </div>
                     </div>
 
-                    <!-- 🎁 REFERRAL REWARDS CARD -->
+                    <!-- REFERRAL REWARDS CARD -->
                     <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
                         <div class="flex justify-between items-start">
                             <div>
@@ -355,10 +342,8 @@
                         </div>
                     </div>
 
-                    <!-- 🐾 PET PROFILES & VET DETAILS SECTION -->
+                    <!-- PET PROFILES & VET DETAILS SECTION -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
-                        
-                        <!-- Panel Header -->
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
                             <div>
                                 <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
@@ -367,14 +352,12 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <!-- STATIC VIEW ACTION -->
                                 <template x-if="!isEditingPets">
                                     <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
                                         ✏️ Edit Information
                                     </button>
                                 </template>
 
-                                <!-- EDITING MODE ACTIONS -->
                                 <template x-if="isEditingPets">
                                     <div class="flex items-center space-x-2">
                                         <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
@@ -391,9 +374,8 @@
                             </div>
                         </div>
 
-                        <!-- 1. STATIC DISPLAY MODE (SAVED VIEW) -->
+                        <!-- DISPLAY MODE -->
                         <div x-show="!isEditingPets" class="space-y-6">
-                            <!-- Pet Cards Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
                                     <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
@@ -420,7 +402,6 @@
                                 </template>
                             </div>
 
-                            <!-- Static Emergency Vet Info Banner -->
                             <div class="border-t dark:border-gray-700 pt-4">
                                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
@@ -436,9 +417,8 @@
                             </div>
                         </div>
 
-                        <!-- 2. EDITABLE PANEL MODE (TEXTBOX VIEW) -->
+                        <!-- EDITABLE PANEL MODE -->
                         <div x-show="isEditingPets" class="space-y-6" x-cloak>
-                            <!-- Pet Cards Inputs Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
                                     <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
@@ -447,7 +427,6 @@
                                         </button>
 
                                         <div class="flex items-center space-x-4">
-                                            <!-- Pet Photo Avatar Input -->
                                             <div class="relative group flex-shrink-0">
                                                 <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
                                                     <template x-if="pet.photo">
@@ -477,7 +456,6 @@
                                 </template>
                             </div>
 
-                            <!-- Vet Info Input Banner -->
                             <div class="border-t dark:border-gray-700 pt-4 mt-4">
                                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -492,7 +470,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <!-- Active Coupons Section -->
@@ -523,7 +500,6 @@
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="font-bold text-base mb-4">Available Rewards</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Reward 1 -->
                             <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
                                 <div>
                                     <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
@@ -533,7 +509,6 @@
                                     Redeem
                                 </button>
                             </div>
-                            <!-- Reward 2 -->
                             <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
                                 <div>
                                     <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
@@ -545,11 +520,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </template>
         </div>
-
     </main>
 
     <!-- Footer -->
@@ -564,7 +537,7 @@
         </div>
     </footer>
 
-    <!-- Customer Profile / Contact Settings Modal -->
+    <!-- Account Profile Modal -->
     <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
@@ -652,6 +625,7 @@
 
     <!-- Application JavaScript Logic -->
     <script>
+        // Exact Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
             authDomain: "paw-points-app.firebaseapp.com",
@@ -665,6 +639,9 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        // Enable default language detection for Auth popups
+        auth.useDeviceLanguage();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -739,6 +716,12 @@
                 async handleGoogleAuth() {
                     this.authError = '';
                     const provider = new firebase.auth.GoogleAuthProvider();
+                    
+                    // Forces selection of account to avoid invalid session tokens
+                    provider.setCustomParameters({
+                        prompt: 'select_account'
+                    });
+
                     try {
                         const res = await auth.signInWithPopup(provider);
                         const userRef = db.collection('clients').doc(res.user.uid);
@@ -761,7 +744,12 @@
                             });
                         }
                     } catch (err) {
-                        this.authError = err.message;
+                        console.error('Google Auth Error:', err);
+                        if (err.code === 'auth/invalid-action-code' || err.code === 'auth/argument-error') {
+                            this.authError = "Configuration issue detected. Please clear browser cache and retry.";
+                        } else {
+                            this.authError = err.message;
+                        }
                     }
                 },
 
