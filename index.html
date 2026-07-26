@@ -119,7 +119,19 @@
         </div>
 
         <!-- VIEW 1: BUSINESS HOME PAGE -->
-        <div x-show="!loading && currentView === 'home'" class="space-y-10">
+        <div x-show="!loading && currentView === 'home'" class="space-y-8">
+            
+            <!-- GOOGLE OAUTH COMPLIANCE BANNER: EXPLICIT APPLICATION PURPOSE -->
+            <section class="bg-gradient-to-r from-brand-600 to-indigo-700 text-white p-6 rounded-2xl shadow-md space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🐾</span>
+                    <h2 class="text-lg font-bold">About Pet Care by Steven</h2>
+                </div>
+                <p class="text-xs md:text-sm leading-relaxed text-indigo-50">
+                    <strong>Pet Care by Steven</strong> is a dedicated client portal designed for managing pet care routines, scheduling dog walking and sitting visits, and earning client loyalty Paw Points. Log in to update your pet’s profile, access your digital pass, and redeem service rewards.
+                </p>
+            </section>
+
             <!-- Hero Section -->
             <section class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="space-y-4 max-w-xl text-center md:text-left z-10">
