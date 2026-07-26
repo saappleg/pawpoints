@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pet Care by Steven 🐾 | Professional Pet Sitting & Loyalty</title>
-    
+    <!-- EXACT MATCH TITLE FOR GOOGLE VERIFICATION -->
+    <title>Pet Care by Steven - Pet Sitting & Paw Points Portal</title>
+        
     <!-- PWA Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
@@ -56,8 +57,9 @@
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <img src="logo.png" alt="Pet Care by Steven Logo" class="h-10 w-10 object-contain rounded-full bg-brand-50 p-1" onerror="this.src='https://via.placeholder.com/40?text=🐾'">
                 <div>
+                    <!-- EXACT MATCH HEADING FOR GOOGLE VERIFICATION -->
                     <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional Sitting & Dog Walking</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
                 </div>
             </div>
 
@@ -122,9 +124,9 @@
             <section class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="space-y-4 max-w-xl text-center md:text-left z-10">
                     <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
-                    <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Your Pets Deserve The Best Care at Home.</h2>
+                    <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
                     <p class="text-indigo-100 text-sm md:text-base leading-relaxed">
-                        Reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
+                        Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                     </p>
                     <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
                         <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center">
@@ -262,11 +264,12 @@
 
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
                     <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
+
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
                 <!-- FORGOT PASSWORD FORM -->
-                <form x-show="authMode !== 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
+                <form x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     
                     <div>
@@ -505,7 +508,7 @@
                                         <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
                                         <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
                                     </div>
-                                                                        
+                                    
                                     <button 
                                         @click="toggleCouponUsed(index)" 
                                         :disabled="coupon.used"
@@ -531,6 +534,7 @@
                                     Redeem
                                 </button>
                             </div>
+
                             <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
                                 <div>
                                     <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
@@ -542,6 +546,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </template>
         </div>
@@ -616,18 +621,20 @@
             <span class="text-xs font-bold hidden sm:inline" x-show="!showChatWidget">Chat with us</span>
         </button>
     </div>
+
     <!-- Footer -->
-<footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
-    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-        <p>© Pet Care by Steven. All rights reserved.</p>
-        <div class="flex space-x-4 font-medium">
-            <button @click="currentView = 'home'" class="hover:underline">Home</button>
-            <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
-            <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
-            <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>© Pet Care by Steven. All rights reserved.</p>
+            <div class="flex space-x-4 font-medium">
+                <button @click="currentView = 'home'" class="hover:underline">Home</button>
+                <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
+                <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
+                <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
+
     <!-- Account Profile Modal -->
     <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
