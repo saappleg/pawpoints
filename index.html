@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paw Points 🐾 Loyalty & Pet Care</title>
+    <title>Pet Care by Steven 🐾 | Professional Pet Sitting & Loyalty</title>
 
     <!-- PWA Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
@@ -50,20 +50,34 @@
 
     <!-- Navigation Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
-        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logo.png" alt="Paw Points Logo" class="h-10 w-10 object-contain rounded-full bg-brand-50 p-1" onerror="this.src='https://via.placeholder.com/40?text=🐾'">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            
+            <!-- Branding / Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
+                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-10 w-10 object-contain rounded-full bg-brand-50 p-1" onerror="this.src='https://via.placeholder.com/40?text=🐾'">
                 <div>
-                    <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Paw Points 🐾</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Pet Care by Steven</p>
+                    <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional Sitting & Dog Walking</p>
                 </div>
             </div>
 
+            <!-- Main Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl">
+                <button @click="currentView = 'home'" :class="currentView === 'home' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition">
+                    🏠 Home
+                </button>
+                <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                    <span>🐾 Paw Points</span>
+                    <span x-show="user" class="bg-brand-600 text-white text-[10px] px-1.5 py-0.2 rounded-full" x-text="userData.points || 0"></span>
+                </button>
+            </nav>
+
+            <!-- Actions Bar -->
             <div class="flex items-center space-x-2">
-                <!-- Walkies Profile Link -->
-                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-700 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5">
+                <!-- Walkies Booking Link -->
+                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <span>🐕</span>
-                    <span class="hidden sm:inline">Book on</span> Walkies
+                    <span class="hidden sm:inline">Book Service</span>
                 </a>
 
                 <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
@@ -78,201 +92,262 @@
                 </template>
             </div>
         </div>
+
+        <!-- Mobile View Switcher Bar -->
+        <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
+            <button @click="currentView = 'home'" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500'">
+                🏠 Home & Services
+            </button>
+            <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500'">
+                🐾 Paw Points Portal
+            </button>
+        </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-grow max-w-4xl w-full mx-auto p-4 space-y-6">
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-6">
 
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading your profile...</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <!-- AUTHENTICATION VIEW -->
-        <div x-show="!loading && !user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
-            <h2 class="text-xl font-bold mb-4 text-center" x-text="authMode === 'login' ? 'Welcome Back' : 'Create Account'"></h2>
+        <!-- ================================================================= -->
+        <!-- VIEW 1: BUSINESS HOME PAGE                                         -->
+        <!-- ================================================================= -->
+        <div x-show="!loading && currentView === 'home'" class="space-y-10">
             
-            <form @submit.prevent="handleAuth()" class="space-y-4">
-                <template x-if="authMode === 'signup'">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                        <input type="text" x-model="authForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                    </div>
-                </template>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                    <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                    <input type="password" x-model="authForm.password" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                </div>
-
-                <template x-if="authMode === 'signup'">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Referral Code (Optional)</label>
-                        <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
-                    </div>
-                </template>
-
-                <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
-
-                <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
-            </form>
-
-            <div class="mt-4 text-center text-xs text-gray-500">
-                <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''" class="text-brand-600 hover:underline">
-                    <span x-text="authMode === 'login' ? 'Need an account? Sign up' : 'Already have an account? Log in'"></span>
-                </button>
-            </div>
-        </div>
-
-        <!-- LOGGED-IN DASHBOARD -->
-        <template x-if="!loading && user">
-            <div class="space-y-6">
-
-                <!-- Admin Notice Banner -->
-                <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
-                    <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
-                    <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
-                </div>
-
-                <!-- Points Banner -->
-                <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
-                    <div>
-                        <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
-                        <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
-                        <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
-                    </div>
-                    <button @click="openDigitalPass()" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
-                        <span>📱 Show Digital Pass</span>
-                    </button>
-                </div>
-
-                <!-- 🎁 REFERRAL REWARDS CARD -->
-                <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
-                            <h3 class="font-extrabold text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
-                            <p class="text-xs text-indigo-100 mt-1 max-w-lg leading-relaxed">
-                                Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
-                            </p>
-                        </div>
-                        <div class="hidden sm:block text-right">
-                            <span class="text-2xl font-black text-white" x-text="userData.referralsCount || 0">0</span>
-                            <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Friends Referred</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-indigo-800/80 dark:bg-indigo-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-indigo-500/40">
-                        <div class="text-center sm:text-left w-full sm:w-auto">
-                            <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Your Personal Referral Link</p>
-                            <p class="font-mono text-xs font-bold text-white truncate max-w-xs sm:max-w-md mt-0.5 select-all" x-text="getReferralLink()"></p>
-                        </div>
-                        <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-indigo-900 font-bold rounded-lg text-xs hover:bg-indigo-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
-                            <span x-text="copiedRef ? '✓ Copied!' : '📋 Copy Link'"></span>
+            <!-- Hero Section -->
+            <section class="bg-gradient-to-br from-brand-600 to-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-4 max-w-xl text-center md:text-left z-10">
+                    <span class="bg-white/20 text-white border border-white/30 text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
+                    <h2 class="text-3xl md:text-5xl font-black leading-tight">Your Pets Deserve The Best Care at Home.</h2>
+                    <p class="text-indigo-100 text-sm md:text-base leading-relaxed">
+                        Reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
+                    </p>
+                    <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
+                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-brand-700 hover:bg-brand-50 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center">
+                            📅 Schedule & Book Walkies
+                        </a>
+                        <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-indigo-700/60 hover:bg-indigo-700 text-white border border-indigo-400/40 px-6 py-3 rounded-xl font-bold text-sm transition text-center">
+                            🎁 View Client Rewards
                         </button>
                     </div>
                 </div>
+                <div class="text-8xl select-none hidden md:block">
+                    🐶🐱
+                </div>
+            </section>
 
-                <!-- 🐾 PET PROFILES & VET DETAILS SECTION -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
-                    
-                    <!-- Panel Header -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-                                <span>🐶 Pet Profiles & Care Details</span>
-                            </h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <!-- STATIC VIEW ACTION -->
-                            <template x-if="!isEditingPets">
-                                <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
-                                    ✏️ Edit Information
-                                </button>
-                            </template>
+            <!-- Services Grid -->
+            <section class="space-y-4">
+                <div class="text-center max-w-lg mx-auto">
+                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional care designed to keep your pets happy, safe, and exercised.</p>
+                </div>
 
-                            <!-- EDITING MODE ACTIONS -->
-                            <template x-if="isEditingPets">
-                                <div class="flex items-center space-x-2">
-                                    <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
-                                        Cancel
-                                    </button>
-                                    <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
-                                        + Add Pet
-                                    </button>
-                                    <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
-                                        💾 Save Profiles
-                                    </button>
-                                </div>
-                            </template>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Service 1 -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                        <div class="text-3xl">🐕‍🦺</div>
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dog Walking</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
+                        </p>
                     </div>
 
-                    <!-- 1. STATIC DISPLAY MODE (SAVED VIEW) -->
-                    <div x-show="!isEditingPets" class="space-y-6">
-                        <!-- Pet Cards Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <template x-for="(pet, index) in userData.pets" :key="index">
-                                <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
-                                            <template x-if="pet.photo">
-                                                <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
-                                            </template>
-                                            <template x-if="!pet.photo">
-                                                <span class="text-2xl">🐾</span>
-                                            </template>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
-                                            <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
-                                        </div>
-                                    </div>
+                    <!-- Service 2 -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                        <div class="text-3xl">🏡</div>
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
+                        </p>
+                    </div>
 
-                                    <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
-                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
-                                        <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
-                                    </div>
-                                </div>
-                            </template>
+                    <!-- Service 3 -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                        <div class="text-3xl">🎁</div>
+                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Paw Points Loyalty</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How It Works Banner -->
+            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 space-y-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">How Booking Works</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">1</div>
+                        <h5 class="font-bold text-sm">Book on Walkies</h5>
+                        <p class="text-xs text-gray-500">Request your dates or regular walking schedule on our official profile.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">2</div>
+                        <h5 class="font-bold text-sm">Log Into Portal</h5>
+                        <p class="text-xs text-gray-500">Add pet details, upload feeding notes, and store emergency vet contacts.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">3</div>
+                        <h5 class="font-bold text-sm">Earn & Redeem</h5>
+                        <p class="text-xs text-gray-500">Collect points automatically after services to unlock $10 and $20 discounts!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Action CTA -->
+            <section class="text-center py-6 bg-brand-50 dark:bg-brand-950/40 rounded-2xl border border-brand-100 dark:border-brand-900/50 p-6">
+                <h4 class="font-bold text-lg text-brand-900 dark:text-brand-100">Ready to track your points or add a pet?</h4>
+                <p class="text-xs text-brand-700 dark:text-brand-300 mt-1">Access your client account to view coupons, referral links, and pet notes.</p>
+                <button @click="currentView = 'loyalty'" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-sm">
+                    Open Paw Points Client Dashboard
+                </button>
+            </section>
+        </div>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: PAW POINTS LOYALTY & CLIENT DASHBOARD (SUB-PAGE)           -->
+        <!-- ================================================================= -->
+        <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
+
+            <!-- AUTHENTICATION VIEW -->
+            <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+                <h2 class="text-xl font-bold mb-4 text-center" x-text="authMode === 'login' ? 'Welcome Back' : 'Create Account'"></h2>
+                
+                <form @submit.prevent="handleAuth()" class="space-y-4">
+                    <template x-if="authMode === 'signup'">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                            <input type="text" x-model="authForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                         </div>
+                    </template>
 
-                        <!-- Static Emergency Vet Info Banner -->
-                        <div class="border-t dark:border-gray-700 pt-4">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
-                                <div>
-                                    <span class="block text-xs font-medium text-gray-400">Clinic Name</span>
-                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
-                                </div>
-                                <div>
-                                    <span class="block text-xs font-medium text-gray-400">Vet Phone Number</span>
-                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetPhone || 'Not specified'"></p>
-                                </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                        <input type="password" x-model="authForm.password" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+
+                    <template x-if="authMode === 'signup'">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Referral Code (Optional)</label>
+                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
+                        </div>
+                    </template>
+
+                    <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
+
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
+                </form>
+
+                <div class="mt-4 text-center text-xs text-gray-500">
+                    <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''" class="text-brand-600 hover:underline">
+                        <span x-text="authMode === 'login' ? 'Need an account? Sign up' : 'Already have an account? Log in'"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- LOGGED-IN DASHBOARD -->
+            <template x-if="user">
+                <div class="space-y-6">
+
+                    <!-- Admin Notice Banner -->
+                    <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
+                        <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
+                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
+                    </div>
+
+                    <!-- Points Banner -->
+                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
+                            <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
+                            <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                        </div>
+                        <button @click="openDigitalPass()" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                            <span>📱 Show Digital Pass</span>
+                        </button>
+                    </div>
+
+                    <!-- 🎁 REFERRAL REWARDS CARD -->
+                    <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
+                                <h3 class="font-extrabold text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
+                                <p class="text-xs text-indigo-100 mt-1 max-w-lg leading-relaxed">
+                                    Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
+                                </p>
+                            </div>
+                            <div class="hidden sm:block text-right">
+                                <span class="text-2xl font-black text-white" x-text="userData.referralsCount || 0">0</span>
+                                <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Friends Referred</p>
                             </div>
                         </div>
+
+                        <div class="bg-indigo-800/80 dark:bg-indigo-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-indigo-500/40">
+                            <div class="text-center sm:text-left w-full sm:w-auto">
+                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Your Personal Referral Link</p>
+                                <p class="font-mono text-xs font-bold text-white truncate max-w-xs sm:max-w-md mt-0.5 select-all" x-text="getReferralLink()"></p>
+                            </div>
+                            <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-indigo-900 font-bold rounded-lg text-xs hover:bg-indigo-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
+                                <span x-text="copiedRef ? '✓ Copied!' : '📋 Copy Link'"></span>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- 2. EDITABLE PANEL MODE (TEXTBOX VIEW) -->
-                    <div x-show="isEditingPets" class="space-y-6" x-cloak>
-                        <!-- Pet Cards Inputs Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <template x-for="(pet, index) in userData.pets" :key="index">
-                                <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
-                                    <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
-                                        ✕ Remove
+                    <!-- 🐾 PET PROFILES & VET DETAILS SECTION -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+                        
+                        <!-- Panel Header -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                    <span>🐶 Pet Profiles & Care Details</span>
+                                </h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <!-- STATIC VIEW ACTION -->
+                                <template x-if="!isEditingPets">
+                                    <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                        ✏️ Edit Information
                                     </button>
+                                </template>
 
-                                    <div class="flex items-center space-x-4">
-                                        <!-- Pet Photo Avatar Input -->
-                                        <div class="relative group flex-shrink-0">
-                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                <!-- EDITING MODE ACTIONS -->
+                                <template x-if="isEditingPets">
+                                    <div class="flex items-center space-x-2">
+                                        <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                            Cancel
+                                        </button>
+                                        <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                            + Add Pet
+                                        </button>
+                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                            💾 Save Profiles
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- 1. STATIC DISPLAY MODE (SAVED VIEW) -->
+                        <div x-show="!isEditingPets" class="space-y-6">
+                            <!-- Pet Cards Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <template x-for="(pet, index) in userData.pets" :key="index">
+                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
                                                 <template x-if="pet.photo">
                                                     <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
                                                 </template>
@@ -280,98 +355,163 @@
                                                     <span class="text-2xl">🐾</span>
                                                 </template>
                                             </div>
-                                            <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
-                                                <span>Upload</span>
-                                                <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
-                                            </label>
+                                            <div>
+                                                <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
+                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
+                                            </div>
                                         </div>
 
-                                        <div class="flex-grow">
-                                            <label class="block text-xs font-bold text-gray-500 mb-1">Pet Name</label>
-                                            <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
+                                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
+                                            <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
                                         </div>
                                     </div>
+                                </template>
+                            </div>
 
+                            <!-- Static Emergency Vet Info Banner -->
+                            <div class="border-t dark:border-gray-700 pt-4">
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-500 mb-1">Special Care Notes / Breed / Routine</label>
-                                        <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                        <span class="block text-xs font-medium text-gray-400">Clinic Name</span>
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
                                     </div>
+                                    <div>
+                                        <span class="block text-xs font-medium text-gray-400">Vet Phone Number</span>
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetPhone || 'Not specified'"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. EDITABLE PANEL MODE (TEXTBOX VIEW) -->
+                        <div x-show="isEditingPets" class="space-y-6" x-cloak>
+                            <!-- Pet Cards Inputs Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <template x-for="(pet, index) in userData.pets" :key="index">
+                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
+                                        <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
+                                            ✕ Remove
+                                        </button>
+
+                                        <div class="flex items-center space-x-4">
+                                            <!-- Pet Photo Avatar Input -->
+                                            <div class="relative group flex-shrink-0">
+                                                <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                                    <template x-if="pet.photo">
+                                                        <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
+                                                    </template>
+                                                    <template x-if="!pet.photo">
+                                                        <span class="text-2xl">🐾</span>
+                                                    </template>
+                                                </div>
+                                                <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
+                                                    <span>Upload</span>
+                                                    <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
+                                                </label>
+                                            </div>
+
+                                            <div class="flex-grow">
+                                                <label class="block text-xs font-bold text-gray-500 mb-1">Pet Name</label>
+                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 mb-1">Special Care Notes / Breed / Routine</label>
+                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Vet Info Input Banner -->
+                            <div class="border-t dark:border-gray-700 pt-4 mt-4">
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
+                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
+                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Active Coupons Section -->
+                    <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="font-bold text-base mb-3">Your Redeemed Coupons</h3>
+                        <div class="space-y-3">
+                            <template x-for="(coupon, index) in userData.coupons" :key="index">
+                                <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
+                                    <div>
+                                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
+                                        <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
+                                        <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
+                                    </div>
+                                    
+                                    <button 
+                                        @click="toggleCouponUsed(index)" 
+                                        :disabled="coupon.used"
+                                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" 
+                                        :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
+                                        <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
+                                    </button>
                                 </div>
                             </template>
                         </div>
-
-                        <!-- Vet Info Input Banner -->
-                        <div class="border-t dark:border-gray-700 pt-4 mt-4">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
-                                    <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
-                                    <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                </div>
-
-                <!-- Active Coupons Section -->
-                <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="font-bold text-base mb-3">Your Redeemed Coupons</h3>
-                    <div class="space-y-3">
-                        <template x-for="(coupon, index) in userData.coupons" :key="index">
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
+                    <!-- Rewards Section -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="font-bold text-base mb-4">Available Rewards</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Reward 1 -->
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
                                 <div>
-                                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
-                                    <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
-                                    <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
+                                    <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
+                                    <p class="text-xs text-gray-500">5,000 Points</p>
                                 </div>
-                                
-                                <button 
-                                    @click="toggleCouponUsed(index)" 
-                                    :disabled="coupon.used"
-                                    class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" 
-                                    :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
-                                    <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
+                                <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                                    Redeem
                                 </button>
                             </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- Rewards Section -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="font-bold text-base mb-4">Available Rewards</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Reward 1 -->
-                        <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
-                            <div>
-                                <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
-                                <p class="text-xs text-gray-500">5,000 Points</p>
+                            <!-- Reward 2 -->
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
+                                    <p class="text-xs text-gray-500">8,000 Points</p>
+                                </div>
+                                <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                                    Redeem
+                                </button>
                             </div>
-                            <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
-                                Redeem
-                            </button>
-                        </div>
-                        <!-- Reward 2 -->
-                        <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
-                            <div>
-                                <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
-                                <p class="text-xs text-gray-500">8,000 Points</p>
-                            </div>
-                            <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
-                                Redeem
-                            </button>
                         </div>
                     </div>
-                </div>
 
-            </div>
-        </template>
+                </div>
+            </template>
+        </div>
+
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>© Pet Care by Steven. All rights reserved.</p>
+            <div class="flex space-x-4 font-medium">
+                <button @click="currentView = 'home'" class="hover:underline">Home</button>
+                <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
+                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" class="hover:underline">Walkies Profile</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Digital Pass QR Modal -->
     <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -448,6 +588,7 @@
         function pawApp() {
             return {
                 darkMode: localStorage.getItem('theme') === 'dark',
+                currentView: 'home',
                 loading: true,
                 user: null,
                 userData: {},
@@ -465,13 +606,16 @@
                 init() {
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
+                        
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const refParam = urlParams.get('ref');
+                        const targetClientUid = urlParams.get('client');
+
                         if (u) {
                             await this.fetchUserData(u.uid);
 
-                            const urlParams = new URLSearchParams(window.location.search);
-                            const targetClientUid = urlParams.get('client');
-
                             if (targetClientUid && this.isAdmin) {
+                                this.currentView = 'loyalty';
                                 await this.fetchClientsList();
                                 this.adminForm.targetUid = targetClientUid;
                                 this.showAdminModal = true;
@@ -480,10 +624,8 @@
                             this.userData = {};
                             this.isAdmin = false;
 
-                            // Auto-populate referral code if present in URL
-                            const urlParams = new URLSearchParams(window.location.search);
-                            const refParam = urlParams.get('ref');
                             if (refParam) {
+                                this.currentView = 'loyalty';
                                 this.authMode = 'signup';
                                 this.authForm.refCode = refParam.toUpperCase();
                             }
@@ -503,13 +645,10 @@
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
                             
-                            // Generate unique personal referral code for the user
                             const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-                            
                             let initialCoupons = [];
                             let referredByUid = null;
 
-                            // Handle incoming referral logic
                             const enteredRefCode = (this.authForm.refCode || '').trim().toUpperCase();
                             if (enteredRefCode) {
                                 const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
@@ -517,7 +656,6 @@
                                     const referrerDoc = refQuery.docs[0];
                                     referredByUid = referrerDoc.id;
 
-                                    // Give welcome discount to newly signed up client
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
@@ -525,7 +663,6 @@
                                         createdAt: new Date().toISOString()
                                     });
 
-                                    // Reward Referrer with 1,000 Points & update stats
                                     const refData = referrerDoc.data();
                                     await db.collection('clients').doc(referredByUid).update({
                                         points: (refData.points || 0) + 1000,
@@ -560,7 +697,6 @@
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
 
-                        // Ensure referral code exists for existing accounts
                         if (!this.userData.referralCode) {
                             const newRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
                             await db.collection('clients').doc(uid).update({ referralCode: newRefCode });
