@@ -86,9 +86,14 @@
                 </button>
 
                 <template x-if="user">
-                    <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-2 rounded-lg font-medium transition">
-                        Log Out
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <span>👤 Profile</span>
+                        </button>
+                        <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-2 rounded-lg font-medium transition">
+                            Log Out
+                        </button>
+                    </div>
                 </template>
             </div>
         </div>
@@ -216,9 +221,10 @@
 
             <!-- AUTHENTICATION VIEW -->
             <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
-                <h2 class="text-xl font-bold mb-4 text-center" x-text="authMode === 'login' ? 'Welcome Back' : 'Create Account'"></h2>
+                <h2 class="text-xl font-bold mb-4 text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
                 
-                <form @submit.prevent="handleAuth()" class="space-y-4">
+                <!-- LOGIN / SIGNUP FORM -->
+                <form x-show="authMode !== 'forgot'" @submit.prevent="handleAuth()" class="space-y-4">
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
@@ -232,7 +238,12 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Password</label>
+                            <button type="button" x-show="authMode === 'login'" @click="authMode = 'forgot'; authError = ''; authSuccess = ''" class="text-[11px] text-brand-600 hover:underline">
+                                Forgot password?
+                            </button>
+                        </div>
                         <input type="password" x-model="authForm.password" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
 
@@ -248,9 +259,26 @@
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
+                <!-- FORGOT PASSWORD FORM -->
+                <form x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+
+                    <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
+                    <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
+
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm">
+                        Send Reset Link
+                    </button>
+                </form>
+
                 <div class="mt-4 text-center text-xs text-gray-500">
-                    <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''" class="text-brand-600 hover:underline">
-                        <span x-text="authMode === 'login' ? 'Need an account? Sign up' : 'Already have an account? Log in'"></span>
+                    <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''; authSuccess = ''" class="text-brand-600 hover:underline">
+                        <span x-text="authMode === 'login' ? 'Need an account? Sign up' : (authMode === 'signup' ? 'Already have an account? Log in' : '← Back to Log In')"></span>
                     </button>
                 </div>
             </div>
@@ -272,9 +300,14 @@
                             <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
                             <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
                         </div>
-                        <button @click="openDigitalPass()" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
-                            <span>📱 Show Digital Pass</span>
-                        </button>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                            <button @click="showProfileModal = true" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700">
+                                ⚙️ Account Profile
+                            </button>
+                            <button @click="openDigitalPass()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                                <span>📱 Digital Pass</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 🎁 REFERRAL REWARDS CARD -->
@@ -513,6 +546,47 @@
         </div>
     </footer>
 
+    <!-- Customer Profile / Contact Settings Modal -->
+    <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h3>
+                <button @click="showProfileModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold">✕</button>
+            </div>
+
+            <form @submit.prevent="updateUserProfile()" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Full Name</label>
+                    <input type="text" x-model="profileForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Account Email Address</label>
+                    <input type="email" x-model="profileForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                    <p class="text-[10px] text-gray-400 mt-1">Changing your email will update your login credentials.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Phone Number</label>
+                    <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Home Address / Service Notes</label>
+                    <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none"></textarea>
+                </div>
+
+                <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-medium"></p>
+                <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-medium"></p>
+
+                <div class="flex space-x-2 pt-2">
+                    <button type="button" @click="showProfileModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
+                    <button type="submit" class="flex-1 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 transition">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Digital Pass QR Modal -->
     <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showQRModal = false" class="bg-white dark:bg-gray-800 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4">
@@ -597,9 +671,14 @@
                 copiedRef: false,
                 authMode: 'login',
                 authError: '',
+                authSuccess: '',
                 authForm: { name: '', email: '', password: '', refCode: '' },
                 showQRModal: false,
                 showAdminModal: false,
+                showProfileModal: false,
+                profileForm: { name: '', email: '', phone: '', address: '' },
+                profileError: '',
+                profileSuccess: '',
                 clientList: [],
                 adminForm: { targetUid: '', pointsDelta: 0 },
 
@@ -641,6 +720,7 @@
 
                 async handleAuth() {
                     this.authError = '';
+                    this.authSuccess = '';
                     try {
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
@@ -674,6 +754,8 @@
                             await db.collection('clients').doc(res.user.uid).set({
                                 name: this.authForm.name,
                                 email: this.authForm.email,
+                                phone: '',
+                                address: '',
                                 points: 0,
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', photo: '' }],
@@ -691,11 +773,34 @@
                     }
                 },
 
+                async handleForgotPassword() {
+                    this.authError = '';
+                    this.authSuccess = '';
+                    if (!this.authForm.email) {
+                        this.authError = 'Please enter your email address.';
+                        return;
+                    }
+
+                    try {
+                        await auth.sendPasswordResetEmail(this.authForm.email);
+                        this.authSuccess = 'Password reset link sent! Check your email inbox.';
+                    } catch (err) {
+                        this.authError = err.message;
+                    }
+                },
+
                 async fetchUserData(uid) {
                     const doc = await db.collection('clients').doc(uid).get();
                     if (doc.exists) {
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
+
+                        this.profileForm = {
+                            name: this.userData.name || '',
+                            email: this.userData.email || this.user.email,
+                            phone: this.userData.phone || '',
+                            address: this.userData.address || ''
+                        };
 
                         if (!this.userData.referralCode) {
                             const newRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -711,6 +816,38 @@
                             }];
                         }
                         this.isAdmin = !!this.userData.isAdmin;
+                    }
+                },
+
+                async updateUserProfile() {
+                    this.profileError = '';
+                    this.profileSuccess = '';
+
+                    try {
+                        if (this.profileForm.email !== this.user.email) {
+                            await this.user.updateEmail(this.profileForm.email);
+                        }
+
+                        await db.collection('clients').doc(this.user.uid).update({
+                            name: this.profileForm.name,
+                            email: this.profileForm.email,
+                            phone: this.profileForm.phone,
+                            address: this.profileForm.address
+                        });
+
+                        this.userData.name = this.profileForm.name;
+                        this.userData.email = this.profileForm.email;
+                        this.userData.phone = this.profileForm.phone;
+                        this.userData.address = this.profileForm.address;
+
+                        this.profileSuccess = 'Profile details updated successfully!';
+                        setTimeout(() => { this.showProfileModal = false; this.profileSuccess = ''; }, 1500);
+                    } catch (err) {
+                        if (err.code === 'auth/requires-recent-login') {
+                            this.profileError = 'Changing your email requires recent authentication. Please log out and back in.';
+                        } else {
+                            this.profileError = err.message;
+                        }
                     }
                 },
 
