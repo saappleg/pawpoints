@@ -616,19 +616,18 @@
             <span class="text-xs font-bold hidden sm:inline" x-show="!showChatWidget">Chat with us</span>
         </button>
     </div>
-
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
-        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p>© Pet Care by Steven. All rights reserved.</p>
-            <div class="flex space-x-4 font-medium">
-                <button @click="currentView = 'home'" class="hover:underline">Home</button>
-                <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
-                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" class="hover:underline">Walkies Profile</a>
-            </div>
+<footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <p>© Pet Care by Steven. All rights reserved.</p>
+        <div class="flex space-x-4 font-medium">
+            <button @click="currentView = 'home'" class="hover:underline">Home</button>
+            <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
+            <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
+            <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
         </div>
-    </footer>
-
+    </div>
+</footer>
     <!-- Account Profile Modal -->
     <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
