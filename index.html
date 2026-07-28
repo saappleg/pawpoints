@@ -6,10 +6,12 @@
     <!-- EXACT MATCH TITLE FOR GOOGLE VERIFICATION -->
     <title>Pet Care by Steven</title>
         
-    <!-- PWA Manifest & Theme Color -->
+    <!-- PWA Manifest, Icons & Theme Color -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="shortcut icon" href="logo.png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -55,10 +57,11 @@
             
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-10 w-10 object-contain rounded-full bg-brand-50 p-1" onerror="this.src='https://via.placeholder.com/40?text=🐾'">
+                <!-- Enlarged Logo Image -->
+                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-16 w-16 object-contain rounded-full bg-brand-50 p-0.5 shadow-sm transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
                 <div>
                     <!-- EXACT MATCH HEADING FOR GOOGLE VERIFICATION -->
-                    <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
+                    <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
                 </div>
             </div>
