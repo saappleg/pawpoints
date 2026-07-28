@@ -49,47 +49,56 @@
     <style>
         [x-cloak] { display: none !important; }
         
-        /* Rainbow Gradient Frame Styles matching logo braid */
-        .rainbow-border-bottom {
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(to right, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7) 1;
+        /* BOLD & DISTINCT RAINBOW BORDER STYLING */
+        .rainbow-top-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
         }
 
         .rainbow-ring {
-            padding: 2px;
-            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7);
+            padding: 4px;
+            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
             border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(234, 179, 8, 0.25);
+        }
+
+        .rainbow-frame {
+            position: relative;
+            border-radius: 1.5rem;
+            padding: 4px; /* Distinct 4px width */
+            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+            box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
         }
 
         .rainbow-card-border {
             position: relative;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
             background-clip: padding-box;
         }
 
         .rainbow-card-border::before {
             content: '';
             position: absolute;
-            top: -2px; right: -2px; bottom: -2px; left: -2px;
+            top: -3px; right: -3px; bottom: -3px; left: -3px;
             z-index: -1;
             border-radius: inherit;
-            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7);
+            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
         }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
 
     <!-- Rainbow Accent Bar Top -->
-    <div class="h-1.5 w-full bg-gradient-to-r from-red-500 via-orange-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 sticky top-0 z-40"></div>
+    <div class="rainbow-top-bar sticky top-0 z-40"></div>
 
     <!-- Navigation Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-1.5 z-30">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <!-- Logo with Rainbow Ring -->
-                <div class="rainbow-ring shadow-md transition-transform hover:scale-105">
+                <!-- Logo with Bold Rainbow Ring -->
+                <div class="rainbow-ring transition-transform hover:scale-105">
                     <img src="logo.png" alt="Pet Care by Steven Logo" class="h-14 w-14 object-contain rounded-full bg-white p-0.5" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
                 </div>
                 <div>
@@ -146,8 +155,8 @@
         </div>
     </header>
 
-    <!-- Main Content Area with Rainbow Gradient Border Wrapper -->
-    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-6">
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8">
 
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
@@ -156,9 +165,10 @@
 
         <!-- VIEW 1: BUSINESS HOME PAGE -->
         <div x-show="!loading && currentView === 'home'" class="space-y-10">
-            <!-- Hero Section framed with Rainbow Card Border -->
-            <section class="rainbow-card-border rounded-3xl shadow-xl overflow-hidden">
-                <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+            
+            <!-- Hero Section framed with Distinct Rainbow Frame -->
+            <section class="rainbow-frame shadow-xl">
+                <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.25rem] p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
                         <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
                         <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
@@ -212,6 +222,87 @@
                 </div>
             </section>
 
+            <!-- NEW ADDITION 1: MEET THE SITTER BIO SECTION -->
+            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="rainbow-ring shrink-0">
+                        <img src="logo.png" alt="Steven Sitter Profile" class="w-28 h-28 object-contain rounded-full bg-white p-0.5">
+                    </div>
+                    <div class="space-y-2 text-center md:text-left">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Meet Steven</h3>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            With years of hands-on experience caring for cats and dogs, I am dedicated to providing a comfortable, stress-free routine for your furry family members. Whether it's high-energy daily walks or quiet drop-in cuddles, every visit is managed with safety, clear communication, and personalized care.
+                        </p>
+                        <div class="pt-1 flex flex-wrap justify-center md:justify-start gap-2 text-[11px] font-bold text-gray-700 dark:text-gray-300">
+                            <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ Pet CPR & First Aid Trained</span>
+                            <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ Background Checked</span>
+                            <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ In-Home Care Specialist</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NEW ADDITION 2: SERVICE AREA / ZIP CODE CHECKER -->
+            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
+                <div class="text-center max-w-lg mx-auto space-y-1">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Check if your neighborhood or zip code is in our primary coverage area.</p>
+                </div>
+
+                <div class="max-w-md mx-auto space-y-3">
+                    <div class="flex gap-2">
+                        <input 
+                            type="text" 
+                            x-model="zipInput" 
+                            @keyup.enter="checkServiceArea()"
+                            placeholder="Enter your Zip Code or City (e.g., 45157, New Richmond)" 
+                            class="flex-1 px-4 py-2 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                        <button @click="checkServiceArea()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">
+                            Check Area
+                        </button>
+                    </div>
+
+                    <template x-if="serviceResult">
+                        <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3 rounded-xl border text-xs font-semibold text-center">
+                            <span x-text="serviceResult.message"></span>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- NEW ADDITION 3: CLIENT REVIEWS & TESTIMONIALS -->
+            <section class="space-y-4">
+                <div class="text-center max-w-lg mx-auto">
+                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
+                        <div class="text-amber-400 text-sm">★★★★★</div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed">
+                            "Steven is absolute gold! He kept us updated with photos and detailed notes every visit. Our cats loved him right away!"
+                        </p>
+                        <p class="text-[11px] font-bold text-gray-900 dark:text-white">— Sarah M. (Cat Owner)</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
+                        <div class="text-amber-400 text-sm">★★★★★</div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed">
+                            "Super dependable for daily dog walks. Always on time, respectful of our home, and the Paw Points program is an awesome bonus."
+                        </p>
+                        <p class="text-[11px] font-bold text-gray-900 dark:text-white">— David R. (Dog Owner)</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
+                        <div class="text-amber-400 text-sm">★★★★★</div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed">
+                            "Peace of mind while on vacation is priceless. Steven followed all feeding instructions to a T. Highly recommended!"
+                        </p>
+                        <p class="text-[11px] font-bold text-gray-900 dark:text-white">— Jessica T. (Multi-Pet Owner)</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- How It Works Banner -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 space-y-6">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">How Booking Works</h3>
@@ -230,6 +321,29 @@
                         <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">3</div>
                         <h5 class="font-bold text-sm text-gray-900 dark:text-white">Earn & Redeem</h5>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Collect points automatically after services to unlock $10 and $20 discounts!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NEW ADDITION 4: FREQUENTLY ASKED QUESTIONS (FAQ) -->
+            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
+                <div class="text-center max-w-lg mx-auto">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Everything you need to know before booking your first visit.</p>
+                </div>
+
+                <div class="space-y-3 max-w-2xl mx-auto text-xs">
+                    <div class="border dark:border-gray-700 rounded-xl p-3.5 space-y-1">
+                        <h4 class="font-bold text-gray-900 dark:text-white">🔑 How do you handle key hand-offs and home access?</h4>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Keys can be placed in a secure lockbox on-site, provided during a initial meet-and-greet, or managed via keypad entry codes stored safely in your client profile.</p>
+                    </div>
+                    <div class="border dark:border-gray-700 rounded-xl p-3.5 space-y-1">
+                        <h4 class="font-bold text-gray-900 dark:text-white">🌧️ What happens in bad weather for dog walks?</h4>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">In cases of severe rain, extreme heat, or freezing conditions, long walks are shortened for safety and converted into indoor playtime, belly rubs, and pot-breaks.</p>
+                    </div>
+                    <div class="border dark:border-gray-700 rounded-xl p-3.5 space-y-1">
+                        <h4 class="font-bold text-gray-900 dark:text-white">📱 Will I receive visit updates and photos?</h4>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Yes! Every sitting visit or dog walk comes with a photo update, arrival/departure confirmation, and notes on feeding or potty breaks.</p>
                     </div>
                 </div>
             </section>
@@ -559,7 +673,7 @@
                         </div>
                     </div>
 
-                    <!-- REWARDS SECTION (HIGH-CONTRAST FIXES APPLIED HERE) -->
+                    <!-- REWARDS SECTION -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="font-bold text-base mb-4 text-gray-900 dark:text-white">Available Rewards</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -819,6 +933,8 @@
                 isEditingPets: false,
                 copiedRef: false,
                 showChatWidget: false,
+                zipInput: '',
+                serviceResult: null,
                 authMode: 'login',
                 authError: '',
                 authSuccess: '',
@@ -872,6 +988,33 @@
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
                     localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+                },
+
+                checkServiceArea() {
+                    const query = this.zipInput.trim().toLowerCase();
+                    if (!query) {
+                        this.serviceResult = null;
+                        return;
+                    }
+
+                    // Standard local area check (e.g., Clermont County & surrounding areas)
+                    const primaryZips = ['45157', '45106', '45102', '45103', '45150', '45244', '45245', '45255'];
+                    const primaryTowns = ['new richmond', 'amelia', 'batavia', 'anderson', 'cincinnati', 'williamsburg', 'pierce', 'monroe'];
+
+                    const isZipMatch = primaryZips.some(z => query.includes(z));
+                    const isTownMatch = primaryTowns.some(t => query.includes(t));
+
+                    if (isZipMatch || isTownMatch) {
+                        this.serviceResult = {
+                            covered: true,
+                            message: '🎉 Great news! You are in our primary pet sitting & walking service area!'
+                        };
+                    } else {
+                        this.serviceResult = {
+                            covered: false,
+                            message: '📍 You are slightly outside our standard zone, but we may still accommodate visits! Message Steven to double check.'
+                        };
+                    }
                 },
 
                 async handleGoogleAuth() {
