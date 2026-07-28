@@ -104,6 +104,16 @@
 
             <!-- Actions Bar -->
             <div class="flex items-center space-x-2">
+                <!-- ADMIN MODE TOGGLE BUTTON (VISIBLE ONLY TO ADMIN USERS) -->
+                <template x-if="user && isAdmin">
+                    <button 
+                        @click="adminModeActive = !adminModeActive" 
+                        :class="adminModeActive ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600'" 
+                        class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition flex items-center gap-1.5 shadow-sm">
+                        <span x-text="adminModeActive ? '👑 Admin Mode: ON' : '👁️ Client View (Admin OFF)'"></span>
+                    </button>
+                </template>
+
                 <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <span>🐕</span>
                     <span class="hidden sm:inline">Book Service</span>
@@ -228,7 +238,7 @@
                         <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
                     </div>
-                    <button x-show="isAdmin" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
+                    <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
                         📸 Manage Gallery & Walkies Photos
                     </button>
                 </div>
@@ -346,7 +356,7 @@
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
                     </div>
-                    <button x-show="isAdmin" @click="openAdminModal('faq')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">
+                    <button x-show="isAdmin && adminModeActive" @click="openAdminModal('faq')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">
                         ❓ Manage FAQ Items
                     </button>
                 </div>
@@ -486,9 +496,9 @@
             <template x-if="user && isVerified">
                 <div class="space-y-6">
 
-                    <!-- Admin Notice Banner -->
-                    <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
-                        <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Mode Active</span>
+                    <!-- Admin Notice Banner (Appears only when Admin Mode Switch is ON) -->
+                    <div x-show="isAdmin && adminModeActive" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
+                        <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Controls Active</span>
                         <button @click="openAdminModal('points')" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
                     </div>
 
@@ -1127,6 +1137,7 @@
                 userData: {},
                 isVerified: false,
                 isAdmin: false,
+                adminModeActive: true, // Toggle switch state for viewing as client
                 isEditingPets: false,
                 copiedRef: false,
                 showChatWidget: false,
@@ -1548,7 +1559,7 @@
                         this.profileSuccess = 'Profile details updated successfully!';
                         setTimeout(() => { this.showProfileModal = false; this.profileSuccess = ''; }, 1500);
                     } catch (err) {
-                        if (err.code === 'auth/requires-recent-login') {
+                        if (err.code === 'requires-recent-login' || err.code === 'auth/requires-recent-login') {
                             this.profileError = 'Changing your email requires recent authentication. Please log out and back in.';
                         } else {
                             this.profileError = err.message;
