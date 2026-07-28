@@ -65,24 +65,9 @@
         .rainbow-frame {
             position: relative;
             border-radius: 1.5rem;
-            padding: 4px; /* Distinct 4px width */
+            padding: 4px;
             background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
             box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
-        }
-
-        .rainbow-card-border {
-            position: relative;
-            border: 3px solid transparent;
-            background-clip: padding-box;
-        }
-
-        .rainbow-card-border::before {
-            content: '';
-            position: absolute;
-            top: -3px; right: -3px; bottom: -3px; left: -3px;
-            z-index: -1;
-            border-radius: inherit;
-            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
         }
     </style>
 </head>
@@ -97,12 +82,10 @@
             
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <!-- Logo with Bold Rainbow Ring -->
                 <div class="rainbow-ring transition-transform hover:scale-105">
                     <img src="logo.png" alt="Pet Care by Steven Logo" class="h-14 w-14 object-contain rounded-full bg-white p-0.5" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
                 </div>
                 <div>
-                    <!-- EXACT MATCH HEADING FOR GOOGLE VERIFICATION -->
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
                 </div>
@@ -222,7 +205,7 @@
                 </div>
             </section>
 
-            <!-- NEW ADDITION 1: MEET THE SITTER BIO SECTION -->
+            <!-- MEET THE SITTER BIO SECTION -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <div class="rainbow-ring shrink-0">
@@ -243,7 +226,7 @@
                 </div>
             </section>
 
-            <!-- NEW ADDITION 2: SERVICE AREA / ZIP CODE CHECKER -->
+            <!-- SERVICE AREA / ZIP CODE CHECKER -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
@@ -271,7 +254,7 @@
                 </div>
             </section>
 
-            <!-- NEW ADDITION 3: CLIENT REVIEWS & TESTIMONIALS -->
+            <!-- DYNAMIC CLIENT REVIEWS & TESTIMONIALS -->
             <section class="space-y-4">
                 <div class="text-center max-w-lg mx-auto">
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
@@ -279,71 +262,66 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
-                        <div class="text-amber-400 text-sm">★★★★★</div>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed">
-                            "Steven is absolute gold! He kept us updated with photos and detailed notes every visit. Our cats loved him right away!"
-                        </p>
-                        <p class="text-[11px] font-bold text-gray-900 dark:text-white">— Sarah M. (Cat Owner)</p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
-                        <div class="text-amber-400 text-sm">★★★★★</div>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed">
-                            "Super dependable for daily dog walks. Always on time, respectful of our home, and the Paw Points program is an awesome bonus."
-                        </p>
-                        <p class="text-[11px] font-bold text-gray-900 dark:text-white">— David R. (Dog Owner)</p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
-                        <div class="text-amber-400 text-sm">★★★★★</div>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed">
-                            "Peace of mind while on vacation is priceless. Steven followed all feeding instructions to a T. Highly recommended!"
-                        </p>
-                        <p class="text-[11px] font-bold text-gray-900 dark:text-white">— Jessica T. (Multi-Pet Owner)</p>
-                    </div>
+                    <template x-for="(rev, idx) in reviewsList" :key="idx">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
+                            <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
+                            <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
+                            <p class="text-[11px] font-bold text-gray-900 dark:text-white" x-text="`— ${rev.author}`"></p>
+                        </div>
+                    </template>
                 </div>
             </section>
 
-            <!-- How It Works Banner -->
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 space-y-6">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">How Booking Works</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                    <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">1</div>
-                        <h5 class="font-bold text-sm text-gray-900 dark:text-white">Book on Walkies</h5>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Request your dates or regular walking schedule on our official profile.</p>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">2</div>
-                        <h5 class="font-bold text-sm text-gray-900 dark:text-white">Log Into Portal</h5>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Add pet details, upload feeding notes, and store emergency vet contacts.</p>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">3</div>
-                        <h5 class="font-bold text-sm text-gray-900 dark:text-white">Earn & Redeem</h5>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Collect points automatically after services to unlock $10 and $20 discounts!</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- NEW ADDITION 4: FREQUENTLY ASKED QUESTIONS (FAQ) -->
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
+            <!-- FULLY INTERACTIVE ACCORDION FAQ WITH CANCELLATION POLICY -->
+            <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="text-center max-w-lg mx-auto">
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Everything you need to know before booking your first visit.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
                 </div>
 
                 <div class="space-y-3 max-w-2xl mx-auto text-xs">
-                    <div class="border dark:border-gray-700 rounded-xl p-3.5 space-y-1">
-                        <h4 class="font-bold text-gray-900 dark:text-white">🔑 How do you handle key hand-offs and home access?</h4>
-                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Keys can be placed in a secure lockbox on-site, provided during a initial meet-and-greet, or managed via keypad entry codes stored safely in your client profile.</p>
+                    <!-- FAQ Item 1: Cancellation Policy -->
+                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
+                        <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                            <span>📅 What is your cancellation policy?</span>
+                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 1 }">▼</span>
+                        </button>
+                        <div x-show="activeFaq === 1" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                            Clients must cancel at least <strong>3 days before</strong> the scheduled service to avoid a 50% sitting charge. Cancellations within 3 days will be billed at 50% of the scheduled reservation total.
+                        </div>
                     </div>
-                    <div class="border dark:border-gray-700 rounded-xl p-3.5 space-y-1">
-                        <h4 class="font-bold text-gray-900 dark:text-white">🌧️ What happens in bad weather for dog walks?</h4>
-                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">In cases of severe rain, extreme heat, or freezing conditions, long walks are shortened for safety and converted into indoor playtime, belly rubs, and pot-breaks.</p>
+
+                    <!-- FAQ Item 2: Key Access -->
+                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
+                        <button @click="activeFaq = activeFaq === 2 ? null : 2" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                            <span>🔑 How do you handle key hand-offs and home access?</span>
+                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 2 }">▼</span>
+                        </button>
+                        <div x-show="activeFaq === 2" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                            Keys can be placed in a secure lockbox on-site, provided during an initial meet-and-greet, or managed via keypad entry codes stored safely in your encrypted client profile.
+                        </div>
                     </div>
-                    <div class="border dark:border-gray-700 rounded-xl p-3.5 space-y-1">
-                        <h4 class="font-bold text-gray-900 dark:text-white">📱 Will I receive visit updates and photos?</h4>
-                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Yes! Every sitting visit or dog walk comes with a photo update, arrival/departure confirmation, and notes on feeding or potty breaks.</p>
+
+                    <!-- FAQ Item 3: Weather Policy -->
+                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
+                        <button @click="activeFaq = activeFaq === 3 ? null : 3" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                            <span>🌧️ What happens during extreme weather for walks?</span>
+                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 3 }">▼</span>
+                        </button>
+                        <div x-show="activeFaq === 3" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                            In cases of heavy thunderstorms, heat advisories, or icy weather, extended outdoor walks are shortened for safety and converted into indoor playtime, potty breaks, and affection.
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4: Visit Updates -->
+                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
+                        <button @click="activeFaq = activeFaq === 4 ? null : 4" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                            <span>📱 Will I receive visit updates and photos?</span>
+                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 4 }">▼</span>
+                        </button>
+                        <div x-show="activeFaq === 4" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                            Yes! Every sitting visit or walk comes with real-time photo updates, arrival/departure logs, and notes regarding feeding or bathroom habits.
+                        </div>
                     </div>
                 </div>
             </section>
@@ -421,7 +399,7 @@
                 </form>
 
                 <!-- FORGOT PASSWORD FORM -->
-                <form x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
+                <form x-show="authMode !== 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     
                     <div>
@@ -471,8 +449,8 @@
 
                     <!-- Admin Notice Banner -->
                     <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
-                        <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
-                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
+                        <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Mode Active</span>
+                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
                     </div>
 
                     <!-- Points Banner -->
@@ -673,31 +651,53 @@
                         </div>
                     </div>
 
-                    <!-- REWARDS SECTION -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="font-bold text-base mb-4 text-gray-900 dark:text-white">Available Rewards</h3>
+                    <!-- REWARDS SECTION WITH ULTRA-NOTICEABLE UNUSABLE BUTTON STATE -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white">Available Rewards</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center bg-gray-50/40 dark:bg-gray-800/80">
-                                <div>
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">$10 Off Next Visit</h4>
-                                    <!-- HIGH CONTRAST POINTS TEXT FIX -->
-                                    <p class="text-xs font-bold text-brand-600 dark:text-brand-400">5,000 Points</p>
+                            <!-- $10 Reward -->
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col justify-between gap-3 bg-gray-50/40 dark:bg-gray-800/80">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">$10 Off Next Visit</h4>
+                                        <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400 mt-0.5">5,000 Points Required</p>
+                                    </div>
+                                    <span x-show="(userData.points || 0) < 5000" class="text-[10px] font-black uppercase bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 px-2 py-0.5 rounded-md border border-red-200 dark:border-red-800">
+                                        🔒 Locked
+                                    </span>
                                 </div>
-                                <!-- HIGH CONTRAST BUTTON TEXT FIX -->
-                                <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-slate-200 cursor-not-allowed'">
-                                    Redeem
+
+                                <button 
+                                    @click="redeemReward(5000, '$10 Off Next Visit')" 
+                                    :disabled="(userData.points || 0) < 5000" 
+                                    class="w-full py-2 px-3 rounded-lg text-xs font-black transition flex items-center justify-center gap-1.5" 
+                                    :class="(userData.points || 0) >= 5000 
+                                        ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm cursor-pointer' 
+                                        : 'bg-gray-200 dark:bg-gray-700/80 text-gray-500 dark:text-slate-300 opacity-70 border border-gray-300 dark:border-gray-600 cursor-not-allowed'">
+                                    <span x-text="(userData.points || 0) >= 5000 ? '🎁 Redeem $10 Coupon' : `🔒 Need ${(5000 - (userData.points || 0)).toLocaleString()} More Pts`"></span>
                                 </button>
                             </div>
 
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center bg-gray-50/40 dark:bg-gray-800/80">
-                                <div>
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">$20 Off Next Visit</h4>
-                                    <!-- HIGH CONTRAST POINTS TEXT FIX -->
-                                    <p class="text-xs font-bold text-brand-600 dark:text-brand-400">8,000 Points</p>
+                            <!-- $20 Reward -->
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col justify-between gap-3 bg-gray-50/40 dark:bg-gray-800/80">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">$20 Off Next Visit</h4>
+                                        <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400 mt-0.5">8,000 Points Required</p>
+                                    </div>
+                                    <span x-show="(userData.points || 0) < 8000" class="text-[10px] font-black uppercase bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 px-2 py-0.5 rounded-md border border-red-200 dark:border-red-800">
+                                        🔒 Locked
+                                    </span>
                                 </div>
-                                <!-- HIGH CONTRAST BUTTON TEXT FIX -->
-                                <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-slate-200 cursor-not-allowed'">
-                                    Redeem
+
+                                <button 
+                                    @click="redeemReward(8000, '$20 Off Next Visit')" 
+                                    :disabled="(userData.points || 0) < 8000" 
+                                    class="w-full py-2 px-3 rounded-lg text-xs font-black transition flex items-center justify-center gap-1.5" 
+                                    :class="(userData.points || 0) >= 8000 
+                                        ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm cursor-pointer' 
+                                        : 'bg-gray-200 dark:bg-gray-700/80 text-gray-500 dark:text-slate-300 opacity-70 border border-gray-300 dark:border-gray-600 cursor-not-allowed'">
+                                    <span x-text="(userData.points || 0) >= 8000 ? '🎁 Redeem $20 Coupon' : `🔒 Need ${(8000 - (userData.points || 0)).toLocaleString()} More Pts`"></span>
                                 </button>
                             </div>
                         </div>
@@ -864,30 +864,89 @@
         </div>
     </div>
 
-    <!-- Admin Panel Modal -->
-    <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-4">
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Admin: Adjust Client Points</h3>
-            
-            <div>
-                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Select Client</label>
-                <select x-model="adminForm.targetUid" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
-                    <option value="">-- Choose a Client --</option>
-                    <template x-for="c in clientList" :key="c.id">
-                        <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Current: ${c.points || 0} Pts`"></option>
+    <!-- COMPREHENSIVE ADMIN PANEL MODAL (POINTS, SERVICE AREAS & REVIEWS) -->
+    <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-lg w-full p-6 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Portal Panel</h3>
+                <button @click="showAdminModal = false" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex gap-2 border-b dark:border-gray-700 pb-3 text-xs font-bold">
+                <button @click="adminTab = 'points'" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition">Points Management</button>
+                <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition">Service Areas</button>
+                <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition">Manage Reviews</button>
+            </div>
+
+            <!-- TAB 1: POINTS MANAGEMENT -->
+            <div x-show="adminTab === 'points'" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Select Client</label>
+                    <select x-model="adminForm.targetUid" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                        <option value="">-- Choose a Client --</option>
+                        <template x-for="c in clientList" :key="c.id">
+                            <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Current: ${c.points || 0} Pts`"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Points to Add / Subtract</label>
+                    <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                </div>
+
+                <button @click="updateClientPoints()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Update Client Points</button>
+            </div>
+
+            <!-- TAB 2: SERVICE AREA MANAGEMENT -->
+            <div x-show="adminTab === 'areas'" class="space-y-4" x-cloak>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Add or remove covered Zip Codes and City names for the public lookup tool.</p>
+
+                <div class="flex gap-2">
+                    <input type="text" x-model="newAreaInput" placeholder="Add Zip or City (e.g. 45106 or Amelia)" class="flex-1 px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    <button @click="addServiceArea()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-lg text-xs">Add Area</button>
+                </div>
+
+                <div class="space-y-2 max-h-40 overflow-y-auto">
+                    <template x-for="(area, idx) in serviceAreas" :key="idx">
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg text-xs">
+                            <span class="font-mono font-bold text-gray-800 dark:text-gray-200" x-text="area"></span>
+                            <button @click="removeServiceArea(idx)" class="text-red-500 font-bold hover:underline">Remove</button>
+                        </div>
                     </template>
-                </select>
+                </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Points to Add / Subtract</label>
-                <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+            <!-- TAB 3: REVIEW MODERATION & CREATION -->
+            <div x-show="adminTab === 'reviews'" class="space-y-4" x-cloak>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Add new client testimonials to feature on the homepage.</p>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Author Name / Type</label>
+                        <input type="text" x-model="newReview.author" placeholder="e.g. Sarah M. (Cat Owner)" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Star Rating (1 - 5)</label>
+                        <select x-model.number="newReview.stars" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                            <option value="5">★★★★★ (5 Stars)</option>
+                            <option value="4">★★★★☆ (4 Stars)</option>
+                            <option value="3">★★★☆☆ (3 Stars)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Review Comment</label>
+                        <textarea x-model="newReview.comment" rows="2" placeholder="e.g. Steven was wonderful with our cat!" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none"></textarea>
+                    </div>
+
+                    <button @click="addNewReview()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Publish Review to Site</button>
+                </div>
             </div>
 
-            <div class="flex space-x-2 pt-2">
-                <button @click="showAdminModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-lg">Cancel</button>
-                <button @click="updateClientPoints()" class="flex-1 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700">Update Points</button>
-            </div>
+            <button @click="showAdminModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-lg">Close Admin Panel</button>
         </div>
     </div>
 
@@ -947,6 +1006,15 @@
                 profileSuccess: '',
                 clientList: [],
                 adminForm: { targetUid: '', pointsDelta: 0 },
+                adminTab: 'points',
+                serviceAreas: ['45157', '45106', '45102', '45103', '45150', '45244', '45245', '45255', 'new richmond', 'amelia', 'batavia', 'anderson', 'cincinnati'],
+                newAreaInput: '',
+                reviewsList: [
+                    { stars: 5, comment: 'Steven is absolute gold! He kept us updated with photos and detailed notes every visit. Our cats loved him right away!', author: 'Sarah M. (Cat Owner)' },
+                    { stars: 5, comment: 'Super dependable for daily dog walks. Always on time, respectful of our home, and the Paw Points program is an awesome bonus.', author: 'David R. (Dog Owner)' },
+                    { stars: 5, comment: 'Peace of mind while on vacation is priceless. Steven followed all feeding instructions to a T. Highly recommended!', author: 'Jessica T. (Multi-Pet Owner)' }
+                ],
+                newReview: { stars: 5, comment: '', author: '' },
 
                 init() {
                     auth.onAuthStateChanged(async (u) => {
@@ -997,14 +1065,9 @@
                         return;
                     }
 
-                    // Standard local area check (e.g., Clermont County & surrounding areas)
-                    const primaryZips = ['45157', '45106', '45102', '45103', '45150', '45244', '45245', '45255'];
-                    const primaryTowns = ['new richmond', 'amelia', 'batavia', 'anderson', 'cincinnati', 'williamsburg', 'pierce', 'monroe'];
+                    const isMatch = this.serviceAreas.some(area => query.includes(area.toLowerCase()));
 
-                    const isZipMatch = primaryZips.some(z => query.includes(z));
-                    const isTownMatch = primaryTowns.some(t => query.includes(t));
-
-                    if (isZipMatch || isTownMatch) {
+                    if (isMatch) {
                         this.serviceResult = {
                             covered: true,
                             message: '🎉 Great news! You are in our primary pet sitting & walking service area!'
@@ -1014,6 +1077,28 @@
                             covered: false,
                             message: '📍 You are slightly outside our standard zone, but we may still accommodate visits! Message Steven to double check.'
                         };
+                    }
+                },
+
+                addServiceArea() {
+                    if (this.newAreaInput.trim()) {
+                        this.serviceAreas.push(this.newAreaInput.trim().toLowerCase());
+                        this.newAreaInput = '';
+                        alert('New service area added successfully!');
+                    }
+                },
+
+                removeServiceArea(idx) {
+                    this.serviceAreas.splice(idx, 1);
+                },
+
+                addNewReview() {
+                    if (this.newReview.comment && this.newReview.author) {
+                        this.reviewsList.unshift({ ...this.newReview });
+                        this.newReview = { stars: 5, comment: '', author: '' };
+                        alert('New review published to site!');
+                    } else {
+                        alert('Please enter both an author name and review comment.');
                     }
                 },
 
@@ -1043,7 +1128,6 @@
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
 
-                            // Send new Google signup details to Make webhook
                             fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -1114,7 +1198,6 @@
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
 
-                            // Send new email signup details to Make webhook
                             fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
