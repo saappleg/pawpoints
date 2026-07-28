@@ -8,7 +8,7 @@
         
     <!-- PWA Manifest, Icons & Theme Color -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#2b4263">
     <link rel="icon" type="image/png" sizes="512x512" href="logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
     <link rel="shortcut icon" href="logo.png">
@@ -22,11 +22,22 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            500: '#3b547a',
+                            600: '#2b4263', /* Deep Slate/Denim from Steven's hoodie & text */
+                            700: '#1f314d',
+                        },
+                        sage: {
+                            50: '#f2f7f4',
+                            500: '#5c8d6e',
+                            600: '#4a7c59', /* Leaf Green from the foliage */
+                            700: '#386345',
+                        },
+                        warmCanvas: {
+                            50: '#fcfbfa',
+                            100: '#f8f6f0', /* Cream canvas texture background */
+                            200: '#eee9df',
                         }
                     }
                 }
@@ -47,27 +58,34 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Rainbow woven accent line matching logo border */
+        .rainbow-gradient-bar {
+            background: linear-gradient(90deg, #e53e3e, #dd6b20, #d69e2e, #38a169, #3182ce, #805ad5);
+        }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-warmCanvas-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Rainbow Top Accent Line (Echoing circular rope border) -->
+    <div class="h-1.5 rainbow-gradient-bar w-full"></div>
 
     <!-- Navigation Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+    <header class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-sm border-b border-warmCanvas-200 dark:border-gray-700 sticky top-0 z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <!-- Enlarged Logo Image -->
-                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-16 w-16 object-contain rounded-full bg-brand-50 p-0.5 shadow-sm transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
+                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-16 w-16 object-contain rounded-full bg-warmCanvas-100 p-0.5 shadow-md border-2 border-brand-500/20 transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
                 <div>
                     <!-- EXACT MATCH HEADING FOR GOOGLE VERIFICATION -->
-                    <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
+                    <h1 class="font-extrabold text-xl leading-tight text-brand-700 dark:text-white tracking-tight">Pet Care by Steven</h1>
+                    <p class="text-xs text-sage-600 dark:text-sage-400 font-medium">Professional Pet Sitting & Dog Walking</p>
                 </div>
             </div>
 
             <!-- Main Navigation Links -->
-            <nav class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl">
+            <nav class="hidden md:flex items-center space-x-1 bg-warmCanvas-100 dark:bg-gray-700/60 p-1 rounded-xl border border-warmCanvas-200 dark:border-gray-600">
                 <button @click="currentView = 'home'" :class="currentView === 'home' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition">
                     🏠 Home
                 </button>
@@ -79,22 +97,22 @@
 
             <!-- Actions Bar -->
             <div class="flex items-center space-x-2">
-                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
                     <span>🐕</span>
                     <span class="hidden sm:inline">Book Service</span>
                 </a>
 
-                <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                <button @click="toggleDarkMode()" class="p-2 rounded-xl bg-warmCanvas-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-warmCanvas-200 dark:hover:bg-gray-600 transition">
                     <span x-show="!darkMode">🌙</span>
                     <span x-show="darkMode" x-cloak>☀️</span>
                 </button>
 
                 <template x-if="user">
                     <div class="flex items-center space-x-2">
-                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-warmCanvas-100 dark:bg-gray-700 hover:bg-warmCanvas-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-xl font-bold transition flex items-center gap-1">
                             <span>👤 Profile</span>
                         </button>
-                        <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-2 rounded-lg font-medium transition">
+                        <button @click="logout()" class="text-xs bg-warmCanvas-200 dark:bg-gray-700 hover:bg-warmCanvas-300 dark:hover:bg-gray-600 px-3 py-2 rounded-xl font-medium transition">
                             Log Out
                         </button>
                     </div>
@@ -103,7 +121,7 @@
         </div>
 
         <!-- Mobile View Switcher Bar -->
-        <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
+        <div class="flex md:hidden border-t border-warmCanvas-200 dark:border-gray-700/50 bg-warmCanvas-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
             <button @click="currentView = 'home'" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500'">
                 🏠 Home & Services
             </button>
@@ -124,18 +142,21 @@
         <!-- VIEW 1: BUSINESS HOME PAGE -->
         <div x-show="!loading && currentView === 'home'" class="space-y-10">
             <!-- Hero Section -->
-            <section class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="space-y-4 max-w-xl text-center md:text-left z-10">
-                    <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
-                    <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
-                    <p class="text-indigo-100 text-sm md:text-base leading-relaxed">
+            <section class="bg-brand-600 dark:bg-gray-950 border border-brand-700 dark:border-gray-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                <!-- Rainbow edge highlight inside hero banner -->
+                <div class="absolute top-0 left-0 right-0 h-1 rainbow-gradient-bar"></div>
+
+                <div class="space-y-4 max-w-xl text-center md:text-left z-10 pt-2">
+                    <span class="bg-sage-600/90 text-white border border-sage-500/40 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">Trusted Local Care</span>
+                    <h2 class="text-3xl md:text-5xl font-black leading-tight text-white tracking-tight">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
+                    <p class="text-brand-100 text-sm md:text-base leading-relaxed">
                         Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                     </p>
                     <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center">
+                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-brand-700 hover:bg-warmCanvas-100 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center">
                             📅 Schedule & Book Walkies
                         </a>
-                        <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-indigo-800/80 hover:bg-indigo-800 text-white border border-indigo-400/40 px-6 py-3 rounded-xl font-bold text-sm transition text-center">
+                        <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-brand-700/80 hover:bg-brand-700 text-white border border-brand-500/40 px-6 py-3 rounded-xl font-bold text-sm transition text-center">
                             🎁 View Client Rewards
                         </button>
                     </div>
@@ -148,28 +169,28 @@
             <!-- Services Grid -->
             <section class="space-y-4">
                 <div class="text-center max-w-lg mx-auto">
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
+                    <h3 class="text-2xl font-extrabold text-brand-700 dark:text-white">Our Pet Care Services</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Professional care designed to keep your pets happy, safe, and exercised.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                    <div class="bg-white dark:bg-gray-800 border border-warmCanvas-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🐕‍🦺</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dog Walking</h4>
+                        <h4 class="font-bold text-lg text-brand-700 dark:text-white">Dog Walking</h4>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
                         </p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                    <div class="bg-white dark:bg-gray-800 border border-warmCanvas-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🏡</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
+                        <h4 class="font-bold text-lg text-brand-700 dark:text-white">In-Home Sitting Visits</h4>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
                         </p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                    <div class="bg-white dark:bg-gray-800 border border-warmCanvas-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🎁</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Paw Points Loyalty</h4>
+                        <h4 class="font-bold text-lg text-brand-700 dark:text-white">Paw Points Loyalty</h4>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
                         </p>
@@ -178,21 +199,21 @@
             </section>
 
             <!-- How It Works Banner -->
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 space-y-6">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">How Booking Works</h3>
+            <section class="bg-white dark:bg-gray-800 border border-warmCanvas-200 dark:border-gray-700 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm">
+                <h3 class="text-xl font-bold text-brand-700 dark:text-white text-center">How Booking Works</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                     <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">1</div>
+                        <div class="w-10 h-10 bg-sage-50 dark:bg-sage-900/40 text-sage-600 dark:text-sage-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm border border-sage-500/20">1</div>
                         <h5 class="font-bold text-sm text-gray-900 dark:text-white">Book on Walkies</h5>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Request your dates or regular walking schedule on our official profile.</p>
                     </div>
                     <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">2</div>
+                        <div class="w-10 h-10 bg-sage-50 dark:bg-sage-900/40 text-sage-600 dark:text-sage-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm border border-sage-500/20">2</div>
                         <h5 class="font-bold text-sm text-gray-900 dark:text-white">Log Into Portal</h5>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Add pet details, upload feeding notes, and store emergency vet contacts.</p>
                     </div>
                     <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">3</div>
+                        <div class="w-10 h-10 bg-sage-50 dark:bg-sage-900/40 text-sage-600 dark:text-sage-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm border border-sage-500/20">3</div>
                         <h5 class="font-bold text-sm text-gray-900 dark:text-white">Earn & Redeem</h5>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Collect points automatically after services to unlock $10 and $20 discounts!</p>
                     </div>
@@ -200,9 +221,9 @@
             </section>
 
             <!-- Quick Action CTA -->
-            <section class="text-center py-8 bg-indigo-50 dark:bg-gray-800 rounded-2xl border border-indigo-100 dark:border-gray-700 p-6 shadow-sm">
-                <h4 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h4>
-                <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium">Access your client account to view coupons, referral links, and pet notes.</p>
+            <section class="text-center py-8 bg-warmCanvas-200/60 dark:bg-gray-800 rounded-2xl border border-warmCanvas-200 dark:border-gray-700 p-6 shadow-sm">
+                <h4 class="font-bold text-xl text-brand-700 dark:text-white">Ready to track your points or add a pet?</h4>
+                <p class="text-xs text-sage-700 dark:text-sage-300 mt-1.5 font-medium">Access your client account to view coupons, referral links, and pet notes.</p>
                 <button @click="currentView = 'loyalty'" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-sm">
                     Open Paw Points Client Dashboard
                 </button>
@@ -213,12 +234,12 @@
         <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
             
             <!-- AUTHENTICATION VIEW -->
-            <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
-                <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
+            <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-warmCanvas-200 dark:border-gray-700 space-y-5">
+                <h2 class="text-xl font-bold text-center text-brand-700 dark:text-white" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
                 <!-- GOOGLE SIGN IN BUTTON -->
                 <div x-show="authMode !== 'forgot'">
-                    <button @click="handleGoogleAuth()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border border-gray-300 dark:border-gray-600 text-sm shadow-sm transition">
+                    <button @click="handleGoogleAuth()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-white dark:bg-gray-700 hover:bg-warmCanvas-100 dark:hover:bg-gray-650 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border border-gray-300 dark:border-gray-600 text-sm shadow-sm transition">
                         <svg class="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -327,54 +348,54 @@
                     </div>
 
                     <!-- Points Banner -->
-                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
-                            <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
-                            <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                    <div class="bg-brand-700 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-brand-800 relative overflow-hidden">
+                        <div class="z-10">
+                            <p class="text-xs uppercase tracking-wider text-brand-100 font-bold">Your Balance</p>
+                            <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-brand-100">Pts</span></h2>
+                            <p class="text-xs mt-2 text-brand-100">Earn 10 points for every $1 spent on pet sitting & walks.</p>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                            <button @click="showProfileModal = true" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700">
+                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto z-10">
+                            <button @click="showProfileModal = true" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-brand-500">
                                 ⚙️ Account Profile
                             </button>
-                            <button @click="openDigitalPass()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                            <button @click="openDigitalPass()" class="bg-sage-600 hover:bg-sage-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
                                 <span>📱 Digital Pass</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- REFERRAL REWARDS CARD -->
-                    <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
+                    <div class="bg-brand-600 dark:bg-gray-950 border border-brand-700 dark:border-gray-800 text-white p-6 rounded-2xl shadow-md space-y-4">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
+                                <span class="text-[10px] uppercase font-extrabold tracking-widest bg-sage-600 text-white border border-sage-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
                                 <h3 class="font-extrabold text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
-                                <p class="text-xs text-indigo-100 mt-1 max-w-lg leading-relaxed">
+                                <p class="text-xs text-brand-100 mt-1 max-w-lg leading-relaxed">
                                     Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
                                 </p>
                             </div>
                             <div class="hidden sm:block text-right">
                                 <span class="text-2xl font-black text-white" x-text="userData.referralsCount || 0">0</span>
-                                <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Friends Referred</p>
+                                <p class="text-[10px] text-brand-100 uppercase font-bold tracking-wider">Friends Referred</p>
                             </div>
                         </div>
 
-                        <div class="bg-indigo-800/80 dark:bg-indigo-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-indigo-500/40">
+                        <div class="bg-brand-700/80 dark:bg-gray-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-brand-500/40">
                             <div class="text-center sm:text-left w-full sm:w-auto">
-                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Your Personal Referral Link</p>
+                                <p class="text-[10px] uppercase tracking-wider text-brand-100 font-bold">Your Personal Referral Link</p>
                                 <p class="font-mono text-xs font-bold text-white truncate max-w-xs sm:max-w-md mt-0.5 select-all" x-text="getReferralLink()"></p>
                             </div>
-                            <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-indigo-900 font-bold rounded-lg text-xs hover:bg-indigo-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
+                            <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-brand-700 font-bold rounded-lg text-xs hover:bg-warmCanvas-100 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
                                 <span x-text="copiedRef ? '✓ Copied!' : '📋 Copy Link'"></span>
                             </button>
                         </div>
                     </div>
 
                     <!-- PET PROFILES & VET DETAILS SECTION -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-warmCanvas-200 dark:border-gray-700 space-y-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
                             <div>
-                                <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <h3 class="font-bold text-lg text-brand-700 dark:text-white flex items-center gap-2">
                                     <span>🐶 Pet Profiles & Care Details</span>
                                 </h3>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
@@ -388,13 +409,13 @@
 
                                 <template x-if="isEditingPets">
                                     <div class="flex items-center space-x-2">
-                                        <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                        <button @click="cancelPetEdit()" class="text-xs bg-warmCanvas-100 hover:bg-warmCanvas-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
                                             Cancel
                                         </button>
-                                        <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                        <button @click="addPet()" class="text-xs bg-warmCanvas-100 hover:bg-warmCanvas-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
                                             + Add Pet
                                         </button>
-                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                        <button @click="savePetDetails()" class="text-xs bg-sage-600 hover:bg-sage-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
                                             💾 Save Profiles
                                         </button>
                                     </div>
@@ -406,9 +427,9 @@
                         <div x-show="!isEditingPets" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
-                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
+                                    <div class="border border-warmCanvas-200 dark:border-gray-700 rounded-xl p-4 bg-warmCanvas-50/60 dark:bg-gray-800/60 space-y-3">
                                         <div class="flex items-center space-x-4">
-                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-warmCanvas-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
                                                 <template x-if="pet.photo">
                                                     <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
                                                 </template>
@@ -417,12 +438,12 @@
                                                 </template>
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
-                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
+                                                <h4 class="font-bold text-base text-brand-700 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
+                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">Registered Pet</span>
                                             </div>
                                         </div>
 
-                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
+                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-warmCanvas-200 dark:border-gray-700/50">
                                             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
                                             <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
                                         </div>
@@ -432,7 +453,7 @@
 
                             <div class="border-t dark:border-gray-700 pt-4">
                                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-warmCanvas-50/60 dark:bg-gray-800/60 p-4 rounded-xl border border-warmCanvas-200 dark:border-gray-700">
                                     <div>
                                         <span class="block text-xs font-medium text-gray-400">Clinic Name</span>
                                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
@@ -449,14 +470,14 @@
                         <div x-show="isEditingPets" class="space-y-6" x-cloak>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
-                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
+                                    <div class="border border-warmCanvas-200 dark:border-gray-700 rounded-xl p-4 bg-warmCanvas-50/50 dark:bg-gray-800/50 relative space-y-3">
                                         <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
                                             ✕ Remove
                                         </button>
 
                                         <div class="flex items-center space-x-4">
                                             <div class="relative group flex-shrink-0">
-                                                <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                                <div class="w-16 h-16 rounded-full overflow-hidden bg-warmCanvas-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
                                                     <template x-if="pet.photo">
                                                         <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
                                                     </template>
@@ -501,14 +522,14 @@
                     </div>
 
                     <!-- Active Coupons Section -->
-                    <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-warmCanvas-200 dark:border-gray-700">
                         <h3 class="font-bold text-base mb-3">Your Redeemed Coupons</h3>
                         <div class="space-y-3">
                             <template x-for="(coupon, index) in userData.coupons" :key="index">
-                                <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
+                                <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-sage-50/50 dark:bg-sage-950/20 border-sage-200 dark:border-sage-800'">
                                     <div>
-                                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
-                                        <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
+                                        <span class="text-xs font-bold text-sage-600 dark:text-sage-400 uppercase tracking-wider" x-text="coupon.title"></span>
+                                        <p class="font-mono text-lg font-extrabold tracking-widest text-brand-700 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
                                         <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
                                     </div>
                                     
@@ -516,7 +537,7 @@
                                         @click="toggleCouponUsed(index)" 
                                         :disabled="coupon.used"
                                         class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" 
-                                        :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
+                                        :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-sage-600 text-white hover:bg-sage-700'">
                                         <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
                                     </button>
                                 </div>
@@ -525,23 +546,23 @@
                     </div>
 
                     <!-- Rewards Section -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="font-bold text-base mb-4">Available Rewards</h3>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-warmCanvas-200 dark:border-gray-700">
+                        <h3 class="font-bold text-base mb-4 text-brand-700 dark:text-white">Available Rewards</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                            <div class="border border-warmCanvas-200 dark:border-gray-700 p-4 rounded-xl flex justify-between items-center bg-warmCanvas-50/30">
                                 <div>
-                                    <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
-                                    <p class="text-xs text-gray-500">5,000 Points</p>
+                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">$10 Off Next Visit</h4>
+                                    <p class="text-xs text-sage-600 font-semibold">5,000 Points</p>
                                 </div>
                                 <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
                                     Redeem
                                 </button>
                             </div>
 
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                            <div class="border border-warmCanvas-200 dark:border-gray-700 p-4 rounded-xl flex justify-between items-center bg-warmCanvas-50/30">
                                 <div>
-                                    <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
-                                    <p class="text-xs text-gray-500">8,000 Points</p>
+                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">$20 Off Next Visit</h4>
+                                    <p class="text-xs text-sage-600 font-semibold">8,000 Points</p>
                                 </div>
                                 <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
                                     Redeem
@@ -568,11 +589,11 @@
             x-transition:leave-end="opacity-0 scale-95 transform translate-y-2"
             x-cloak
             @click.away="showChatWidget = false"
-            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl w-72 p-4 space-y-3">
+            class="bg-white dark:bg-gray-800 border border-warmCanvas-200 dark:border-gray-700 rounded-2xl shadow-2xl w-72 p-4 space-y-3">
             
             <div class="flex items-center justify-between border-b dark:border-gray-700 pb-2">
                 <div>
-                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">Chat with Steven 💬</h4>
+                    <h4 class="font-bold text-sm text-brand-700 dark:text-white">Chat with Steven 💬</h4>
                     <p class="text-[10px] text-gray-500 dark:text-gray-400">Choose your preferred channel</p>
                 </div>
                 <button @click="showChatWidget = false" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
@@ -596,8 +617,8 @@
                     href="https://wa.me/15133025418?text=Hi%20Steven,%20I%20have%20a%20question%20about%20pet%20sitting!" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
-                    <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24">
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-sage-50 dark:bg-sage-950/40 hover:bg-sage-100 dark:hover:bg-sage-900/50 text-sage-900 dark:text-sage-100 border border-sage-200 dark:border-sage-800 transition text-xs font-bold">
+                    <svg class="w-5 h-5 fill-current text-sage-600" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                     </svg>
                     <span>WhatsApp Chat</span>
@@ -606,7 +627,7 @@
                 <!-- Email Message Button -->
                 <a 
                     href="mailto:support@petcarebysteven.me?subject=Pet%20Sitting%20Inquiry" 
-                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition text-xs font-bold">
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-warmCanvas-100 dark:bg-gray-700/50 hover:bg-warmCanvas-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-warmCanvas-200 dark:border-gray-600 transition text-xs font-bold">
                     <span class="text-base">✉️</span>
                     <span>Send Email Message</span>
                 </a>
@@ -626,12 +647,12 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500">
+    <footer class="bg-white dark:bg-gray-800 border-t border-warmCanvas-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500">
         <div class="max-w-5xl mx-auto px-4 space-y-4">
             
             <!-- GOOGLE OAUTH COMPLIANCE (NATURALLY INTEGRATED IN FOOTER) -->
             <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
-                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
+                <p class="font-semibold text-brand-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
                 <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
                     Pet Care by Steven is an official client management portal designed to help clients schedule dog walking and pet sitting services, manage care routines, view digital client passes, and track Paw Points loyalty rewards.
                 </p>
@@ -654,7 +675,7 @@
     <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
-                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h3>
+                <h3 class="font-bold text-lg text-brand-700 dark:text-white">Account & Contact Profile</h3>
                 <button @click="showProfileModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold">✕</button>
             </div>
 
@@ -684,7 +705,7 @@
                 <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-medium"></p>
 
                 <div class="flex space-x-2 pt-2">
-                    <button type="button" @click="showProfileModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
+                    <button type="button" @click="showProfileModal = false" class="flex-1 py-2 bg-warmCanvas-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
                     <button type="submit" class="flex-1 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 transition">Save Profile</button>
                 </div>
             </form>
@@ -694,16 +715,16 @@
     <!-- Digital Pass QR Modal -->
     <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showQRModal = false" class="bg-white dark:bg-gray-800 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4">
-            <h3 class="font-bold text-lg">Your Paw Pass</h3>
+            <h3 class="font-bold text-lg text-brand-700 dark:text-white">Your Paw Pass</h3>
             <p class="text-xs text-gray-500">Scan this code at checkout or visits to quickly access your account.</p>
             
-            <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200 min-h-[192px] items-center">
+            <div class="flex justify-center p-4 bg-white rounded-xl border border-warmCanvas-200 min-h-[192px] items-center">
                 <div id="qrcode"></div>
             </div>
 
             <p class="text-xs font-mono text-gray-400" x-text="user?.uid"></p>
 
-            <button @click="showQRModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-sm font-medium rounded-lg">
+            <button @click="showQRModal = false" class="w-full py-2 bg-warmCanvas-200 dark:bg-gray-700 hover:bg-warmCanvas-300 text-sm font-medium rounded-lg">
                 Close
             </button>
         </div>
@@ -712,7 +733,7 @@
     <!-- Admin Panel Modal -->
     <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-4">
-            <h3 class="font-bold text-lg">Admin: Adjust Client Points</h3>
+            <h3 class="font-bold text-lg text-brand-700 dark:text-white">Admin: Adjust Client Points</h3>
             
             <div>
                 <label class="block text-xs text-gray-500 mb-1">Select Client</label>
@@ -730,7 +751,7 @@
             </div>
 
             <div class="flex space-x-2 pt-2">
-                <button @click="showAdminModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
+                <button @click="showAdminModal = false" class="flex-1 py-2 bg-warmCanvas-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
                 <button @click="updateClientPoints()" class="flex-1 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">Update Points</button>
             </div>
         </div>
