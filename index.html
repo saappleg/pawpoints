@@ -26,7 +26,6 @@
                             100: '#e0e7ff',
                             400: '#818cf8',
                             500: '#6366f1',
-                            600: '#6366f1',
                             600: '#4f46e5',
                             700: '#4338ca',
                         }
@@ -828,21 +827,21 @@
                         </div>
                     </div>
 
-                    <!-- REWARDS SECTION & DIRECT TIPPING -->
+                    <!-- REWARDS SECTION & SUPPORT TIPPING -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
                         <div class="flex justify-between items-center border-b dark:border-gray-700 pb-4">
                             <div>
-                                <h3 class="font-bold text-base text-gray-900 dark:text-white">Available Rewards & Support</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Redeem your points for discounts or leave a tip via Venmo or CashApp!</p>
+                                <h3 class="font-bold text-base text-gray-900 dark:text-white">Available Rewards & Support Tipping</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Redeem your points for discounts or send a tip. Tips earn <strong>10x bonus Paw Points</strong>!</p>
                             </div>
                         </div>
 
-                        <!-- Tip Sitter / Buy a Treat Widget (Venmo & CashApp) -->
+                        <!-- Tip Sitter / Buy a Treat Widget -->
                         <div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 p-4 rounded-xl space-y-3">
                             <div class="flex items-center justify-between">
-                                <h4 class="font-bold text-xs text-indigo-950 dark:text-indigo-200">☕ Leave a Tip / Buy Steven a Treat</h4>
+                                <h4 class="font-bold text-xs text-indigo-950 dark:text-indigo-200">☕ Leave a Tip / Buy Steven a Treat (Earns 10x Bonus Pts!)</h4>
                             </div>
-                            <p class="text-[11px] text-gray-600 dark:text-gray-300">If you'd like to leave a tip for recent services, you can use one of the options below:</p>
+                            <p class="text-[11px] text-gray-600 dark:text-gray-300">Choose your preferred payment platform to send a tip. Once sent, message Steven to have your 10x bonus points credited!</p>
                             <div class="flex flex-wrap gap-3 pt-1">
                                 <a href="https://venmo.com/StevenApplegate" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-1.5">
                                     <span>💸 Venmo: @StevenApplegate</span>
@@ -1393,9 +1392,29 @@
                     .then(reg => {
                         reg.update();
                         console.log('Service Worker registered!');
+                        // Request notification permission for PWA alerts
+                        if (window.Notification && Notification.permission === 'default') {
+                            Notification.requestPermission();
+                        }
                     })
                     .catch(err => console.log('Service Worker failed:', err));
             });
+        }
+
+        function firePwaNotification(title, body) {
+            if (window.Notification && Notification.permission === 'granted') {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification(title, {
+                            body: body,
+                            icon: 'logo.png',
+                            badge: 'logo.png'
+                        });
+                    });
+                } else {
+                    new Notification(title, { body: body, icon: 'logo.png' });
+                }
+            }
         }
 
         function pawApp() {
@@ -1802,8 +1821,14 @@
                 async fetchUserData(uid) {
                     const doc = await db.collection('clients').doc(uid).get();
                     if (doc.exists) {
+                        const oldPoints = this.userData.points;
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
+
+                        // Fire PWA notification if points changed
+                        if (oldPoints !== undefined && oldPoints !== this.userData.points) {
+                            firePwaNotification("🐾 Paw Points Updated!", `Your new balance is ${this.userData.points} Pts.`);
+                        }
 
                         this.profileForm = {
                             name: this.userData.name || '',
@@ -2079,6 +2104,7 @@
 
                         this.userData.points = newBalance;
                         this.userData.coupons = updatedCoupons;
+                        firePwaNotification("🎁 Reward Redeemed!", `Your coupon code is ${couponCode}`);
 
                         alert(`Reward Redeemed!\n\nYour Coupon Code is: ${couponCode}`);
                     }
@@ -2140,6 +2166,7 @@
                     
                     if (this.adminForm.targetUid === this.user.uid) {
                         this.userData.points = newPts;
+                        firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${newPts} Pts.`);
                     }
                     
                     this.showAdminModal = false;
