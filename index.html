@@ -280,4 +280,976 @@
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
                     <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
 
-             
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm">
+                        Send Reset Link
+                    </button>
+                </form>
+
+                <div class="mt-4 text-center text-xs text-gray-500">
+                    <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''; authSuccess = ''" class="text-brand-600 hover:underline">
+                        <span x-text="authMode === 'login' ? 'Need an account? Sign up' : (authMode === 'signup' ? 'Already have an account? Log in' : '← Back to Log In')"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- UNVERIFIED EMAIL BANNER (IF LOGGED IN BUT UNVERIFIED) -->
+            <template x-if="user && !isVerified">
+                <div class="max-w-md mx-auto p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl shadow-sm text-amber-900 dark:text-amber-200 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">✉️</span>
+                        <h3 class="font-bold text-sm">Verify Your Email Address</h3>
+                    </div>
+                    <p class="text-xs leading-relaxed">
+                        We sent a verification email to <strong x-text="user.email"></strong>. Please click the link inside your email to unlock your account features.
+                    </p>
+                    <div class="flex items-center justify-between pt-2 border-t border-amber-200/60 dark:border-amber-800/60">
+                        <button @click="resendVerificationEmail()" class="text-xs font-bold underline hover:no-underline">
+                            Resend Verification Email
+                        </button>
+                        <button @click="checkVerificationStatus()" class="text-xs bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 font-bold px-3 py-1.5 rounded-lg">
+                            I've Verified
+                        </button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- LOGGED-IN & VERIFIED DASHBOARD -->
+            <template x-if="user && isVerified">
+                <div class="space-y-6">
+
+                    <!-- Admin Notice Banner -->
+                    <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
+                        <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
+                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
+                    </div>
+
+                    <!-- Points Banner -->
+                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
+                            <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
+                            <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                            <button @click="showProfileModal = true" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700">
+                                ⚙️ Account Profile
+                            </button>
+                            <button @click="openDigitalPass()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                                <span>📱 Digital Pass</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- REFERRAL REWARDS CARD -->
+                    <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
+                                <h3 class="font-extrabold text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
+                                <p class="text-xs text-indigo-100 mt-1 max-w-lg leading-relaxed">
+                                    Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
+                                </p>
+                            </div>
+                            <div class="hidden sm:block text-right">
+                                <span class="text-2xl font-black text-white" x-text="userData.referralsCount || 0">0</span>
+                                <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Friends Referred</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-800/80 dark:bg-indigo-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-indigo-500/40">
+                            <div class="text-center sm:text-left w-full sm:w-auto">
+                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Your Personal Referral Link</p>
+                                <p class="font-mono text-xs font-bold text-white truncate max-w-xs sm:max-w-md mt-0.5 select-all" x-text="getReferralLink()"></p>
+                            </div>
+                            <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-indigo-900 font-bold rounded-lg text-xs hover:bg-indigo-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
+                                <span x-text="copiedRef ? '✓ Copied!' : '📋 Copy Link'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PET PROFILES & VET DETAILS SECTION -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                    <span>🐶 Pet Profiles & Care Details</span>
+                                </h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <template x-if="!isEditingPets">
+                                    <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                        ✏️ Edit Information
+                                    </button>
+                                </template>
+
+                                <template x-if="isEditingPets">
+                                    <div class="flex items-center space-x-2">
+                                        <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                            Cancel
+                                        </button>
+                                        <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                            + Add Pet
+                                        </button>
+                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                            💾 Save Profiles
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- DISPLAY MODE -->
+                        <div x-show="!isEditingPets" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <template x-for="(pet, index) in userData.pets" :key="index">
+                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
+                                                <template x-if="pet.photo">
+                                                    <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!pet.photo">
+                                                    <span class="text-2xl">🐾</span>
+                                                </template>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
+                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
+                                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
+                                            <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="border-t dark:border-gray-700 pt-4">
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
+                                    <div>
+                                        <span class="block text-xs font-medium text-gray-400">Clinic Name</span>
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xs font-medium text-gray-400">Vet Phone Number</span>
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-0.5" x-text="userData.vetPhone || 'Not specified'"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EDITABLE PANEL MODE -->
+                        <div x-show="isEditingPets" class="space-y-6" x-cloak>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <template x-for="(pet, index) in userData.pets" :key="index">
+                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
+                                        <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
+                                            ✕ Remove
+                                        </button>
+
+                                        <div class="flex items-center space-x-4">
+                                            <div class="relative group flex-shrink-0">
+                                                <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                                    <template x-if="pet.photo">
+                                                        <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
+                                                    </template>
+                                                    <template x-if="!pet.photo">
+                                                        <span class="text-2xl">🐾</span>
+                                                    </template>
+                                                </div>
+                                                <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
+                                                    <span>Upload</span>
+                                                    <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
+                                                </label>
+                                            </div>
+
+                                            <div class="flex-grow">
+                                                <label class="block text-xs font-bold text-gray-500 mb-1">Pet Name</label>
+                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 mb-1">Special Care Notes / Breed / Routine</label>
+                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="border-t dark:border-gray-700 pt-4 mt-4">
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Clinic Name</label>
+                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Vet Phone Number</label>
+                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Coupons Section -->
+                    <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="font-bold text-base mb-3">Your Redeemed Coupons</h3>
+                        <div class="space-y-3">
+                            <template x-for="(coupon, index) in userData.coupons" :key="index">
+                                <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
+                                    <div>
+                                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
+                                        <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
+                                        <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
+                                    </div>
+                                    
+                                    <button 
+                                        @click="toggleCouponUsed(index)" 
+                                        :disabled="coupon.used"
+                                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" 
+                                        :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
+                                        <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Rewards Section -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="font-bold text-base mb-4">Available Rewards</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-sm">$10 Off Next Visit</h4>
+                                    <p class="text-xs text-gray-500">5,000 Points</p>
+                                </div>
+                                <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                                    Redeem
+                                </button>
+                            </div>
+
+                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-sm">$20 Off Next Visit</h4>
+                                    <p class="text-xs text-gray-500">8,000 Points</p>
+                                </div>
+                                <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'">
+                                    Redeem
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </template>
+        </div>
+    </main>
+
+    <!-- FLOATING MULTI-CHANNEL CHAT WIDGET -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
+        <!-- Chat Channel Menu -->
+        <div 
+            x-show="showChatWidget" 
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95 transform translate-y-2"
+            x-transition:enter-end="opacity-100 scale-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 scale-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 scale-95 transform translate-y-2"
+            x-cloak
+            @click.away="showChatWidget = false"
+            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl w-72 p-4 space-y-3">
+            
+            <div class="flex items-center justify-between border-b dark:border-gray-700 pb-2">
+                <div>
+                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">Chat with Steven 💬</h4>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400">Choose your preferred channel</p>
+                </div>
+                <button @click="showChatWidget = false" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
+            </div>
+
+            <div class="space-y-2">
+                <!-- Facebook Messenger Button -->
+                <a 
+                    href="https://m.me/petcarebysteven" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800 transition text-xs font-bold">
+                    <svg class="w-5 h-5 fill-current text-blue-600" viewBox="0 0 24 24">
+                        <path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.91 1.45 5.515 3.717 7.185V22l3.391-1.862c.928.257 1.91.396 2.892.396 5.523 0 10-4.145 10-9.258C22 6.145 17.523 2 12 2zm1.066 12.434l-2.562-2.733-5.003 2.733 5.503-5.84 2.625 2.733 4.94-2.733-5.503 5.84z"/>
+                    </svg>
+                    <span>Facebook Messenger</span>
+                </a>
+
+                <!-- WhatsApp Button -->
+                <a 
+                    href="https://wa.me/15133025418?text=Hi%20Steven,%20I%20have%20a%20question%20about%20pet%20sitting!" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                    <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                    </svg>
+                    <span>WhatsApp Chat</span>
+                </a>
+
+                <!-- Email Message Button -->
+                <a 
+                    href="mailto:support@petcarebysteven.me?subject=Pet%20Sitting%20Inquiry" 
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition text-xs font-bold">
+                    <span class="text-base">✉️</span>
+                    <span>Send Email Message</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Floating Chat Toggle Button -->
+        <button 
+            @click="showChatWidget = !showChatWidget" 
+            class="bg-brand-600 hover:bg-brand-700 text-white p-3.5 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2 focus:outline-none">
+            <svg x-show="!showChatWidget" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
+            </svg>
+            <span x-show="showChatWidget" class="text-lg font-bold" x-cloak>✕</span>
+            <span class="text-xs font-bold hidden sm:inline" x-show="!showChatWidget">Chat with us</span>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500">
+        <div class="max-w-5xl mx-auto px-4 space-y-4">
+            
+            <!-- GOOGLE OAUTH COMPLIANCE (NATURALLY INTEGRATED IN FOOTER) -->
+            <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
+                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                    Pet Care by Steven is an official client management portal designed to help clients schedule dog walking and pet sitting services, manage care routines, view digital client passes, and track Paw Points loyalty rewards.
+                </p>
+            </div>
+
+            <!-- Standard Navigation & Copyright -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                <p>© Pet Care by Steven. All rights reserved.</p>
+                <div class="flex space-x-4 font-medium">
+                    <button @click="currentView = 'home'" class="hover:underline">Home</button>
+                    <button @click="currentView = 'loyalty'" class="hover:underline">Paw Points</button>
+                    <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
+                    <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Account Profile Modal -->
+    <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h3>
+                <button @click="showProfileModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold">✕</button>
+            </div>
+
+            <form @submit.prevent="updateUserProfile()" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Full Name</label>
+                    <input type="text" x-model="profileForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Account Email Address</label>
+                    <input type="email" x-model="profileForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                    <p class="text-[10px] text-gray-400 mt-1">Changing your email will update your login credentials.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Phone Number</label>
+                    <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Home Address / Service Notes</label>
+                    <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none"></textarea>
+                </div>
+
+                <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-medium"></p>
+                <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-medium"></p>
+
+                <div class="flex space-x-2 pt-2">
+                    <button type="button" @click="showProfileModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
+                    <button type="submit" class="flex-1 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 transition">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Digital Pass QR Modal -->
+    <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showQRModal = false" class="bg-white dark:bg-gray-800 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4">
+            <h3 class="font-bold text-lg">Your Paw Pass</h3>
+            <p class="text-xs text-gray-500">Scan this code at checkout or visits to quickly access your account.</p>
+            
+            <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200 min-h-[192px] items-center">
+                <div id="qrcode"></div>
+            </div>
+
+            <p class="text-xs font-mono text-gray-400" x-text="user?.uid"></p>
+
+            <button @click="showQRModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-sm font-medium rounded-lg">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-4">
+            <h3 class="font-bold text-lg">Admin: Adjust Client Points</h3>
+            
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Select Client</label>
+                <select x-model="adminForm.targetUid" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                    <option value="">-- Choose a Client --</option>
+                    <template x-for="c in clientList" :key="c.id">
+                        <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Current: ${c.points || 0} Pts`"></option>
+                    </template>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Points to Add / Subtract</label>
+                <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+            </div>
+
+            <div class="flex space-x-2 pt-2">
+                <button @click="showAdminModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg">Cancel</button>
+                <button @click="updateClientPoints()" class="flex-1 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">Update Points</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Exact Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
+            authDomain: "paw-points-app.firebaseapp.com",
+            projectId: "paw-points-app",
+            storageBucket: "paw-points-app.firebasestorage.app",
+            messagingSenderId: "252239990659",
+            appId: "1:252239990659:web:627f4bd85785e0bdcfb0b6",
+            measurementId: "G-6MPSER0Z6L"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        auth.useDeviceLanguage();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => {
+                        reg.update();
+                        console.log('Service Worker registered!');
+                    })
+                    .catch(err => console.log('Service Worker failed:', err));
+            });
+        }
+
+        function pawApp() {
+            return {
+                darkMode: localStorage.getItem('theme') === 'dark',
+                currentView: 'home',
+                loading: true,
+                user: null,
+                userData: {},
+                isVerified: false,
+                isAdmin: false,
+                isEditingPets: false,
+                copiedRef: false,
+                showChatWidget: false,
+                authMode: 'login',
+                authError: '',
+                authSuccess: '',
+                authForm: { name: '', email: '', password: '', refCode: '' },
+                showQRModal: false,
+                showAdminModal: false,
+                showProfileModal: false,
+                profileForm: { name: '', email: '', phone: '', address: '' },
+                profileError: '',
+                profileSuccess: '',
+                clientList: [],
+                adminForm: { targetUid: '', pointsDelta: 0 },
+
+                init() {
+                    auth.onAuthStateChanged(async (u) => {
+                        this.user = u;
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const refParam = urlParams.get('ref');
+                        const targetClientUid = urlParams.get('client');
+
+                        if (u) {
+                            await u.reload();
+                            const isGoogleUser = u.providerData.some(p => p.providerId === 'google.com');
+                            this.isVerified = u.emailVerified || isGoogleUser;
+
+                            if (this.isVerified) {
+                                await this.fetchUserData(u.uid);
+
+                                if (targetClientUid && this.isAdmin) {
+                                    this.currentView = 'loyalty';
+                                    await this.fetchClientsList();
+                                    this.adminForm.targetUid = targetClientUid;
+                                    this.showAdminModal = true;
+                                }
+                            }
+                        } else {
+                            this.userData = {};
+                            this.isVerified = false;
+                            this.isAdmin = false;
+
+                            if (refParam) {
+                                this.currentView = 'loyalty';
+                                this.authMode = 'signup';
+                                this.authForm.refCode = refParam.toUpperCase();
+                            }
+                        }
+                        this.loading = false;
+                    });
+                },
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+                },
+
+                async handleGoogleAuth() {
+                    this.authError = '';
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    provider.setCustomParameters({ prompt: 'select_account' });
+
+                    try {
+                        const res = await auth.signInWithPopup(provider);
+                        const userRef = db.collection('clients').doc(res.user.uid);
+                        const doc = await userRef.get();
+
+                        if (!doc.exists) {
+                            const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                            await userRef.set({
+                                name: res.user.displayName || 'Client',
+                                email: res.user.email,
+                                phone: '',
+                                address: '',
+                                points: 0,
+                                coupons: [],
+                                pets: [{ name: '', notes: '', photo: '' }],
+                                isAdmin: false,
+                                referralCode: personalRefCode,
+                                referralsCount: 0,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Google Auth Error:', err);
+                        if (err.code === 'auth/invalid-action-code' || err.code === 'auth/argument-error') {
+                            this.authError = "Configuration issue detected. Please clear browser cache and retry.";
+                        } else {
+                            this.authError = err.message;
+                        }
+                    }
+                },
+
+                async handleAuth() {
+                    this.authError = '';
+                    this.authSuccess = '';
+                    try {
+                        if (this.authMode === 'signup') {
+                            const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                            await res.user.sendEmailVerification();
+
+                            const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                            let initialCoupons = [];
+                            let referredByUid = null;
+
+                            const enteredRefCode = (this.authForm.refCode || '').trim().toUpperCase();
+                            if (enteredRefCode) {
+                                const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
+                                if (!refQuery.empty) {
+                                    const referrerDoc = refQuery.docs[0];
+                                    referredByUid = referrerDoc.id;
+
+                                    initialCoupons.push({
+                                        code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                                        title: '$10 Off First Visit (Referral Bonus)',
+                                        used: false,
+                                        createdAt: new Date().toISOString()
+                                    });
+
+                                    const refData = referrerDoc.data();
+                                    await db.collection('clients').doc(referredByUid).update({
+                                        points: (refData.points || 0) + 1000,
+                                        referralsCount: (refData.referralsCount || 0) + 1
+                                    });
+                                }
+                            }
+
+                            await db.collection('clients').doc(res.user.uid).set({
+                                name: this.authForm.name,
+                                email: this.authForm.email,
+                                phone: '',
+                                address: '',
+                                points: 0,
+                                coupons: initialCoupons,
+                                pets: [{ name: '', notes: '', photo: '' }],
+                                isAdmin: false,
+                                referralCode: personalRefCode,
+                                referredBy: referredByUid,
+                                referralsCount: 0,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+
+                            this.authSuccess = 'Account created! Please check your email to verify your address.';
+                            this.authMode = 'login';
+                        } else {
+                            const res = await auth.signInWithEmailAndPassword(this.authForm.email, this.authForm.password);
+                            await res.user.reload();
+                            
+                            const isGoogleUser = res.user.providerData.some(p => p.providerId === 'google.com');
+                            this.isVerified = res.user.emailVerified || isGoogleUser;
+
+                            if (!this.isVerified) {
+                                this.authError = 'Please verify your email address to access the dashboard.';
+                            }
+                        }
+                    } catch (err) {
+                        this.authError = err.message;
+                    }
+                },
+
+                async resendVerificationEmail() {
+                    this.authError = '';
+                    this.authSuccess = '';
+                    if (auth.currentUser) {
+                        try {
+                            await auth.currentUser.sendEmailVerification();
+                            alert('Verification email resent! Please check your inbox.');
+                        } catch (err) {
+                            alert('Error sending verification email: ' + err.message);
+                        }
+                    }
+                },
+
+                async checkVerificationStatus() {
+                    if (auth.currentUser) {
+                        await auth.currentUser.reload();
+                        const isGoogleUser = auth.currentUser.providerData.some(p => p.providerId === 'google.com');
+                        this.isVerified = auth.currentUser.emailVerified || isGoogleUser;
+
+                        if (this.isVerified) {
+                            await this.fetchUserData(auth.currentUser.uid);
+                        } else {
+                            alert('Email not verified yet. Please click the link sent to your email.');
+                        }
+                    }
+                },
+
+                async handleForgotPassword() {
+                    this.authError = '';
+                    this.authSuccess = '';
+                    if (!this.authForm.email) {
+                        this.authError = 'Please enter your email address.';
+                        return;
+                    }
+
+                    try {
+                        await auth.sendPasswordResetEmail(this.authForm.email);
+                        this.authSuccess = 'Password reset link sent! Check your email inbox.';
+                    } catch (err) {
+                        this.authError = err.message;
+                    }
+                },
+
+                async fetchUserData(uid) {
+                    const doc = await db.collection('clients').doc(uid).get();
+                    if (doc.exists) {
+                        this.userData = doc.data();
+                        this.userData.coupons = this.userData.coupons || [];
+
+                        this.profileForm = {
+                            name: this.userData.name || '',
+                            email: this.userData.email || this.user.email,
+                            phone: this.userData.phone || '',
+                            address: this.userData.address || ''
+                        };
+
+                        if (!this.userData.referralCode) {
+                            const newRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                            await db.collection('clients').doc(uid).update({ referralCode: newRefCode });
+                            this.userData.referralCode = newRefCode;
+                        }
+
+                        if (!this.userData.pets || this.userData.pets.length === 0) {
+                            this.userData.pets = [{
+                                name: this.userData.petName || '',
+                                notes: this.userData.petNotes || '',
+                                photo: ''
+                            }];
+                        }
+                        this.isAdmin = !!this.userData.isAdmin;
+                    }
+                },
+
+                async updateUserProfile() {
+                    this.profileError = '';
+                    this.profileSuccess = '';
+
+                    try {
+                        if (this.profileForm.email !== this.user.email) {
+                            await this.user.updateEmail(this.profileForm.email);
+                            await this.user.sendEmailVerification();
+                        }
+
+                        await db.collection('clients').doc(this.user.uid).update({
+                            name: this.profileForm.name,
+                            email: this.profileForm.email,
+                            phone: this.profileForm.phone,
+                            address: this.profileForm.address
+                        });
+
+                        this.userData.name = this.profileForm.name;
+                        this.userData.email = this.profileForm.email;
+                        this.userData.phone = this.profileForm.phone;
+                        this.userData.address = this.profileForm.address;
+
+                        this.profileSuccess = 'Profile details updated successfully!';
+                        setTimeout(() => { this.showProfileModal = false; this.profileSuccess = ''; }, 1500);
+                    } catch (err) {
+                        if (err.code === 'auth/requires-recent-login') {
+                            this.profileError = 'Changing your email requires recent authentication. Please log out and back in.';
+                        } else {
+                            this.profileError = err.message;
+                        }
+                    }
+                },
+
+                getReferralLink() {
+                    if (!this.userData.referralCode) return 'Loading...';
+                    return `${window.location.origin}${window.location.pathname}?ref=${this.userData.referralCode}`;
+                },
+
+                copyReferralLink() {
+                    const link = this.getReferralLink();
+                    navigator.clipboard.writeText(link).then(() => {
+                        this.copiedRef = true;
+                        setTimeout(() => this.copiedRef = false, 2500);
+                    });
+                },
+
+                addPet() {
+                    if (!this.userData.pets) this.userData.pets = [];
+                    this.userData.pets.push({ name: '', notes: '', photo: '' });
+                    this.isEditingPets = true;
+                },
+
+                removePet(index) {
+                    if (this.userData.pets.length > 1) {
+                        this.userData.pets.splice(index, 1);
+                    }
+                },
+
+                uploadPetPhoto(event, index) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const img = new Image();
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        img.src = e.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 300;
+                            const MAX_HEIGHT = 300;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            this.userData.pets[index].photo = canvas.toDataURL('image/jpeg', 0.7);
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                async savePetDetails() {
+                    if (!this.user) {
+                        alert('You must be logged in to save pet details.');
+                        return;
+                    }
+
+                    try {
+                        const cleanedPets = (this.userData.pets || []).map(p => ({
+                            name: p.name || '',
+                            notes: p.notes || '',
+                            photo: p.photo || ''
+                        }));
+
+                        await db.collection('clients').doc(this.user.uid).set({
+                            pets: cleanedPets,
+                            vetClinic: this.userData.vetClinic || '',
+                            vetPhone: this.userData.vetPhone || ''
+                        }, { merge: true });
+
+                        this.isEditingPets = false;
+                        alert('Pet profiles & vet details saved successfully!');
+                    } catch (err) {
+                        console.error('Failed to save pet details:', err);
+                        alert(`Error saving profile: ${err.message}`);
+                    }
+                },
+
+                async cancelPetEdit() {
+                    if (this.user) {
+                        await this.fetchUserData(this.user.uid);
+                    }
+                    this.isEditingPets = false;
+                },
+
+                async openAdminModal() {
+                    this.showAdminModal = true;
+                    await this.fetchClientsList();
+                },
+
+                async fetchClientsList() {
+                    try {
+                        const snapshot = await db.collection('clients').get();
+                        this.clientList = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+                    } catch (err) {
+                        console.error('Failed to load clients list:', err);
+                    }
+                },
+
+                async redeemReward(cost, title) {
+                    if ((this.userData.points || 0) < cost) return;
+                    if (confirm(`Redeem ${cost} points for ${title}?`)) {
+                        const newBalance = this.userData.points - cost;
+                        
+                        const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                        const newCoupon = {
+                            code: couponCode,
+                            title: title,
+                            used: false,
+                            createdAt: new Date().toISOString()
+                        };
+
+                        const updatedCoupons = [...(this.userData.coupons || []), newCoupon];
+
+                        await db.collection('clients').doc(this.user.uid).update({ 
+                            points: newBalance,
+                            coupons: updatedCoupons
+                        });
+
+                        this.userData.points = newBalance;
+                        this.userData.coupons = updatedCoupons;
+
+                        alert(`Reward Redeemed!\n\nYour Coupon Code is: ${couponCode}`);
+                    }
+                },
+
+                async toggleCouponUsed(index) {
+                    if (!this.user) return;
+
+                    const coupon = this.userData.coupons[index];
+
+                    if (coupon.used) {
+                        alert('This coupon has already been used and cannot be changed.');
+                        return;
+                    }
+
+                    if (confirm(`Are you sure you want to mark "${coupon.title}" (${coupon.code}) as USED?\n\nThis cannot be undone.`)) {
+                        this.userData.coupons[index].used = true;
+                        
+                        await db.collection('clients').doc(this.user.uid).update({
+                            coupons: this.userData.coupons
+                        });
+                    }
+                },
+
+                openDigitalPass() {
+                    this.showQRModal = true;
+                    this.$nextTick(() => {
+                        const qrDiv = document.getElementById("qrcode");
+                        qrDiv.innerHTML = "";
+                        
+                        const clientUrl = `${window.location.origin}${window.location.pathname}?client=${this.user.uid}`;
+                        
+                        if (typeof QRCode !== 'undefined') {
+                            new QRCode(qrDiv, {
+                                text: clientUrl,
+                                width: 160,
+                                height: 160
+                            });
+                        } else {
+                            qrDiv.innerHTML = "<p class='text-xs text-red-500'>Failed to load QR generator.</p>";
+                        }
+                    });
+                },
+
+                async updateClientPoints() {
+                    if (!this.adminForm.targetUid) return alert('Please select a client from the list.');
+                    
+                    const targetRef = db.collection('clients').doc(this.adminForm.targetUid);
+                    const doc = await targetRef.get();
+                    
+                    if (!doc.exists) return alert('Client not found!');
+                    
+                    const currentPts = doc.data().points || 0;
+                    const newPts = currentPts + parseInt(this.adminForm.pointsDelta || 0);
+                    
+                    await targetRef.update({ points: newPts });
+                    alert(`Updated client points from ${currentPts} to ${newPts}!`);
+                    
+                    if (this.adminForm.targetUid === this.user.uid) {
+                        this.userData.points = newPts;
+                    }
+                    
+                    this.showAdminModal = false;
+                    this.adminForm = { targetUid: '', pointsDelta: 0 };
+                },
+
+                async logout() {
+                    await auth.signOut();
+                    this.user = null;
+                    this.userData = {};
+                    this.isVerified = false;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
