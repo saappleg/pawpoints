@@ -856,20 +856,17 @@
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
 
-                            // Optional Make Webhook trigger for new Google signups
-                            const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_HERE';
-                            if (MAKE_WEBHOOK_URL && !MAKE_WEBHOOK_URL.includes('YOUR_MAKE')) {
-                                fetch(MAKE_WEBHOOK_URL, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        clientName: res.user.displayName || 'Client',
-                                        clientEmail: res.user.email,
-                                        authMethod: 'Google OAuth',
-                                        signedUpAt: new Date().toISOString()
-                                    })
-                                }).catch(err => console.error('Make webhook error:', err));
-                            }
+                            // Send new Google signup details to Make webhook
+                            fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    clientName: res.user.displayName || 'Client',
+                                    clientEmail: res.user.email,
+                                    authMethod: 'Google OAuth',
+                                    signedUpAt: new Date().toISOString()
+                                })
+                            }).catch(err => console.error('Make webhook error:', err));
                         }
                     } catch (err) {
                         console.error('Google Auth Error:', err);
@@ -930,20 +927,17 @@
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
 
-                            // Post new sign-up notification to Make.com Webhook
-                            const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_HERE';
-                            if (MAKE_WEBHOOK_URL && !MAKE_WEBHOOK_URL.includes('YOUR_MAKE')) {
-                                fetch(MAKE_WEBHOOK_URL, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        clientName: this.authForm.name,
-                                        clientEmail: this.authForm.email,
-                                        authMethod: 'Email/Password',
-                                        signedUpAt: new Date().toISOString()
-                                    })
-                                }).catch(err => console.error('Make webhook error:', err));
-                            }
+                            // Send new email signup details to Make webhook
+                            fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    clientName: this.authForm.name,
+                                    clientEmail: this.authForm.email,
+                                    authMethod: 'Email/Password',
+                                    signedUpAt: new Date().toISOString()
+                                })
+                            }).catch(err => console.error('Make webhook error:', err));
 
                             this.authSuccess = 'Account created! Please check your email to verify your address.';
                             this.authMode = 'login';
