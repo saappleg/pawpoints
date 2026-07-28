@@ -654,7 +654,7 @@
                                 </template>
                             </div>
 
-                            <!-- OPTION 1: DISPLAY MODE FOR HOME ACCESS & LOCKBOX -->
+                            <!-- HOME ACCESS & LOCKBOX -->
                             <div class="border-t dark:border-gray-700 pt-4">
                                 <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access & Key Instructions</h4>
                                 <div class="bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700 space-y-3 text-xs">
@@ -672,6 +672,27 @@
                                         <span class="font-bold text-gray-500 dark:text-slate-400 uppercase text-[10px]">Entry & Parking Notes:</span>
                                         <p class="text-gray-700 dark:text-gray-300 mt-0.5 leading-relaxed" x-text="userData.homeEntryNotes || 'No specific entry notes added.'"></p>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- NEW OPTION 3: EMERGENCY CONTACTS & AUTHORIZED PICKUP ROSTER (DISPLAY) -->
+                            <div class="border-t dark:border-gray-700 pt-4">
+                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">👥 Emergency Contacts & Authorized Pickup Roster</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                    <template x-if="userData.emergencyContacts && userData.emergencyContacts.length > 0">
+                                        <template x-for="(contact, cIdx) in userData.emergencyContacts" :key="cIdx">
+                                            <div class="bg-gray-50/60 dark:bg-gray-800/60 p-3 rounded-xl border dark:border-gray-700 space-y-1">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="font-bold text-gray-900 dark:text-white" x-text="contact.name"></span>
+                                                    <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded font-bold uppercase" x-text="contact.relation"></span>
+                                                </div>
+                                                <p class="font-mono text-gray-600 dark:text-gray-300 text-[11px]" x-text="contact.phone"></p>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template x-if="!userData.emergencyContacts || userData.emergencyContacts.length === 0">
+                                        <p class="text-gray-400 text-xs italic col-span-2">No emergency contacts or authorized pickup people added yet. Click Edit Information to add.</p>
+                                    </template>
                                 </div>
                             </div>
 
@@ -729,7 +750,7 @@
                                 </template>
                             </div>
 
-                            <!-- OPTION 1: EDITABLE FIELDS FOR HOME ACCESS & LOCKBOX -->
+                            <!-- HOME ACCESS EDIT -->
                             <div class="border-t dark:border-gray-700 pt-4 mt-4">
                                 <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access Details</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
@@ -746,6 +767,23 @@
                                     <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Home Access & Parking Instructions</label>
                                     <textarea x-model="userData.homeEntryNotes" rows="2" placeholder="e.g. Park in driveway on right side. Side gate is unlocked." class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                                 </div>
+                            </div>
+
+                            <!-- NEW OPTION 3: EMERGENCY CONTACTS EDITABLE ROSTER -->
+                            <div class="border-t dark:border-gray-700 pt-4 mt-4 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider">👥 Emergency Contacts & Authorized Pickup Roster</h4>
+                                    <button @click="addEmergencyContact()" class="text-xs bg-brand-600 text-white px-2.5 py-1 rounded-md font-bold">+ Add Contact</button>
+                                </div>
+                                
+                                <template x-for="(contact, cIdx) in userData.emergencyContacts" :key="cIdx">
+                                    <div class="flex gap-2 items-center bg-gray-50 dark:bg-gray-700/40 p-2.5 rounded-xl">
+                                        <input type="text" x-model="contact.name" placeholder="Contact Name" class="flex-1 px-2.5 py-1.5 rounded border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                                        <input type="text" x-model="contact.relation" placeholder="Relation (e.g. Neighbor)" class="w-32 px-2.5 py-1.5 rounded border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                                        <input type="tel" x-model="contact.phone" placeholder="Phone Number" class="w-32 px-2.5 py-1.5 rounded border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none font-mono">
+                                        <button @click="removeEmergencyContact(cIdx)" class="text-red-500 font-bold px-2 text-xs">✕</button>
+                                    </div>
+                                </template>
                             </div>
 
                             <div class="border-t dark:border-gray-700 pt-4 mt-4">
@@ -845,7 +883,7 @@
         </div>
     </main>
 
-    <!-- OPTION 3: HOUSE CARE & MEDICATION CHECKLIST MODAL -->
+    <!-- HOUSE CARE & MEDICATION CHECKLIST MODAL -->
     <div x-show="showChecklistModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div @click.away="showChecklistModal = false" class="bg-white dark:bg-gray-800 max-w-2xl w-full p-6 md:p-8 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-start border-b dark:border-gray-700 pb-4">
@@ -1709,6 +1747,10 @@
                             }];
                         }
 
+                        if (!this.userData.emergencyContacts) {
+                            this.userData.emergencyContacts = [];
+                        }
+
                         if (this.userData.vetAuth) {
                             this.vetAuthForm = { ...this.userData.vetAuth };
                         }
@@ -1814,6 +1856,15 @@
                     }
                 },
 
+                addEmergencyContact() {
+                    if (!this.userData.emergencyContacts) this.userData.emergencyContacts = [];
+                    this.userData.emergencyContacts.push({ name: '', relation: '', phone: '' });
+                },
+
+                removeEmergencyContact(idx) {
+                    this.userData.emergencyContacts.splice(idx, 1);
+                },
+
                 uploadPetPhoto(event, index) {
                     const file = event.target.files[0];
                     if (!file) return;
@@ -1871,12 +1922,13 @@
                             lockboxCode: this.userData.lockboxCode || '',
                             alarmInstructions: this.userData.alarmInstructions || '',
                             homeEntryNotes: this.userData.homeEntryNotes || '',
+                            emergencyContacts: this.userData.emergencyContacts || [],
                             vetClinic: this.userData.vetClinic || '',
                             vetPhone: this.userData.vetPhone || ''
                         }, { merge: true });
 
                         this.isEditingPets = false;
-                        alert('Pet profiles, home entry codes & vet details saved successfully!');
+                        alert('Pet profiles, home access & emergency contacts saved successfully!');
                     } catch (err) {
                         console.error('Failed to save pet details:', err);
                         alert(`Error saving profile: ${err.message}`);
