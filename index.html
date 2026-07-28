@@ -226,10 +226,10 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto">
                     <div class="text-center sm:text-left">
                         <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
                     </div>
                     <button x-show="isAdmin" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
-                        📸 Manage Gallery Photos
+                        📸 Manage Gallery & Walkies Photos
                     </button>
                 </div>
 
@@ -339,53 +339,29 @@
                 </div>
             </section>
 
-            <!-- ACCORDION FAQ WITH CANCELLATION POLICY -->
+            <!-- FULLY DYNAMIC ACCORDION FAQ SECTION -->
             <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
-                <div class="text-center max-w-lg mx-auto">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto">
+                    <div class="text-center sm:text-left">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
+                    </div>
+                    <button x-show="isAdmin" @click="openAdminModal('faq')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">
+                        ❓ Manage FAQ Items
+                    </button>
                 </div>
 
                 <div class="space-y-3 max-w-2xl mx-auto text-xs">
-                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
-                        <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
-                            <span>📅 What is your cancellation policy?</span>
-                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 1 }">▼</span>
-                        </button>
-                        <div x-show="activeFaq === 1" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                            Clients must cancel at least <strong>3 days before</strong> the scheduled service to avoid a 50% sitting charge. Cancellations within 3 days will be billed at 50% of the scheduled reservation total.
+                    <template x-for="(faq, idx) in faqList" :key="idx">
+                        <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
+                            <button @click="activeFaq = activeFaq === idx ? null : idx" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                                <span x-text="faq.question"></span>
+                                <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === idx }">▼</span>
+                            </button>
+                            <div x-show="activeFaq === idx" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium" x-html="faq.answer">
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
-                        <button @click="activeFaq = activeFaq === 2 ? null : 2" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
-                            <span>🔑 How do you handle key hand-offs and home access?</span>
-                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 2 }">▼</span>
-                        </button>
-                        <div x-show="activeFaq === 2" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                            Keys can be placed in a secure lockbox on-site, provided during an initial meet-and-greet, or managed via keypad entry codes stored safely in your encrypted client profile.
-                        </div>
-                    </div>
-
-                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
-                        <button @click="activeFaq = activeFaq === 3 ? null : 3" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
-                            <span>🌧️ What happens during extreme weather for walks?</span>
-                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 3 }">▼</span>
-                        </button>
-                        <div x-show="activeFaq === 3" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                            In cases of heavy thunderstorms, heat advisories, or icy weather, extended outdoor walks are shortened for safety and converted into indoor playtime, potty breaks, and affection.
-                        </div>
-                    </div>
-
-                    <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
-                        <button @click="activeFaq = activeFaq === 4 ? null : 4" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
-                            <span>📱 Will I receive visit updates and photos?</span>
-                            <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === 4 }">▼</span>
-                        </button>
-                        <div x-show="activeFaq === 4" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                            Yes! Every sitting visit or walk comes with real-time photo updates, arrival/departure logs, and notes regarding feeding or bathroom habits.
-                        </div>
-                    </div>
+                    </template>
                 </div>
             </section>
 
@@ -957,7 +933,7 @@
         </div>
     </div>
 
-    <!-- ADMIN PANEL MODAL (POINTS, AREAS, REVIEWS & PHOTO GALLERY MANAGER) -->
+    <!-- ADMIN PANEL MODAL (POINTS, AREAS, REVIEWS, PHOTO GALLERY & FAQ MANAGER) -->
     <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-lg w-full p-6 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
@@ -970,7 +946,8 @@
                 <button @click="adminTab = 'points'" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Points</button>
                 <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Service Areas</button>
                 <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Reviews</button>
-                <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Manage Gallery</button>
+                <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Photos & Walkies</button>
+                <button @click="adminTab = 'faq'" :class="adminTab === 'faq' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Manage FAQ</button>
             </div>
 
             <!-- TAB 1: POINTS MANAGEMENT -->
@@ -1040,19 +1017,24 @@
                 </div>
             </div>
 
-            <!-- TAB 4: PHOTO VISIT GALLERY MANAGER -->
+            <!-- TAB 4: PHOTO VISIT GALLERY & WALKIES MANAGER -->
             <div x-show="adminTab === 'photos'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Add new image URLs to update the homepage photo visits gallery.</p>
+                <div class="bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 space-y-1">
+                    <p class="font-bold">🐕 Sync Walkies Page Photos</p>
+                    <p class="text-[11px] leading-relaxed">
+                        To add photos directly from your Walkies page: Open your Walkies company gallery, right-click any photo and select <strong>"Copy Image Address"</strong>, then paste it below!
+                    </p>
+                </div>
 
                 <div class="space-y-3 border-b dark:border-gray-700 pb-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Image URL</label>
-                        <input type="url" x-model="newPhoto.url" placeholder="https://example.com/pet-photo.jpg" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Image URL / Walkies Photo Link</label>
+                        <input type="url" x-model="newPhoto.url" placeholder="https://personalwalkies.com/... or paste image link" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Hover Caption / Title</label>
-                        <input type="text" x-model="newPhoto.caption" placeholder="e.g. Morning stroll in New Richmond" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                        <input type="text" x-model="newPhoto.caption" placeholder="e.g. Afternoon stroll with Buddy" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
                     </div>
 
                     <button @click="addGalleryPhoto()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Add Photo to Gallery</button>
@@ -1066,6 +1048,37 @@
                                 <span class="truncate font-semibold text-gray-800 dark:text-gray-200" x-text="p.caption || 'Photo'"></span>
                             </div>
                             <button @click="removeGalleryPhoto(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- TAB 5: FAQ MANAGEMENT PANEL -->
+            <div x-show="adminTab === 'faq'" class="space-y-4" x-cloak>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Add new custom questions and answers to your site FAQ section.</p>
+
+                <div class="space-y-3 border-b dark:border-gray-700 pb-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Question Title</label>
+                        <input type="text" x-model="newFaq.question" placeholder="e.g. 🐱 Do you feed outdoor cats?" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Detailed Answer / Policy</label>
+                        <textarea x-model="newFaq.answer" rows="3" placeholder="Enter answer details here..." class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none"></textarea>
+                    </div>
+
+                    <button @click="addNewFaq()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Publish FAQ Item</button>
+                </div>
+
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                    <template x-for="(f, idx) in faqList" :key="idx">
+                        <div class="flex justify-between items-start gap-2 bg-gray-50 dark:bg-gray-700/50 p-2.5 rounded-lg text-xs">
+                            <div class="space-y-0.5 overflow-hidden">
+                                <p class="font-bold text-gray-900 dark:text-white truncate" x-text="f.question"></p>
+                                <p class="text-gray-500 dark:text-gray-400 truncate text-[11px]" x-text="f.answer"></p>
+                            </div>
+                            <button @click="removeFaq(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
                         </div>
                     </template>
                 </div>
@@ -1138,6 +1151,13 @@
                     { url: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80", caption: "Treats & Cuddles" }
                 ],
                 newPhoto: { url: '', caption: '' },
+                faqList: [
+                    { question: "📅 What is your cancellation policy?", answer: "Clients must cancel at least <strong>3 days before</strong> the scheduled service to avoid a 50% sitting charge. Cancellations within 3 days will be billed at 50% of the scheduled reservation total." },
+                    { question: "🔑 How do you handle key hand-offs and home access?", answer: "Keys can be placed in a secure lockbox on-site, provided during an initial meet-and-greet, or managed via keypad entry codes stored safely in your encrypted client profile." },
+                    { question: "🌧️ What happens during extreme weather for walks?", answer: "In cases of heavy thunderstorms, heat advisories, or icy weather, extended outdoor walks are shortened for safety and converted into indoor playtime, potty breaks, and affection." },
+                    { question: "📱 Will I receive visit updates and photos?", answer: "Yes! Every sitting visit or walk comes with real-time photo updates, arrival/departure logs, and notes regarding feeding or bathroom habits." }
+                ],
+                newFaq: { question: '', answer: '' },
                 zipInput: '',
                 serviceResult: null,
                 authMode: 'login',
@@ -1203,20 +1223,17 @@
                 },
 
                 scheduleNextToast() {
-                    // Random interval between 12s and 28s
                     const randomDelay = Math.floor(Math.random() * (28000 - 12000 + 1)) + 12000;
                     
                     setTimeout(() => {
-                        // Pick random notification item
                         const randomIndex = Math.floor(Math.random() * this.toastEvents.length);
                         this.toastMessage = this.toastEvents[randomIndex];
                         this.showToast = true;
 
-                        // Display duration between 4s and 7s
                         const displayTime = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000;
                         setTimeout(() => {
                             this.showToast = false;
-                            this.scheduleNextToast(); // Schedule next toast recursively
+                            this.scheduleNextToast();
                         }, displayTime);
                     }, randomDelay);
                 },
@@ -1286,6 +1303,25 @@
                 removeGalleryPhoto(idx) {
                     if (confirm('Are you sure you want to remove this photo from the gallery?')) {
                         this.photoGrid.splice(idx, 1);
+                    }
+                },
+
+                addNewFaq() {
+                    if (this.newFaq.question.trim() && this.newFaq.answer.trim()) {
+                        this.faqList.push({
+                            question: this.newFaq.question.trim(),
+                            answer: this.newFaq.answer.trim()
+                        });
+                        this.newFaq = { question: '', answer: '' };
+                        alert('New FAQ question published successfully!');
+                    } else {
+                        alert('Please enter both a question title and answer.');
+                    }
+                },
+
+                removeFaq(idx) {
+                    if (confirm('Are you sure you want to remove this FAQ item?')) {
+                        this.faqList.splice(idx, 1);
                     }
                 },
 
