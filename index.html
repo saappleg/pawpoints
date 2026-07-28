@@ -8,7 +8,7 @@
         
     <!-- PWA Manifest, Icons & Theme Color -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#d97706">
     <link rel="icon" type="image/png" sizes="512x512" href="logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
     <link rel="shortcut icon" href="logo.png">
@@ -21,13 +21,20 @@
             theme: {
                 extend: {
                     colors: {
+                        patch: {
+                            canvas: '#fdfbf7',
+                            gold: '#d97706',
+                            goldHover: '#b45309',
+                            denim: '#1e293b',
+                            denimDark: '#0f172a',
+                        },
                         brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
+                            50: '#fffbe3',
+                            100: '#fef3c7',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
                         }
                     }
                 }
@@ -48,54 +55,57 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        .patch-ring {
+            box-shadow: 0 0 0 3px #f59e0b, 0 4px 14px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-patch-canvas dark:bg-patch-denimDark text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
     <!-- Navigation Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+    <header class="bg-white dark:bg-slate-900 shadow-sm border-b-2 border-amber-500/80 sticky top-0 z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <!-- Enlarged Logo Image -->
-                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-16 w-16 object-contain rounded-full bg-brand-50 p-0.5 shadow-sm transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
+                <!-- Enlarged Patch Logo -->
+                <img src="logo.png" alt="Pet Care by Steven Logo" class="h-16 w-16 object-contain rounded-full bg-amber-50 p-0.5 patch-ring transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
                 <div>
                     <!-- EXACT MATCH HEADING FOR GOOGLE VERIFICATION -->
-                    <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
+                    <h1 class="font-black text-xl leading-tight text-slate-900 dark:text-amber-400 tracking-tight">Pet Care by Steven</h1>
+                    <p class="text-xs font-bold text-amber-700 dark:text-amber-300">Professional Pet Sitting & Dog Walking</p>
                 </div>
             </div>
 
             <!-- Main Navigation Links -->
-            <nav class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl">
-                <button @click="currentView = 'home'" :class="currentView === 'home' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition">
+            <nav class="hidden md:flex items-center space-x-1 bg-amber-100/70 dark:bg-slate-800 p-1 rounded-xl border border-amber-200 dark:border-slate-700">
+                <button @click="currentView = 'home'" :class="currentView === 'home' ? 'bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-400 shadow-sm font-extrabold' : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white font-bold'" class="px-4 py-1.5 rounded-lg text-xs transition">
                     🏠 Home
                 </button>
-                <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-400 shadow-sm font-extrabold' : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white font-bold'" class="px-4 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
                     <span>🐾 Paw Points</span>
-                    <span x-show="user && isVerified" class="bg-brand-600 text-white text-[10px] px-1.5 py-0.2 rounded-full" x-text="userData.points || 0"></span>
+                    <span x-show="user && isVerified" class="bg-amber-600 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold" x-text="userData.points || 0"></span>
                 </button>
             </nav>
 
             <!-- Actions Bar -->
             <div class="flex items-center space-x-2">
-                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
                     <span>🐕</span>
                     <span class="hidden sm:inline">Book Service</span>
                 </a>
 
-                <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                <button @click="toggleDarkMode()" class="p-2 rounded-xl bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-slate-700 transition">
                     <span x-show="!darkMode">🌙</span>
                     <span x-show="darkMode" x-cloak>☀️</span>
                 </button>
 
                 <template x-if="user">
                     <div class="flex items-center space-x-2">
-                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 dark:hover:bg-slate-700 text-amber-900 dark:text-slate-200 px-3 py-2 rounded-xl font-bold transition flex items-center gap-1">
                             <span>👤 Profile</span>
                         </button>
-                        <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-slate-200 px-3 py-2 rounded-lg font-bold transition">
+                        <button @click="logout()" class="text-xs bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-3 py-2 rounded-xl font-bold transition">
                             Log Out
                         </button>
                     </div>
@@ -104,11 +114,11 @@
         </div>
 
         <!-- Mobile View Switcher Bar -->
-        <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
-            <button @click="currentView = 'home'" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
+        <div class="flex md:hidden border-t border-amber-200 dark:border-slate-800 bg-amber-50/90 dark:bg-slate-900 px-4 py-2 justify-around text-xs font-extrabold">
+            <button @click="currentView = 'home'" :class="currentView === 'home' ? 'text-amber-700 dark:text-amber-400 underline underline-offset-4' : 'text-slate-600 dark:text-slate-300'">
                 🏠 Home & Services
             </button>
-            <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
+            <button @click="currentView = 'loyalty'" :class="currentView === 'loyalty' ? 'text-amber-700 dark:text-amber-400 underline underline-offset-4' : 'text-slate-600 dark:text-slate-300'">
                 🐾 Paw Points Portal
             </button>
         </div>
@@ -118,60 +128,60 @@
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-6">
 
         <div x-show="loading" class="text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
+            <p class="text-sm font-semibold text-amber-800 dark:text-amber-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
         <!-- VIEW 1: BUSINESS HOME PAGE -->
         <div x-show="!loading && currentView === 'home'" class="space-y-10">
-            <!-- Hero Section -->
-            <section class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+            <!-- Hero Section styled with denim blue & gold from patch logo -->
+            <section class="bg-patch-denim dark:bg-slate-900 border-2 border-amber-500/80 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="space-y-4 max-w-xl text-center md:text-left z-10">
-                    <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm">Trusted Local Pet Sitting</span>
                     <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
-                    <p class="text-indigo-100 text-sm md:text-base leading-relaxed">
+                    <p class="text-slate-200 text-sm md:text-base leading-relaxed font-medium">
                         Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                     </p>
                     <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center">
+                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-6 py-3 rounded-xl text-sm shadow-md transition text-center">
                             📅 Schedule & Book Walkies
                         </a>
-                        <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-indigo-800/80 hover:bg-indigo-800 text-white border border-indigo-400/40 px-6 py-3 rounded-xl font-bold text-sm transition text-center">
+                        <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-slate-800/80 hover:bg-slate-800 text-amber-300 border border-amber-400/40 px-6 py-3 rounded-xl font-extrabold text-sm transition text-center">
                             🎁 View Client Rewards
                         </button>
                     </div>
                 </div>
-                <div class="text-8xl select-none hidden md:block">
-                    🐶🐱
+                <div class="relative shrink-0 hidden md:block">
+                    <img src="logo.png" alt="Pet Care Patch" class="w-48 h-48 object-contain rounded-full patch-ring bg-white p-1 transform rotate-2 shadow-2xl">
                 </div>
             </section>
 
             <!-- Services Grid -->
             <section class="space-y-4">
                 <div class="text-center max-w-lg mx-auto">
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional care designed to keep your pets happy, safe, and exercised.</p>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white">Our Pet Care Services</h3>
+                    <p class="text-xs text-amber-800 dark:text-amber-400 font-bold">Professional care designed to keep your pets happy, safe, and exercised.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                    <div class="bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🐕‍🦺</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dog Walking</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <h4 class="font-extrabold text-lg text-slate-900 dark:text-white">Dog Walking</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                             Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
                         </p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                    <div class="bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🏡</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <h4 class="font-extrabold text-lg text-slate-900 dark:text-white">In-Home Sitting Visits</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                             Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
                         </p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
+                    <div class="bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-3">
                         <div class="text-3xl">🎁</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Paw Points Loyalty</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <h4 class="font-extrabold text-lg text-slate-900 dark:text-white">Paw Points Loyalty</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                             Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
                         </p>
                     </div>
@@ -179,32 +189,32 @@
             </section>
 
             <!-- How It Works Banner -->
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 space-y-6">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">How Booking Works</h3>
+            <section class="bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 rounded-2xl p-6 md:p-8 space-y-6">
+                <h3 class="text-xl font-black text-slate-900 dark:text-white text-center">How Booking Works</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                     <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">1</div>
-                        <h5 class="font-bold text-sm text-gray-900 dark:text-white">Book on Walkies</h5>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Request your dates or regular walking schedule on our official profile.</p>
+                        <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-300 font-black rounded-full flex items-center justify-center mx-auto text-sm border border-amber-300">1</div>
+                        <h5 class="font-extrabold text-sm text-slate-900 dark:text-white">Book on Walkies</h5>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">Request your dates or regular walking schedule on our official profile.</p>
                     </div>
                     <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">2</div>
-                        <h5 class="font-bold text-sm text-gray-900 dark:text-white">Log Into Portal</h5>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Add pet details, upload feeding notes, and store emergency vet contacts.</p>
+                        <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-300 font-black rounded-full flex items-center justify-center mx-auto text-sm border border-amber-300">2</div>
+                        <h5 class="font-extrabold text-sm text-slate-900 dark:text-white">Log Into Portal</h5>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">Add pet details, upload feeding notes, and store emergency vet contacts.</p>
                     </div>
                     <div class="space-y-2">
-                        <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 font-extrabold rounded-full flex items-center justify-center mx-auto text-sm">3</div>
-                        <h5 class="font-bold text-sm text-gray-900 dark:text-white">Earn & Redeem</h5>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Collect points automatically after services to unlock $10 and $20 discounts!</p>
+                        <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-300 font-black rounded-full flex items-center justify-center mx-auto text-sm border border-amber-300">3</div>
+                        <h5 class="font-extrabold text-sm text-slate-900 dark:text-white">Earn & Redeem</h5>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">Collect points automatically after services to unlock $10 and $20 discounts!</p>
                     </div>
                 </div>
             </section>
 
             <!-- Quick Action CTA -->
-            <section class="text-center py-8 bg-indigo-50 dark:bg-gray-800 rounded-2xl border border-indigo-100 dark:border-gray-700 p-6 shadow-sm">
-                <h4 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h4>
-                <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium">Access your client account to view coupons, referral links, and pet notes.</p>
-                <button @click="currentView = 'loyalty'" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-sm">
+            <section class="text-center py-8 bg-amber-100/60 dark:bg-slate-900 rounded-2xl border-2 border-amber-300 dark:border-slate-800 p-6 shadow-sm">
+                <h4 class="font-black text-xl text-slate-900 dark:text-white">Ready to track your points or add a pet?</h4>
+                <p class="text-xs text-amber-900 dark:text-amber-300 mt-1.5 font-bold">Access your client account to view coupons, referral links, and pet notes.</p>
+                <button @click="currentView = 'loyalty'" class="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-black px-6 py-3 rounded-xl text-xs transition shadow-sm">
                     Open Paw Points Client Dashboard
                 </button>
             </section>
@@ -214,12 +224,12 @@
         <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
             
             <!-- AUTHENTICATION VIEW -->
-            <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
-                <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
+            <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-md border-2 border-amber-200 dark:border-slate-800 space-y-5">
+                <h2 class="text-xl font-black text-center text-slate-900 dark:text-white" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
                 <!-- GOOGLE SIGN IN BUTTON -->
                 <div x-show="authMode !== 'forgot'">
-                    <button @click="handleGoogleAuth()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border border-gray-300 dark:border-gray-600 text-sm shadow-sm transition">
+                    <button @click="handleGoogleAuth()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 font-extrabold rounded-xl border-2 border-slate-200 dark:border-slate-700 text-sm shadow-sm transition">
                         <svg class="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -230,8 +240,8 @@
                     </button>
 
                     <div class="relative my-4">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200 dark:border-gray-700"></div></div>
-                        <div class="relative flex justify-center text-xs"><span class="bg-white dark:bg-gray-800 px-2 text-gray-400">or use email</span></div>
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-amber-200 dark:border-slate-800"></div></div>
+                        <div class="relative flex justify-center text-xs"><span class="bg-white dark:bg-slate-900 px-2 text-slate-400 font-bold">or use email</span></div>
                     </div>
                 </div>
 
@@ -239,58 +249,58 @@
                 <form x-show="authMode !== 'forgot'" @submit.prevent="handleAuth()" class="space-y-4">
                     <template x-if="authMode === 'signup'">
                         <div>
-                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                            <input type="text" x-model="authForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                            <input type="text" x-model="authForm.name" required class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                         </div>
                     </template>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
 
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Password</label>
-                            <button type="button" x-show="authMode === 'login'" @click="authMode = 'forgot'; authError = ''; authSuccess = ''" class="text-[11px] text-brand-600 dark:text-brand-400 hover:underline">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Password</label>
+                            <button type="button" x-show="authMode === 'login'" @click="authMode = 'forgot'; authError = ''; authSuccess = ''" class="text-[11px] text-amber-700 dark:text-amber-400 font-bold hover:underline">
                                 Forgot password?
                             </button>
                         </div>
-                        <input type="password" x-model="authForm.password" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="password" x-model="authForm.password" required class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
 
                     <template x-if="authMode === 'signup'">
                         <div>
-                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Referral Code (Optional)</label>
-                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Referral Code (Optional)</label>
+                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none uppercase font-mono">
                         </div>
                     </template>
 
-                    <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
-                    <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
+                    <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-bold"></p>
+                    <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
-                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
+                    <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
                 <!-- FORGOT PASSWORD FORM -->
                 <form x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Enter your email address and we'll send you a link to reset your password.</p>
                     
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
 
-                    <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
-                    <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
+                    <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-bold"></p>
+                    <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
-                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm">
+                    <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl text-sm transition shadow-sm">
                         Send Reset Link
                     </button>
                 </form>
 
-                <div class="mt-4 text-center text-xs text-gray-500">
-                    <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''; authSuccess = ''" class="text-brand-600 dark:text-brand-400 hover:underline">
+                <div class="mt-4 text-center text-xs text-slate-500 font-bold">
+                    <button @click="authMode = authMode === 'login' ? 'signup' : 'login'; authError = ''; authSuccess = ''" class="text-amber-700 dark:text-amber-400 hover:underline">
                         <span x-text="authMode === 'login' ? 'Need an account? Sign up' : (authMode === 'signup' ? 'Already have an account? Log in' : '← Back to Log In')"></span>
                     </button>
                 </div>
@@ -298,19 +308,19 @@
 
             <!-- UNVERIFIED EMAIL BANNER (IF LOGGED IN BUT UNVERIFIED) -->
             <template x-if="user && !isVerified">
-                <div class="max-w-md mx-auto p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl shadow-sm text-amber-900 dark:text-amber-200 space-y-3">
+                <div class="max-w-md mx-auto p-4 bg-amber-100 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-800 rounded-2xl shadow-sm text-amber-900 dark:text-amber-200 space-y-3">
                     <div class="flex items-center gap-2">
                         <span class="text-xl">✉️</span>
-                        <h3 class="font-bold text-sm">Verify Your Email Address</h3>
+                        <h3 class="font-extrabold text-sm">Verify Your Email Address</h3>
                     </div>
-                    <p class="text-xs leading-relaxed">
+                    <p class="text-xs leading-relaxed font-medium">
                         We sent a verification email to <strong x-text="user.email"></strong>. Please click the link inside your email to unlock your account features.
                     </p>
-                    <div class="flex items-center justify-between pt-2 border-t border-amber-200/60 dark:border-amber-800/60">
+                    <div class="flex items-center justify-between pt-2 border-t border-amber-300/60 dark:border-amber-800/60">
                         <button @click="resendVerificationEmail()" class="text-xs font-bold underline hover:no-underline">
                             Resend Verification Email
                         </button>
-                        <button @click="checkVerificationStatus()" class="text-xs bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 font-bold px-3 py-1.5 rounded-lg">
+                        <button @click="checkVerificationStatus()" class="text-xs bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 font-extrabold px-3 py-1.5 rounded-lg">
                             I've Verified
                         </button>
                     </div>
@@ -322,80 +332,80 @@
                 <div class="space-y-6">
 
                     <!-- Admin Notice Banner -->
-                    <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
-                        <span class="text-xs text-amber-800 dark:text-amber-200 font-medium">👑 Admin Mode Active</span>
-                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
+                    <div x-show="isAdmin" class="bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
+                        <span class="text-xs text-amber-900 dark:text-amber-200 font-bold">👑 Admin Mode Active</span>
+                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white font-bold px-3 py-1 rounded-lg hover:bg-amber-700">Manage Client Points</button>
                     </div>
 
                     <!-- Points Banner -->
-                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
+                    <div class="bg-patch-denim dark:bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border-2 border-amber-500/80">
                         <div>
-                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
-                            <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
-                            <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                            <p class="text-xs uppercase tracking-wider text-amber-300 font-black">Your Balance</p>
+                            <h2 class="text-4xl font-black mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
+                            <p class="text-xs mt-2 text-slate-300 font-medium">Earn 10 points for every $1 spent on pet sitting & walks.</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                            <button @click="showProfileModal = true" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700">
+                            <button @click="showProfileModal = true" class="bg-slate-800 hover:bg-slate-700 text-slate-100 px-4 py-3 rounded-xl font-extrabold text-sm transition border border-slate-700">
                                 ⚙️ Account Profile
                             </button>
-                            <button @click="openDigitalPass()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                            <button @click="openDigitalPass()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-3 rounded-xl font-black text-sm shadow transition flex items-center justify-center space-x-2">
                                 <span>📱 Digital Pass</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- REFERRAL REWARDS CARD -->
-                    <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
+                    <div class="bg-gradient-to-r from-amber-600 to-amber-700 dark:from-slate-900 dark:to-slate-850 border-2 border-amber-400 dark:border-slate-800 text-white p-6 rounded-2xl shadow-md space-y-4">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 px-2.5 py-1 rounded-full">Earn Free Care</span>
-                                <h3 class="font-extrabold text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
-                                <p class="text-xs text-indigo-100 mt-1 max-w-lg leading-relaxed">
+                                <span class="text-[10px] uppercase font-black tracking-widest bg-amber-400/20 text-amber-100 border border-amber-300/40 px-2.5 py-1 rounded-full">Earn Free Care</span>
+                                <h3 class="font-black text-xl text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
+                                <p class="text-xs text-amber-50 mt-1 max-w-lg leading-relaxed font-medium">
                                     Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
                                 </p>
                             </div>
                             <div class="hidden sm:block text-right">
                                 <span class="text-2xl font-black text-white" x-text="userData.referralsCount || 0">0</span>
-                                <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Friends Referred</p>
+                                <p class="text-[10px] text-amber-200 uppercase font-black tracking-wider">Friends Referred</p>
                             </div>
                         </div>
 
-                        <div class="bg-indigo-800/80 dark:bg-indigo-900/90 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-indigo-500/40">
+                        <div class="bg-amber-900/40 p-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-amber-300/40 backdrop-blur-sm">
                             <div class="text-center sm:text-left w-full sm:w-auto">
-                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Your Personal Referral Link</p>
+                                <p class="text-[10px] uppercase tracking-wider text-amber-200 font-black">Your Personal Referral Link</p>
                                 <p class="font-mono text-xs font-bold text-white truncate max-w-xs sm:max-w-md mt-0.5 select-all" x-text="getReferralLink()"></p>
                             </div>
-                            <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-indigo-900 font-bold rounded-lg text-xs hover:bg-indigo-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
+                            <button @click="copyReferralLink()" class="w-full sm:w-auto px-4 py-2 bg-white text-amber-900 font-black rounded-lg text-xs hover:bg-amber-50 transition shadow-sm flex items-center justify-center gap-1 shrink-0">
                                 <span x-text="copiedRef ? '✓ Copied!' : '📋 Copy Link'"></span>
                             </button>
                         </div>
                     </div>
 
                     <!-- PET PROFILES & VET DETAILS SECTION -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border-2 border-amber-200 dark:border-slate-800 space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b-2 border-amber-100 dark:border-slate-800 pb-4">
                             <div>
-                                <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <h3 class="font-black text-lg text-slate-900 dark:text-white flex items-center gap-2">
                                     <span>🐶 Pet Profiles & Care Details</span>
                                 </h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, and emergency contacts for visits.</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Your pet photos, care routines, and emergency contacts for visits.</p>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <template x-if="!isEditingPets">
-                                    <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                    <button @click="isEditingPets = true" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-4 py-1.5 rounded-lg shadow-sm transition">
                                         ✏️ Edit Information
                                     </button>
                                 </template>
 
                                 <template x-if="isEditingPets">
                                     <div class="flex items-center space-x-2">
-                                        <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                        <button @click="cancelPetEdit()" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold px-3 py-1.5 rounded-lg transition">
                                             Cancel
                                         </button>
-                                        <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold px-3 py-1.5 rounded-lg transition">
+                                        <button @click="addPet()" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold px-3 py-1.5 rounded-lg transition">
                                             + Add Pet
                                         </button>
-                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
+                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-1.5 rounded-lg shadow-sm transition">
                                             💾 Save Profiles
                                         </button>
                                     </div>
@@ -407,9 +417,9 @@
                         <div x-show="!isEditingPets" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
-                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/60 dark:bg-gray-800/60 space-y-3">
+                                    <div class="border-2 border-amber-200 dark:border-slate-800 rounded-xl p-4 bg-amber-50/40 dark:bg-slate-800/60 space-y-3">
                                         <div class="flex items-center space-x-4">
-                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-white dark:bg-slate-700 flex-shrink-0 flex items-center justify-center border-2 border-amber-500 shadow-sm">
                                                 <template x-if="pet.photo">
                                                     <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
                                                 </template>
@@ -418,29 +428,33 @@
                                                 </template>
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
-                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
+                                                <h4 class="font-extrabold text-base text-slate-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
+                                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400">Registered Pet</span>
                                             </div>
                                         </div>
 
-                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
-                                            <p class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
-                                            <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
+                                        <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-amber-200 dark:border-slate-700">
+                                            <!-- HIGH CONTRAST CARE NOTES LABEL -->
+                                            <p class="text-xs font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider mb-1">Care Notes & Routine</p>
+                                            <p class="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed font-medium" x-text="pet.notes || 'No special care instructions added yet.'"></p>
                                         </div>
                                     </div>
                                 </template>
                             </div>
 
-                            <div class="border-t dark:border-gray-700 pt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700">
+                            <div class="border-t-2 border-amber-100 dark:border-slate-800 pt-4">
+                                <!-- HIGH CONTRAST VET HEADER -->
+                                <h4 class="text-xs font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/40 dark:bg-slate-800/60 p-4 rounded-xl border-2 border-amber-200 dark:border-slate-800">
                                     <div>
-                                        <span class="block text-xs font-medium text-gray-500 dark:text-slate-300">Clinic Name</span>
-                                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
+                                        <!-- HIGH CONTRAST LABELS -->
+                                        <span class="block text-xs font-bold text-slate-600 dark:text-slate-300">Clinic Name</span>
+                                        <p class="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5" x-text="userData.vetClinic || 'Not specified'"></p>
                                     </div>
                                     <div>
-                                        <span class="block text-xs font-medium text-gray-500 dark:text-slate-300">Vet Phone Number</span>
-                                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5" x-text="userData.vetPhone || 'Not specified'"></p>
+                                        <!-- HIGH CONTRAST LABELS -->
+                                        <span class="block text-xs font-bold text-slate-600 dark:text-slate-300">Vet Phone Number</span>
+                                        <p class="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5" x-text="userData.vetPhone || 'Not specified'"></p>
                                     </div>
                                 </div>
                             </div>
@@ -450,14 +464,14 @@
                         <div x-show="isEditingPets" class="space-y-6" x-cloak>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
-                                    <div class="border dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50 relative space-y-3">
-                                        <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
+                                    <div class="border-2 border-amber-200 dark:border-slate-800 rounded-xl p-4 bg-amber-50/40 dark:bg-slate-800/50 relative space-y-3">
+                                        <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-slate-400 hover:text-red-500 text-xs font-bold p-1">
                                             ✕ Remove
                                         </button>
 
                                         <div class="flex items-center space-x-4">
                                             <div class="relative group flex-shrink-0">
-                                                <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-brand-500">
+                                                <div class="w-16 h-16 rounded-full overflow-hidden bg-white dark:bg-slate-700 flex items-center justify-center border-2 border-amber-500">
                                                     <template x-if="pet.photo">
                                                         <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
                                                     </template>
@@ -472,29 +486,29 @@
                                             </div>
 
                                             <div class="flex-grow">
-                                                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Pet Name</label>
-                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Pet Name</label>
+                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-1.5 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                                             </div>
                                         </div>
 
                                         <div>
-                                            <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Special Care Notes / Breed / Routine</label>
-                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Special Care Notes / Breed / Routine</label>
+                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
                                         </div>
                                     </div>
                                 </template>
                             </div>
 
-                            <div class="border-t dark:border-gray-700 pt-4 mt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                            <div class="border-t-2 border-amber-100 dark:border-slate-800 pt-4 mt-4">
+                                <h4 class="text-xs font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Clinic Name</label>
-                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Clinic Name</label>
+                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Vet Phone Number</label>
-                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Vet Phone Number</label>
+                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                                     </div>
                                 </div>
                             </div>
@@ -502,22 +516,22 @@
                     </div>
 
                     <!-- Active Coupons Section -->
-                    <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="font-bold text-base mb-3 text-gray-900 dark:text-white">Your Redeemed Coupons</h3>
+                    <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border-2 border-amber-200 dark:border-slate-800">
+                        <h3 class="font-extrabold text-base mb-3 text-slate-900 dark:text-white">Your Redeemed Coupons</h3>
                         <div class="space-y-3">
                             <template x-for="(coupon, index) in userData.coupons" :key="index">
-                                <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
+                                <div class="border-2 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800'">
                                     <div>
-                                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
-                                        <p class="font-mono text-lg font-extrabold tracking-widest text-gray-900 dark:text-white" :class="{ 'line-through text-gray-400': coupon.used }" x-text="coupon.code"></p>
-                                        <p class="text-xs text-gray-400" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
+                                        <span class="text-xs font-extrabold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider" x-text="coupon.title"></span>
+                                        <p class="font-mono text-lg font-black tracking-widest text-slate-900 dark:text-white" :class="{ 'line-through text-slate-400': coupon.used }" x-text="coupon.code"></p>
+                                        <p class="text-xs text-slate-400 font-medium" x-text="'Redeemed: ' + new Date(coupon.createdAt).toLocaleDateString()"></p>
                                     </div>
                                     
                                     <button 
                                         @click="toggleCouponUsed(index)" 
                                         :disabled="coupon.used"
-                                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition self-end sm:self-center" 
-                                        :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
+                                        class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition self-end sm:self-center" 
+                                        :class="coupon.used ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
                                         <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
                                     </button>
                                 </div>
@@ -525,30 +539,30 @@
                         </div>
                     </div>
 
-                    <!-- REWARDS SECTION (HIGH-CONTRAST FIXES APPLIED HERE) -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="font-bold text-base mb-4 text-gray-900 dark:text-white">Available Rewards</h3>
+                    <!-- REWARDS SECTION (HIGH CONTRAST FIXES APPLIED) -->
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border-2 border-amber-200 dark:border-slate-800">
+                        <h3 class="font-extrabold text-base mb-4 text-slate-900 dark:text-white">Available Rewards</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center bg-gray-50/40 dark:bg-gray-800/80">
+                            <div class="border-2 border-amber-200 dark:border-slate-800 p-4 rounded-xl flex justify-between items-center bg-amber-50/30 dark:bg-slate-800/80">
                                 <div>
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">$10 Off Next Visit</h4>
-                                    <!-- HIGH CONTRAST POINTS TEXT FIX -->
-                                    <p class="text-xs font-bold text-brand-600 dark:text-brand-400">5,000 Points</p>
+                                    <h4 class="font-extrabold text-sm text-slate-900 dark:text-white">$10 Off Next Visit</h4>
+                                    <!-- HIGH CONTRAST POINTS REQUIRED -->
+                                    <p class="text-xs font-black text-amber-700 dark:text-amber-300">5,000 Points</p>
                                 </div>
-                                <!-- HIGH CONTRAST BUTTON TEXT FIX -->
-                                <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 5000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-slate-200 cursor-not-allowed'">
+                                <!-- HIGH CONTRAST BUTTON TEXT -->
+                                <button @click="redeemReward(5000, '$10 Off Next Visit')" :disabled="(userData.points || 0) < 5000" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition" :class="(userData.points || 0) >= 5000 ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 cursor-not-allowed'">
                                     Redeem
                                 </button>
                             </div>
 
-                            <div class="border dark:border-gray-700 p-4 rounded-xl flex justify-between items-center bg-gray-50/40 dark:bg-gray-800/80">
+                            <div class="border-2 border-amber-200 dark:border-slate-800 p-4 rounded-xl flex justify-between items-center bg-amber-50/30 dark:bg-slate-800/80">
                                 <div>
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">$20 Off Next Visit</h4>
-                                    <!-- HIGH CONTRAST POINTS TEXT FIX -->
-                                    <p class="text-xs font-bold text-brand-600 dark:text-brand-400">8,000 Points</p>
+                                    <h4 class="font-extrabold text-sm text-slate-900 dark:text-white">$20 Off Next Visit</h4>
+                                    <!-- HIGH CONTRAST POINTS REQUIRED -->
+                                    <p class="text-xs font-black text-amber-700 dark:text-amber-300">8,000 Points</p>
                                 </div>
-                                <!-- HIGH CONTRAST BUTTON TEXT FIX -->
-                                <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3 py-1.5 rounded-lg text-xs font-bold transition" :class="(userData.points || 0) >= 8000 ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-slate-200 cursor-not-allowed'">
+                                <!-- HIGH CONTRAST BUTTON TEXT -->
+                                <button @click="redeemReward(8000, '$20 Off Next Visit')" :disabled="(userData.points || 0) < 8000" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition" :class="(userData.points || 0) >= 8000 ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 cursor-not-allowed'">
                                     Redeem
                                 </button>
                             </div>
@@ -573,14 +587,14 @@
             x-transition:leave-end="opacity-0 scale-95 transform translate-y-2"
             x-cloak
             @click.away="showChatWidget = false"
-            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl w-72 p-4 space-y-3">
+            class="bg-white dark:bg-slate-900 border-2 border-amber-300 dark:border-slate-800 rounded-2xl shadow-2xl w-72 p-4 space-y-3">
             
-            <div class="flex items-center justify-between border-b dark:border-gray-700 pb-2">
+            <div class="flex items-center justify-between border-b dark:border-slate-800 pb-2">
                 <div>
-                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">Chat with Steven 💬</h4>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400">Choose your preferred channel</p>
+                    <h4 class="font-black text-sm text-slate-900 dark:text-white">Chat with Steven 💬</h4>
+                    <p class="text-[10px] font-bold text-amber-700 dark:text-amber-400">Choose your preferred channel</p>
                 </div>
-                <button @click="showChatWidget = false" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
+                <button @click="showChatWidget = false" class="text-slate-400 hover:text-slate-600 text-xs font-bold">✕</button>
             </div>
 
             <div class="space-y-2">
@@ -589,7 +603,7 @@
                     href="https://m.me/petcarebysteven" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800 transition text-xs font-bold">
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800 transition text-xs font-extrabold">
                     <svg class="w-5 h-5 fill-current text-blue-600" viewBox="0 0 24 24">
                         <path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.91 1.45 5.515 3.717 7.185V22l3.391-1.862c.928.257 1.91.396 2.892.396 5.523 0 10-4.145 10-9.258C22 6.145 17.523 2 12 2zm1.066 12.434l-2.562-2.733-5.003 2.733 5.503-5.84 2.625 2.733 4.94-2.733-5.503 5.84z"/>
                     </svg>
@@ -601,7 +615,7 @@
                     href="https://wa.me/15133025418?text=Hi%20Steven,%20I%20have%20a%20question%20about%20pet%20sitting!" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-extrabold">
                     <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                     </svg>
@@ -611,7 +625,7 @@
                 <!-- Email Message Button -->
                 <a 
                     href="mailto:support@petcarebysteven.me?subject=Pet%20Sitting%20Inquiry" 
-                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition text-xs font-bold">
+                    class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-amber-50 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-amber-900 dark:text-slate-200 border border-amber-200 dark:border-slate-700 transition text-xs font-extrabold">
                     <span class="text-base">✉️</span>
                     <span>Send Email Message</span>
                 </a>
@@ -621,33 +635,33 @@
         <!-- Floating Chat Toggle Button -->
         <button 
             @click="showChatWidget = !showChatWidget" 
-            class="bg-brand-600 hover:bg-brand-700 text-white p-3.5 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2 focus:outline-none">
+            class="bg-amber-600 hover:bg-amber-700 text-white p-3.5 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2 focus:outline-none patch-ring">
             <svg x-show="!showChatWidget" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
             </svg>
             <span x-show="showChatWidget" class="text-lg font-bold" x-cloak>✕</span>
-            <span class="text-xs font-bold hidden sm:inline" x-show="!showChatWidget">Chat with us</span>
+            <span class="text-xs font-extrabold hidden sm:inline" x-show="!showChatWidget">Chat with us</span>
         </button>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500">
+    <footer class="bg-white dark:bg-slate-900 border-t-2 border-amber-200 dark:border-slate-800 mt-12 py-8 text-xs text-slate-500">
         <div class="max-w-5xl mx-auto px-4 space-y-4">
             
             <!-- GOOGLE OAUTH COMPLIANCE -->
-            <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
-                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+            <div class="border-b dark:border-slate-800 pb-4 text-left max-w-2xl">
+                <p class="font-extrabold text-slate-700 dark:text-slate-300 mb-1">About Pet Care by Steven</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                     Pet Care by Steven is an official client management portal designed to help clients schedule dog walking and pet sitting services, manage care routines, view digital client passes, and track Paw Points loyalty rewards.
                 </p>
             </div>
 
             <!-- Standard Navigation & Copyright -->
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2 font-medium">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2 font-semibold">
                 <p>© Pet Care by Steven. All rights reserved.</p>
                 <div class="flex space-x-4">
-                    <button @click="currentView = 'home'" class="hover:underline text-brand-600 dark:text-brand-400">Home</button>
-                    <button @click="currentView = 'loyalty'" class="hover:underline text-brand-600 dark:text-brand-400">Paw Points</button>
+                    <button @click="currentView = 'home'" class="hover:underline text-amber-700 dark:text-amber-400">Home</button>
+                    <button @click="currentView = 'loyalty'" class="hover:underline text-amber-700 dark:text-amber-400">Paw Points</button>
                     <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
                     <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
                 </div>
@@ -657,40 +671,40 @@
 
     <!-- Account Profile Modal -->
     <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
-            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
-                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h3>
-                <button @click="showProfileModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold">✕</button>
+        <div @click.away="showProfileModal = false" class="bg-white dark:bg-slate-900 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5 border-2 border-amber-300 dark:border-slate-800">
+            <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                <h3 class="font-black text-lg text-slate-900 dark:text-white">Account & Contact Profile</h3>
+                <button @click="showProfileModal = false" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
             </div>
 
             <form @submit.prevent="updateUserProfile()" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Full Name</label>
-                    <input type="text" x-model="profileForm.name" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Full Name</label>
+                    <input type="text" x-model="profileForm.name" required class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Account Email Address</label>
-                    <input type="email" x-model="profileForm.email" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
-                    <p class="text-[10px] text-gray-400 mt-1">Changing your email will update your login credentials.</p>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Account Email Address</label>
+                    <input type="email" x-model="profileForm.email" required class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none">
+                    <p class="text-[10px] text-slate-400 mt-1">Changing your email will update your login credentials.</p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Phone Number</label>
-                    <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Phone Number</label>
+                    <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Home Address / Service Notes</label>
-                    <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none"></textarea>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Home Address / Service Notes</label>
+                    <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none"></textarea>
                 </div>
 
                 <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
                 <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
                 <div class="flex space-x-2 pt-2">
-                    <button type="button" @click="showProfileModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-lg">Cancel</button>
-                    <button type="submit" class="flex-1 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 transition">Save Profile</button>
+                    <button type="button" @click="showProfileModal = false" class="flex-1 py-2 bg-slate-200 dark:bg-slate-800 text-sm font-bold text-slate-800 dark:text-slate-200 rounded-lg">Cancel</button>
+                    <button type="submit" class="flex-1 py-2 bg-amber-600 text-white text-sm font-extrabold rounded-lg hover:bg-amber-700 transition">Save Profile</button>
                 </div>
             </form>
         </div>
@@ -698,17 +712,17 @@
 
     <!-- Digital Pass QR Modal -->
     <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div @click.away="showQRModal = false" class="bg-white dark:bg-gray-800 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4">
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Your Paw Pass</h3>
-            <p class="text-xs text-gray-500 dark:text-slate-300 font-medium">Scan this code at checkout or visits to quickly access your account.</p>
+        <div @click.away="showQRModal = false" class="bg-white dark:bg-slate-900 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4 border-2 border-amber-300 dark:border-slate-800">
+            <h3 class="font-black text-lg text-slate-900 dark:text-white">Your Paw Pass</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-300 font-medium">Scan this code at checkout or visits to quickly access your account.</p>
             
-            <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200 min-h-[192px] items-center">
+            <div class="flex justify-center p-4 bg-white rounded-xl border-2 border-amber-200 min-h-[192px] items-center">
                 <div id="qrcode"></div>
             </div>
 
-            <p class="text-xs font-mono text-gray-400" x-text="user?.uid"></p>
+            <p class="text-xs font-mono text-slate-400" x-text="user?.uid"></p>
 
-            <button @click="showQRModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-lg">
+            <button @click="showQRModal = false" class="w-full py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-sm font-bold text-slate-800 dark:text-slate-200 rounded-lg">
                 Close
             </button>
         </div>
@@ -716,12 +730,12 @@
 
     <!-- Admin Panel Modal -->
     <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-4">
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Admin: Adjust Client Points</h3>
+        <div @click.away="showAdminModal = false" class="bg-white dark:bg-slate-900 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-4 border-2 border-amber-400 dark:border-slate-800">
+            <h3 class="font-black text-lg text-slate-900 dark:text-white">Admin: Adjust Client Points</h3>
             
             <div>
-                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Select Client</label>
-                <select x-model="adminForm.targetUid" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Select Client</label>
+                <select x-model="adminForm.targetUid" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none">
                     <option value="">-- Choose a Client --</option>
                     <template x-for="c in clientList" :key="c.id">
                         <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Current: ${c.points || 0} Pts`"></option>
@@ -730,13 +744,13 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Points to Add / Subtract</label>
-                <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm outline-none">
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Points to Add / Subtract</label>
+                <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm outline-none">
             </div>
 
             <div class="flex space-x-2 pt-2">
-                <button @click="showAdminModal = false" class="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-lg">Cancel</button>
-                <button @click="updateClientPoints()" class="flex-1 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700">Update Points</button>
+                <button @click="showAdminModal = false" class="flex-1 py-2 bg-slate-200 dark:bg-slate-800 text-sm font-bold text-slate-800 dark:text-slate-200 rounded-lg">Cancel</button>
+                <button @click="updateClientPoints()" class="flex-1 py-2 bg-amber-600 text-white text-sm font-extrabold rounded-lg hover:bg-amber-700">Update Points</button>
             </div>
         </div>
     </div>
