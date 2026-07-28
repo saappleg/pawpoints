@@ -1,21 +1,16 @@
 {
-  "name": "Paw Points Loyalty",
-  "short_name": "Paw Points 🐾",
-  "description": "Pet Sitting Loyalty Program and Pet Care Portal",
-  "start_url": "./index.html",
+  "name": "Pet Care by Steven",
+  "short_name": "PetCare",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#172554",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
   "icons": [
     {
       "src": "logo.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
