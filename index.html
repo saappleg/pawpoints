@@ -173,7 +173,7 @@
                 </div>
             </section>
 
-            <!-- ITEM 1: FREE MEET & GREET REQUEST BANNER -->
+            <!-- FREE MEET & GREET REQUEST BANNER -->
             <section class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="space-y-1 text-center md:text-left">
                     <div class="flex items-center justify-center md:justify-start gap-2">
@@ -221,7 +221,29 @@
                 </div>
             </section>
 
-            <!-- ITEM 3: INTERACTIVE PAW POINTS REWARDS ESTIMATOR -->
+            <!-- DYNAMIC DAILY VISIT HIGHLIGHTS PHOTO GALLERY -->
+            <section class="space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto">
+                    <div class="text-center sm:text-left">
+                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits.</p>
+                    </div>
+                    <button x-show="isAdmin" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
+                        📸 Manage Gallery Photos
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <template x-for="(photo, idx) in photoGrid" :key="idx">
+                        <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
+                            <img :src="photo.url" :alt="photo.caption" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- INTERACTIVE PAW POINTS REWARDS ESTIMATOR -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
@@ -246,33 +268,6 @@
                             <span class="block text-[10px] font-bold text-gray-400 uppercase">Yearly Discounts</span>
                             <span class="text-lg font-black text-emerald-600 dark:text-emerald-400" x-text="`$${Math.floor((calcSpend * 120) / 500) * 10}`"></span>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ITEM 4: DAILY VISIT HIGHLIGHTS PHOTO GALLERY -->
-            <section class="space-y-4">
-                <div class="text-center max-w-lg mx-auto">
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits.</p>
-                </div>
-
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80" alt="Happy dog walking" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-end p-2 text-white text-[10px] font-bold">Neighborhood Walks</div>
-                    </div>
-                    <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                        <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80" alt="Cat drop-in sitting" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-end p-2 text-white text-[10px] font-bold">Cat Sitting Visits</div>
-                    </div>
-                    <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                        <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&w=400&q=80" alt="Puppy playtime" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-end p-2 text-white text-[10px] font-bold">In-Home Playtime</div>
-                    </div>
-                    <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                        <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80" alt="Relaxed dog after visit" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-end p-2 text-white text-[10px] font-bold">Treats & Cuddles</div>
                     </div>
                 </div>
             </section>
@@ -352,7 +347,6 @@
                 </div>
 
                 <div class="space-y-3 max-w-2xl mx-auto text-xs">
-                    <!-- FAQ Item 1: Cancellation Policy -->
                     <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
                         <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
                             <span>📅 What is your cancellation policy?</span>
@@ -363,7 +357,6 @@
                         </div>
                     </div>
 
-                    <!-- FAQ Item 2: Key Access -->
                     <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
                         <button @click="activeFaq = activeFaq === 2 ? null : 2" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
                             <span>🔑 How do you handle key hand-offs and home access?</span>
@@ -374,7 +367,6 @@
                         </div>
                     </div>
 
-                    <!-- FAQ Item 3: Weather Policy -->
                     <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
                         <button @click="activeFaq = activeFaq === 3 ? null : 3" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
                             <span>🌧️ What happens during extreme weather for walks?</span>
@@ -385,7 +377,6 @@
                         </div>
                     </div>
 
-                    <!-- FAQ Item 4: Visit Updates -->
                     <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
                         <button @click="activeFaq = activeFaq === 4 ? null : 4" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
                             <span>📱 Will I receive visit updates and photos?</span>
@@ -522,7 +513,7 @@
                     <!-- Admin Notice Banner -->
                     <div x-show="isAdmin" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
                         <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Mode Active</span>
-                        <button @click="openAdminModal()" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
+                        <button @click="openAdminModal('points')" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
                     </div>
 
                     <!-- Points Banner -->
@@ -601,7 +592,7 @@
                             </div>
                         </div>
 
-                        <!-- ITEM 5: EMERGENCY VET AUTHORIZATION RELEASE CARD -->
+                        <!-- EMERGENCY VET AUTHORIZATION RELEASE CARD -->
                         <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                             <div class="space-y-0.5 text-center sm:text-left">
                                 <span class="font-bold text-amber-950 dark:text-amber-200">🏥 Emergency Veterinary Care Authorization</span>
@@ -791,7 +782,7 @@
         </div>
     </main>
 
-    <!-- ITEM 2: FLOATING RECENT ACTIVITY / SOCIAL PROOF TOAST -->
+    <!-- FLOATING RANDOMIZED SOCIAL PROOF TOAST -->
     <div 
         x-show="showToast" 
         x-transition:enter="transition ease-out duration-300"
@@ -804,7 +795,7 @@
         class="fixed bottom-6 left-6 z-50 bg-slate-900 text-white border border-slate-700 p-3.5 rounded-2xl shadow-xl max-w-xs flex items-center gap-3">
         <div class="text-xl shrink-0">🐾</div>
         <div class="text-xs">
-            <p class="font-bold text-amber-400">Recent Booking</p>
+            <p class="font-bold text-amber-400">Recent Activity</p>
             <p class="text-slate-300 text-[11px]" x-text="toastMessage"></p>
         </div>
         <button @click="showToast = false" class="text-slate-400 hover:text-white text-xs font-bold ml-auto">✕</button>
@@ -966,7 +957,7 @@
         </div>
     </div>
 
-    <!-- COMPREHENSIVE ADMIN PANEL MODAL -->
+    <!-- ADMIN PANEL MODAL (POINTS, AREAS, REVIEWS & PHOTO GALLERY MANAGER) -->
     <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-lg w-full p-6 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
@@ -975,10 +966,11 @@
             </div>
 
             <!-- Tab Switcher -->
-            <div class="flex gap-2 border-b dark:border-gray-700 pb-3 text-xs font-bold">
-                <button @click="adminTab = 'points'" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition">Points Management</button>
-                <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition">Service Areas</button>
-                <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition">Manage Reviews</button>
+            <div class="flex gap-1.5 border-b dark:border-gray-700 pb-3 text-xs font-bold overflow-x-auto">
+                <button @click="adminTab = 'points'" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Points</button>
+                <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Service Areas</button>
+                <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Reviews</button>
+                <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Manage Gallery</button>
             </div>
 
             <!-- TAB 1: POINTS MANAGEMENT -->
@@ -1048,6 +1040,37 @@
                 </div>
             </div>
 
+            <!-- TAB 4: PHOTO VISIT GALLERY MANAGER -->
+            <div x-show="adminTab === 'photos'" class="space-y-4" x-cloak>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Add new image URLs to update the homepage photo visits gallery.</p>
+
+                <div class="space-y-3 border-b dark:border-gray-700 pb-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Image URL</label>
+                        <input type="url" x-model="newPhoto.url" placeholder="https://example.com/pet-photo.jpg" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Hover Caption / Title</label>
+                        <input type="text" x-model="newPhoto.caption" placeholder="e.g. Morning stroll in New Richmond" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+
+                    <button @click="addGalleryPhoto()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Add Photo to Gallery</button>
+                </div>
+
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                    <template x-for="(p, idx) in photoGrid" :key="idx">
+                        <div class="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg text-xs">
+                            <div class="flex items-center gap-2 overflow-hidden">
+                                <img :src="p.url" class="w-8 h-8 object-cover rounded-md shrink-0">
+                                <span class="truncate font-semibold text-gray-800 dark:text-gray-200" x-text="p.caption || 'Photo'"></span>
+                            </div>
+                            <button @click="removeGalleryPhoto(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
             <button @click="showAdminModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-lg">Close Admin Panel</button>
         </div>
     </div>
@@ -1097,13 +1120,24 @@
                 calcSpend: 150,
                 showToast: false,
                 toastMessage: '',
-                toastIndex: 0,
+                toastTimer: null,
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
                     "A client in Batavia registered a new pet profile!",
-                    "A client in Anderson scheduled a daily walk sequence!"
+                    "A client in Anderson scheduled a daily walk sequence!",
+                    "A client in Cincinnati booked weekend drop-in visits!",
+                    "A client in Pierce Township earned 1,000 Paw Points from a referral!",
+                    "A new client requested a free 15-minute Meet & Greet!",
+                    "A client in Williamsburg reserved a 5-night sitting package!"
                 ],
+                photoGrid: [
+                    { url: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80", caption: "Neighborhood Walks" },
+                    { url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80", caption: "Cat Sitting Visits" },
+                    { url: "https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&w=400&q=80", caption: "In-Home Playtime" },
+                    { url: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80", caption: "Treats & Cuddles" }
+                ],
+                newPhoto: { url: '', caption: '' },
                 zipInput: '',
                 serviceResult: null,
                 authMode: 'login',
@@ -1129,13 +1163,8 @@
                 newReview: { stars: 5, comment: '', author: '' },
 
                 init() {
-                    // Trigger Periodic Social Proof Toast Popup
-                    setInterval(() => {
-                        this.toastMessage = this.toastEvents[this.toastIndex % this.toastEvents.length];
-                        this.toastIndex++;
-                        this.showToast = true;
-                        setTimeout(() => { this.showToast = false; }, 5000);
-                    }, 14000);
+                    // Start Dynamic & Randomized Toast Engine
+                    this.scheduleNextToast();
 
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
@@ -1155,7 +1184,7 @@
                                     this.currentView = 'loyalty';
                                     await this.fetchClientsList();
                                     this.adminForm.targetUid = targetClientUid;
-                                    this.showAdminModal = true;
+                                    this.openAdminModal('points');
                                 }
                             }
                         } else {
@@ -1171,6 +1200,25 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                scheduleNextToast() {
+                    // Random interval between 12s and 28s
+                    const randomDelay = Math.floor(Math.random() * (28000 - 12000 + 1)) + 12000;
+                    
+                    setTimeout(() => {
+                        // Pick random notification item
+                        const randomIndex = Math.floor(Math.random() * this.toastEvents.length);
+                        this.toastMessage = this.toastEvents[randomIndex];
+                        this.showToast = true;
+
+                        // Display duration between 4s and 7s
+                        const displayTime = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000;
+                        setTimeout(() => {
+                            this.showToast = false;
+                            this.scheduleNextToast(); // Schedule next toast recursively
+                        }, displayTime);
+                    }, randomDelay);
                 },
 
                 toggleDarkMode() {
@@ -1219,6 +1267,25 @@
                         alert('New review published to site!');
                     } else {
                         alert('Please enter both an author name and review comment.');
+                    }
+                },
+
+                addGalleryPhoto() {
+                    if (this.newPhoto.url.trim()) {
+                        this.photoGrid.unshift({
+                            url: this.newPhoto.url.trim(),
+                            caption: this.newPhoto.caption.trim() || 'Visit Photo'
+                        });
+                        this.newPhoto = { url: '', caption: '' };
+                        alert('Photo added to daily care gallery!');
+                    } else {
+                        alert('Please enter a valid image URL.');
+                    }
+                },
+
+                removeGalleryPhoto(idx) {
+                    if (confirm('Are you sure you want to remove this photo from the gallery?')) {
+                        this.photoGrid.splice(idx, 1);
                     }
                 },
 
@@ -1551,7 +1618,8 @@
                     this.isEditingPets = false;
                 },
 
-                async openAdminModal() {
+                async openAdminModal(tab = 'points') {
+                    this.adminTab = tab;
                     this.showAdminModal = true;
                     await this.fetchClientsList();
                 },
