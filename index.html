@@ -578,14 +578,18 @@
                             </div>
                         </div>
 
-                        <!-- EMERGENCY VET AUTHORIZATION RELEASE CARD -->
+                        <!-- EMERGENCY VET AUTHORIZATION RELEASE CARD (UPDATED) -->
                         <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                             <div class="space-y-0.5 text-center sm:text-left">
-                                <span class="font-bold text-amber-950 dark:text-amber-200">🏥 Emergency Veterinary Care Authorization</span>
-                                <p class="text-[11px] text-amber-800 dark:text-amber-300">Grant permission for medical care up to a designated cap if an emergency arises while away.</p>
+                                <span class="font-bold text-amber-950 dark:text-amber-200 flex items-center gap-1.5 justify-center sm:justify-start">
+                                    🏥 Emergency Veterinary Care Authorization
+                                    <span x-show="userData.vetAuth?.isSigned" class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-0.5 rounded uppercase tracking-wider border border-emerald-200">Active</span>
+                                    <span x-show="!userData.vetAuth?.isSigned" class="bg-red-100 text-red-800 text-[9px] px-2 py-0.5 rounded uppercase tracking-wider border border-red-200">Action Needed</span>
+                                </span>
+                                <p class="text-[11px] text-amber-800 dark:text-amber-300">Formally grant permission and set a financial limit for emergency medical care if an issue arises while you are away.</p>
                             </div>
-                            <button @click="alert('Emergency Medical Care Authorization is active! All vet clinic details saved in your profile will be used by Steven if needed.')" class="shrink-0 bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
-                                View Authorization
+                            <button @click="showVetAuthModal = true" class="shrink-0 bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg transition shadow-sm">
+                                <span x-text="userData.vetAuth?.isSigned ? 'View & Edit Authorization' : 'Review & Sign'"></span>
                             </button>
                         </div>
 
@@ -767,6 +771,87 @@
             </template>
         </div>
     </main>
+
+    <!-- NEW VET AUTHORIZATION MODAL -->
+    <div x-show="showVetAuthModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div @click.away="showVetAuthModal = false" class="bg-white dark:bg-gray-800 max-w-2xl w-full p-6 md:p-8 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
+            
+            <div class="flex justify-between items-start border-b dark:border-gray-700 pb-4">
+                <div>
+                    <h3 class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                        🏥 Medical Release & Authorization
+                    </h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Please review and complete the emergency care permissions below.</p>
+                </div>
+                <button @click="showVetAuthModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">✕ Close</button>
+            </div>
+
+            <!-- Official Agreement Text -->
+            <div class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-xl text-xs leading-relaxed text-gray-700 dark:text-gray-300 space-y-3 font-medium">
+                <p>
+                    In the event of a medical emergency, Pet Care by Steven will make every reasonable attempt to contact you (the owner) or your listed emergency contacts immediately.
+                </p>
+                <p>
+                    If you cannot be reached, you authorize Steven Applegate (Pet Care by Steven) to transport your pet(s) to the veterinary clinic listed in your profile, or to the nearest available emergency veterinary hospital if the primary clinic is closed or unavailable.
+                </p>
+                <p>
+                    You agree to assume full financial responsibility for any veterinary bills incurred up to the financial cap specified below, and you release Pet Care by Steven from any liabilities related to transportation, treatment, or veterinary decisions made in the best interest of the pet during an emergency.
+                </p>
+            </div>
+
+            <!-- Vet Auth Form -->
+            <form @submit.prevent="saveVetAuth()" class="space-y-5">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- Financial Cap Limit -->
+                    <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 p-4 rounded-xl shadow-sm space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-900 dark:text-white">Financial Authorization Cap</label>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400">Maximum amount approved before contacting you.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-black text-brand-600 dark:text-brand-400">$</span>
+                            <input type="number" x-model.number="vetAuthForm.capAmount" min="50" step="50" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <input type="range" x-model.number="vetAuthForm.capAmount" min="100" max="2500" step="50" class="w-full accent-brand-600">
+                    </div>
+
+                    <!-- Pet Insurance Details -->
+                    <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 p-4 rounded-xl shadow-sm space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-900 dark:text-white">Pet Insurance Info (Optional)</label>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400">Provider name and policy number.</p>
+                        </div>
+                        <textarea x-model="vetAuthForm.insuranceInfo" rows="2" placeholder="e.g. Trupanion, Policy #12345678" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Digital Signature Block -->
+                <div class="border-t dark:border-gray-700 pt-5">
+                    <label class="block text-xs font-bold text-gray-900 dark:text-white mb-1">Digital Signature</label>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3">By typing your full legal name below, you agree to the terms stated above.</p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" x-model="vetAuthForm.signature" placeholder="Type your full name" required class="flex-1 px-4 py-3 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-sm font-mono font-bold outline-none focus:ring-2 focus:ring-brand-500 bg-gray-50 dark:bg-gray-900">
+                        
+                        <div class="w-full sm:w-auto px-4 py-3 rounded-xl border dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-mono" x-text="vetAuthForm.dateSigned || new Date().toLocaleDateString()"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button type="button" onclick="window.print()" class="py-2.5 px-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-slate-200 text-sm font-bold rounded-xl hover:bg-gray-300 transition flex items-center justify-center gap-2">
+                        🖨️ Print Record
+                    </button>
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition shadow-md">
+                        Sign & Save Authorization
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- FLOATING RANDOMIZED SOCIAL PROOF TOAST -->
     <div 
@@ -1137,7 +1222,7 @@
                 userData: {},
                 isVerified: false,
                 isAdmin: false,
-                adminModeActive: true, // Toggle switch state for viewing as client
+                adminModeActive: true,
                 isEditingPets: false,
                 copiedRef: false,
                 showChatWidget: false,
@@ -1145,6 +1230,8 @@
                 showToast: false,
                 toastMessage: '',
                 toastTimer: null,
+                showVetAuthModal: false,
+                vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
@@ -1530,6 +1617,11 @@
                                 photo: ''
                             }];
                         }
+
+                        if (this.userData.vetAuth) {
+                            this.vetAuthForm = { ...this.userData.vetAuth };
+                        }
+                        
                         this.isAdmin = !!this.userData.isAdmin;
                     }
                 },
@@ -1564,6 +1656,26 @@
                         } else {
                             this.profileError = err.message;
                         }
+                    }
+                },
+
+                async saveVetAuth() {
+                    if (!this.user) return;
+                    try {
+                        if (!this.vetAuthForm.dateSigned) {
+                            this.vetAuthForm.dateSigned = new Date().toLocaleDateString();
+                        }
+                        this.vetAuthForm.isSigned = true;
+
+                        await db.collection('clients').doc(this.user.uid).set({
+                            vetAuth: this.vetAuthForm
+                        }, { merge: true });
+
+                        this.userData.vetAuth = this.vetAuthForm;
+                        this.showVetAuthModal = false;
+                        alert('Medical Authorization saved successfully!');
+                    } catch (err) {
+                        alert('Error saving authorization: ' + err.message);
                     }
                 },
 
