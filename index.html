@@ -1542,6 +1542,12 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Modern persistence syntax or graceful fallback
+        if (db.settings) {
+            try {
+                db.settings({ cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
+            } catch(e) {}
+        }
         db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
 
         auth.useDeviceLanguage();
