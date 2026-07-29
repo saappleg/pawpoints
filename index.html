@@ -1541,49 +1541,52 @@
                 },
 
                 async loadServiceAreasFromFirestore() {
+                    const fallbackAreas = [
+                        { city: 'Amelia', zips: ['45102', '45101'] },
+                        { city: 'Batavia', zips: ['45103'] },
+                        { city: 'Bethel', zips: ['45106'] },
+                        { city: 'Blanchester', zips: ['45107'] },
+                        { city: 'Camp Dennison', zips: ['45111'] },
+                        { city: 'Chilo', zips: ['45112'] },
+                        { city: 'Clarksville', zips: ['45113'] },
+                        { city: 'Erlanger', zips: ['41018', '41017'] },
+                        { city: 'Felicity', zips: ['45120'] },
+                        { city: 'Florence', zips: ['41042', '41022'] },
+                        { city: 'Fort Thomas', zips: ['41075'] },
+                        { city: 'Georgetown', zips: ['45121', '41021'] },
+                        { city: 'Goshen', zips: ['45122'] },
+                        { city: 'Hamersville', zips: ['45130'] },
+                        { city: 'Hillsboro', zips: ['45133'] },
+                        { city: 'Independence', zips: ['41051'] },
+                        { city: 'Lynchburg', zips: ['45142'] },
+                        { city: 'Milford', zips: ['45150', '45151'] },
+                        { city: 'Moscow', zips: ['45153'] },
+                        { city: 'Mount Orab', zips: ['45154'] },
+                        { city: 'Morrow', zips: ['45152'] },
+                        { city: 'New Richmond', zips: ['45157'] },
+                        { city: 'Newtonsville', zips: ['45156'] },
+                        { city: 'Owensville', zips: ['45160'] },
+                        { city: 'Pleasant Plain', zips: ['45162'] },
+                        { city: 'Sardinia', zips: ['45171'] },
+                        { city: 'Williamsburg', zips: ['45176'] },
+                        { city: 'Lexington', zips: ['40502', '40503', '40504', '40505', '40507', '40508', '40509', '40510', '40511', '40513', '40514', '40515', '40516', '40517'] },
+                        { city: 'Louisville', zips: ['40201', '40202', '40203', '40204', '40205', '40206', '40207', '40208', '40209', '40210', '40211', '40212', '40213', '40214', '40215', '40216', '40217', '40218', '40219', '40220', '40221', '40222', '40223', '40224', '40225', '40228', '40229', '40241', '40242', '40243', '40245', '40258', '40272', '40299'] },
+                        { city: 'Cincinnati & Suburbs', zips: ['45201', '45202', '45203', '45204', '45205', '45206', '45207', '45208', '45209', '45211', '45212', '45213', '45214', '45215', '45216', '45217', '45218', '45219', '45220', '45221', '45222', '45223', '45224', '45225', '45226', '45227', '45229', '45230', '45231', '45232', '45233', '45236', '45237', '45238', '45239', '45240', '45241', '45242', '45243', '45244', '45245', '45246', '45247', '45248', '45249', '45255', '45258'] },
+                        { city: 'Madison & Southeast Indiana', zips: ['47250', '47001', '47003', '47006', '47010', '47011', '47012', '47016', '47017', '47018', '47019', '47020', '47021', '47022', '47023', '47024', '47025', '47030', '47031', '47032', '47033', '47034', '47035', '47036', '47037', '47038', '47039', '47040', '47041', '47042', '47043', '47060'] }
+                    ];
+
                     try {
                         const docRef = db.collection('settings').doc('serviceConfig');
                         const doc = await docRef.get();
-                        if (doc.exists) {
-                            this.serviceAreas = doc.data().areas || [];
+                        if (doc.exists && doc.data().areas && doc.data().areas.length > 0) {
+                            this.serviceAreas = doc.data().areas;
                         } else {
-                            this.serviceAreas = [
-                                { city: 'Amelia', zips: ['45102', '45101'] },
-                                { city: 'Batavia', zips: ['45103'] },
-                                { city: 'Bethel', zips: ['45106'] },
-                                { city: 'Blanchester', zips: ['45107'] },
-                                { city: 'Camp Dennison', zips: ['45111'] },
-                                { city: 'Chilo', zips: ['45112'] },
-                                { city: 'Clarksville', zips: ['45113'] },
-                                { city: 'Erlanger', zips: ['41018', '41017'] },
-                                { city: 'Felicity', zips: ['45120'] },
-                                { city: 'Florence', zips: ['41042', '41022'] },
-                                { city: 'Fort Thomas', zips: ['41075'] },
-                                { city: 'Georgetown', zips: ['45121', '41021'] },
-                                { city: 'Goshen', zips: ['45122'] },
-                                { city: 'Hamersville', zips: ['45130'] },
-                                { city: 'Hillsboro', zips: ['45133'] },
-                                { city: 'Independence', zips: ['41051'] },
-                                { city: 'Lynchburg', zips: ['45142'] },
-                                { city: 'Milford', zips: ['45150', '45151'] },
-                                { city: 'Moscow', zips: ['45153'] },
-                                { city: 'Mount Orab', zips: ['45154'] },
-                                { city: 'Morrow', zips: ['45152'] },
-                                { city: 'New Richmond', zips: ['45157'] },
-                                { city: 'Newtonsville', zips: ['45156'] },
-                                { city: 'Owensville', zips: ['45160'] },
-                                { city: 'Pleasant Plain', zips: ['45162'] },
-                                { city: 'Sardinia', zips: ['45171'] },
-                                { city: 'Williamsburg', zips: ['45176'] },
-                                { city: 'Lexington', zips: ['40502', '40503', '40504', '40505', '40507', '40508', '40509', '40510', '40511', '40513', '40514', '40515', '40516', '40517'] },
-                                { city: 'Louisville', zips: ['40201', '40202', '40203', '40204', '40205', '40206', '40207', '40208', '40209', '40210', '40211', '40212', '40213', '40214', '40215', '40216', '40217', '40218', '40219', '40220', '40221', '40222', '40223', '40224', '40225', '40228', '40229', '40241', '40242', '40243', '40245', '40258', '40272', '40299'] },
-                                { city: 'Cincinnati & Suburbs', zips: ['45201', '45202', '45203', '45204', '45205', '45206', '45207', '45208', '45209', '45211', '45212', '45213', '45214', '45215', '45216', '45217', '45218', '45219', '45220', '45221', '45222', '45223', '45224', '45225', '45226', '45227', '45229', '45230', '45231', '45232', '45233', '45236', '45237', '45238', '45239', '45240', '45241', '45242', '45243', '45244', '45245', '45246', '45247', '45248', '45249', '45255', '45258'] },
-                                { city: 'Madison & Southeast Indiana', zips: ['47250', '47001', '47003', '47006', '47010', '47011', '47012', '47016', '47017', '47018', '47019', '47020', '47021', '47022', '47023', '47024', '47025', '47030', '47031', '47032', '47033', '47034', '47035', '47036', '47037', '47038', '47039', '47040', '47041', '47042', '47043', '47060'] }
-                            ];
+                            this.serviceAreas = fallbackAreas;
                             await docRef.set({ areas: this.serviceAreas });
                         }
                     } catch (err) {
-                        console.error('Error loading service areas from Firestore:', err);
+                        console.warn('Firestore fallback active:', err);
+                        this.serviceAreas = fallbackAreas;
                     }
                 },
 
