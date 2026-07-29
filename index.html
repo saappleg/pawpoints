@@ -1825,8 +1825,8 @@
                     try {
                         const snap = await db.collection('reviews').where('approved', '==', true).get();
                         if (!snap.empty) {
-                            const dbReviews = snap.docs.map(d => d.data());
-                            this.reviewsList = [...dbReviews, ...this.reviewsList];
+                            const dbReviews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                            this.reviewsList = [...dbReviews];
                         }
                     } catch (err) {
                         console.log('Using default reviews');
@@ -1869,6 +1869,8 @@
                         try {
                             await db.collection('reviews').doc(reviewId).delete();
                             await this.fetchPendingReviews();
+                            await this.loadApprovedReviews();
+                            alert('Review deleted permanently.');
                         } catch (err) {
                             alert('Error deleting review: ' + err.message);
                         }
@@ -2027,11 +2029,23 @@
                     }
                 },
 
-                addNewReview() {
+                async addNewReview() {
                     if (this.newReview.comment && this.newReview.author) {
-                        this.reviewsList.unshift({ ...this.newReview });
-                        this.newReview = { stars: 5, comment: '', author: '' };
-                        alert('New review published to site!');
+                        try {
+                            const revObj = {
+                                author: this.newReview.author.trim(),
+                                stars: this.newReview.stars,
+                                comment: this.newReview.comment.trim(),
+                                approved: true,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            };
+                            const docRef = await db.collection('reviews').add(revObj);
+                            this.reviewsList.unshift({ id: docRef.id, ...revObj });
+                            this.newReview = { stars: 5, comment: '', author: '' };
+                            alert('New review published directly to site and saved to Firestore!');
+                        } catch (err) {
+                            alert('Error publishing review: ' + err.message);
+                        }
                     } else {
                         alert('Please enter both an author name and review comment.');
                     }
@@ -2403,7 +2417,7 @@
                             this.houseChecklist = { ...this.userData.houseChecklist };
                         }
                         
-                        // 👑 RESTORED ADMIN RECOGNITION (matches email or explicit flag)
+                        // 👑 RESTORED ADMIN RECOGNITION
                         this.isAdmin = !!this.userData.isAdmin || (this.user && this.user.email && (this.user.email.includes('steven') || this.user.email === 'madcathouse92@gmail.com'));
                     }
                 },
