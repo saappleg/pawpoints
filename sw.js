@@ -29,8 +29,10 @@ self.addEventListener('notificationclick', (event) => {
     );
 });
 
-// Fetch Event - Network First, fallback to Cache
+// Fetch Event - Network First, fallback to Cache (Ignoring extensions)
 self.addEventListener('fetch', (event) => {
+  // Ignore non-http/https requests (like chrome-extension://)
+  if (!event.request.url.startsWith('http')) return;
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
