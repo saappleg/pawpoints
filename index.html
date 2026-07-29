@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven</title>
         
+    <!-- CDN Preconnects for High-Speed Asset Loading -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
+
     <!-- Dedicated Favicons for Browser Tabs -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -104,6 +109,18 @@
     <!-- Rainbow Accent Bar Top -->
     <div class="rainbow-top-bar sticky top-0 z-40"></div>
 
+    <!-- PWA INSTALL BANNER PROMPT -->
+    <div x-show="showInstallBanner" x-transition x-cloak class="bg-brand-600 text-white px-4 py-2 text-xs font-bold flex justify-between items-center shadow-md">
+        <div class="flex items-center gap-2">
+            <span>📱</span>
+            <span>Install Pet Care by Steven for quick access and offline support!</span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button @click="installPwa()" class="bg-white text-brand-700 px-3 py-1 rounded-lg shadow-sm hover:bg-brand-50 transition">Install App</button>
+            <button @click="showInstallBanner = false" class="text-white hover:text-indigo-200 px-1">✕</button>
+        </div>
+    </div>
+
     <!-- Navigation Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -111,7 +128,7 @@
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="rainbow-ring h-14 w-14 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="object-cover rounded-full" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="object-cover rounded-full" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -205,7 +222,7 @@
                         </div>
                     </div>
                     <div class="rainbow-ring w-44 h-44 shadow-2xl hidden md:block shrink-0">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="object-cover rounded-full">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="object-cover rounded-full" loading="lazy">
                     </div>
                 </div>
             </section>
@@ -273,7 +290,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <template x-for="(photo, idx) in photoGrid" :key="idx">
                         <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                            <img :src="photo.url" :alt="photo.caption" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <img :src="photo.url" :alt="photo.caption" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
                         </div>
                     </template>
@@ -313,7 +330,7 @@
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <div class="rainbow-ring w-28 h-28 shrink-0">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="object-cover rounded-full">
+                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="object-cover rounded-full" loading="lazy">
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
@@ -528,6 +545,19 @@
                         <button @click="openAdminModal('points')" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
                     </div>
 
+                    <!-- PET BIRTHDAY & FIRST VISIT BADGE BANNER -->
+                    <template x-if="petBirthdayAlert || isFirstVisitCompleted">
+                        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between gap-4 text-xs">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🎉</span>
+                                <div>
+                                    <p class="font-black text-sm" x-text="petBirthdayAlert ? 'Happy Birthday / Gotcha Day to your pet! (+250 Pts Awarded)' : 'First-Visit Welcome Badge Unlocked!'"></p>
+                                    <p class="text-indigo-100 text-[11px]" x-text="petBirthdayAlert ? 'Enjoy your surprise points bonus today!' : 'Thank you for booking your first visit with Pet Care by Steven.'"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
                     <!-- ONBOARDING GUIDE FOR CLIENTS -->
                     <div x-data="{ showGuide: true }" class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-5 shadow-sm space-y-3">
                         <div class="flex justify-between items-center">
@@ -662,7 +692,7 @@
                                         <div class="flex items-center space-x-4">
                                             <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center border-2 border-brand-500 shadow-sm">
                                                 <template x-if="pet.photo">
-                                                    <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover">
+                                                    <img :src="pet.photo" alt="Pet photo" class="w-full h-full object-cover" loading="lazy">
                                                 </template>
                                                 <template x-if="!pet.photo">
                                                     <span class="text-2xl">🐾</span>
@@ -770,8 +800,19 @@
                                             </div>
                                         </div>
 
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Birthday / Gotcha Day</label>
+                                                <input type="date" x-model="pet.birthday" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Breed / Type</label>
+                                                <input type="text" x-model="pet.breed" placeholder="e.g. Domestic Shorthair" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                                            </div>
+                                        </div>
+
                                         <div>
-                                            <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Special Care Notes / Breed / Routine</label>
+                                            <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Special Care Notes & Routine</label>
                                             <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                                         </div>
                                     </div>
@@ -828,6 +869,32 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- DIRECT CLIENT REVIEW SUBMISSION CARD -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                            <span>⭐ Leave a Review for Steven</span>
+                        </h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Share your experience with future clients! Reviews are published after quick admin review.</p>
+
+                        <form @submit.prevent="submitClientReview()" class="space-y-3 text-xs">
+                            <div>
+                                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Rating</label>
+                                <select x-model.number="clientReviewForm.stars" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 outline-none">
+                                    <option value="5">★★★★★ (5 Stars - Amazing!)</option>
+                                    <option value="4">★★★★☆ (4 Stars)</option>
+                                    <option value="3">★★★☆☆ (3 Stars)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Your Review</label>
+                                <textarea x-model="clientReviewForm.comment" rows="2" placeholder="e.g. Steven was wonderful with our dog!" required class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 outline-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg transition shadow-sm">
+                                Submit Review
+                            </button>
+                        </form>
                     </div>
 
                     <!-- Active Coupons Section -->
@@ -1155,7 +1222,7 @@
 
             <!-- TAB 2: SERVICE AREA MANAGEMENT (FIRESTORE BACKED) -->
             <div x-show="adminTab === 'areas'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names (e.g., <em>Madison, 47250, 45120</em>). Saved directly to Firestore.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names. Saved directly to Firestore.</p>
 
                 <div class="space-y-2">
                     <textarea x-model="bulkAreaInput" rows="3" placeholder="Paste locations separated by commas..." class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
@@ -1411,14 +1478,23 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Enable Offline Persistence for High Performance & Speed
+        db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
+
         auth.useDeviceLanguage();
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            window.dispatchEvent(new CustomEvent('pwa-install-ready'));
+        });
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then(reg => {
                         reg.update();
-                        console.log('Service Worker registered!');
                         if (window.Notification && Notification.permission === 'default') {
                             Notification.requestPermission();
                         }
@@ -1459,7 +1535,7 @@
                 calcSpend: 150,
                 showToast: false,
                 toastMessage: '',
-                toastTimer: null,
+                showInstallBanner: false,
                 showVetAuthModal: false,
                 showChecklistModal: false,
                 showProfileModal: false,
@@ -1468,6 +1544,9 @@
                 vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
                 houseChecklist: { feedingNotes: '', medicationNotes: '', trashDays: '', mailNotes: '', otherNotes: '' },
                 qrBadgeUrl: 'https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1',
+                petBirthdayAlert: false,
+                isFirstVisitCompleted: false,
+                clientReviewForm: { stars: 5, comment: '' },
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
@@ -1516,6 +1595,11 @@
                 async init() {
                     this.scheduleNextToast();
                     await this.loadServiceAreasFromFirestore();
+                    await this.loadApprovedReviews();
+
+                    window.addEventListener('pwa-install-ready', () => {
+                        this.showInstallBanner = true;
+                    });
 
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
@@ -1551,6 +1635,17 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                async installPwa() {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            this.showInstallBanner = false;
+                        }
+                        deferredPrompt = null;
+                    }
                 },
 
                 async loadServiceAreasFromFirestore() {
@@ -1598,8 +1693,42 @@
                             await docRef.set({ areas: this.serviceAreas });
                         }
                     } catch (err) {
-                        console.warn('Firestore fallback active:', err);
                         this.serviceAreas = fallbackAreas;
+                    }
+                },
+
+                async loadApprovedReviews() {
+                    try {
+                        const snap = await db.collection('reviews').where('approved', '==', true).get();
+                        if (!snap.empty) {
+                            const dbReviews = snap.docs.map(d => d.data());
+                            this.reviewsList = [...dbReviews, ...this.reviewsList];
+                        }
+                    } catch (err) {
+                        console.log('Using default reviews');
+                    }
+                },
+
+                async submitClientReview() {
+                    if (!this.user) {
+                        alert('Please log in to submit a review.');
+                        this.currentView = 'loyalty';
+                        return;
+                    }
+                    if (!this.clientReviewForm.comment.trim()) return;
+
+                    try {
+                        await db.collection('reviews').add({
+                            author: this.userData.name || 'Client',
+                            stars: this.clientReviewForm.stars,
+                            comment: this.clientReviewForm.comment.trim(),
+                            approved: false, // Moderated by Steven
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        this.clientReviewForm = { stars: 5, comment: '' };
+                        alert('Thank you! Your review has been submitted for admin approval.');
+                    } catch (err) {
+                        alert('Error submitting review: ' + err.message);
                     }
                 },
 
@@ -1666,7 +1795,7 @@
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
                     } catch (err) {
-                        console.error('Failed to log search input:', err);
+                        console.error('Failed to log search:', err);
                     }
                 },
 
@@ -1831,7 +1960,7 @@
                                 address: '',
                                 points: 0,
                                 coupons: [],
-                                pets: [{ name: '', notes: '', photo: '' }],
+                                pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
                                 referralCode: personalRefCode,
                                 referralsCount: 0,
@@ -1884,7 +2013,7 @@
                                 address: '',
                                 points: 0,
                                 coupons: initialCoupons,
-                                pets: [{ name: '', notes: '', photo: '' }],
+                                pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
                                 referralCode: personalRefCode,
                                 referredBy: referredByUid,
@@ -1977,25 +2106,31 @@
                             this.userData.referralCode = newRefCode;
                         }
 
-                        if (this.userData.createdAt) {
-                            const createdDate = this.userData.createdAt.toDate ? this.userData.createdAt.toDate() : new Date(this.userData.createdAt);
-                            const today = new Date();
-                            if (createdDate.getMonth() === today.getMonth() && createdDate.getDate() === today.getDate() && createdDate.getFullYear() !== today.getFullYear()) {
-                                const lastAnniversaryBonus = localStorage.getItem('anniversary_bonus_' + today.getFullYear());
-                                if (!lastAnniversaryBonus) {
-                                    const newPts = (this.userData.points || 0) + 500;
+                        // Check Pet Birthday / Gotcha Day bonus logic
+                        const todayStr = new Date().toISOString().slice(5, 10); // MM-DD
+                        if (this.userData.pets && this.userData.pets.length > 0) {
+                            const hasBirthdayToday = this.userData.pets.some(p => p.birthday && p.birthday.slice(5, 10) === todayStr);
+                            if (hasBirthdayToday) {
+                                const lastBdayBonus = localStorage.getItem('bday_bonus_' + new Date().getFullYear());
+                                if (!lastBdayBonus) {
+                                    const newPts = (this.userData.points || 0) + 250;
                                     await db.collection('clients').doc(uid).update({ points: newPts });
                                     this.userData.points = newPts;
-                                    localStorage.setItem('anniversary_bonus_' + today.getFullYear(), 'true');
-                                    alert('🎉 Happy Account Anniversary! You have been awarded a surprise 500 Paw Points bonus!');
+                                    localStorage.setItem('bday_bonus_' + new Date().getFullYear(), 'true');
+                                    this.petBirthdayAlert = true;
                                 }
                             }
                         }
+
+                        // First visit badge logic
+                        this.isFirstVisitCompleted = !!this.userData.firstVisitCompleted;
 
                         if (!this.userData.pets || this.userData.pets.length === 0) {
                             this.userData.pets = [{
                                 name: this.userData.petName || '',
                                 notes: this.userData.petNotes || '',
+                                birthday: '',
+                                breed: '',
                                 photo: ''
                             }];
                         }
@@ -2041,11 +2176,7 @@
                         this.profileSuccess = 'Profile details updated successfully!';
                         setTimeout(() => { this.showProfileModal = false; this.profileSuccess = ''; }, 1500);
                     } catch (err) {
-                        if (err.code === 'requires-recent-login' || err.code === 'auth/requires-recent-login') {
-                            this.profileError = 'Changing your email requires recent authentication. Please log out and back in.';
-                        } else {
-                            this.profileError = err.message;
-                        }
+                        this.profileError = err.message;
                     }
                 },
 
@@ -2099,7 +2230,7 @@
 
                 addPet() {
                     if (!this.userData.pets) this.userData.pets = [];
-                    this.userData.pets.push({ name: '', notes: '', photo: '' });
+                    this.userData.pets.push({ name: '', notes: '', birthday: '', breed: '', photo: '' });
                     this.isEditingPets = true;
                 },
 
@@ -2151,7 +2282,8 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
 
-                            this.userData.pets[index].photo = canvas.toDataURL('image/jpeg', 0.7);
+                            // High-performance WebP compression
+                            this.userData.pets[index].photo = canvas.toDataURL('image/webp', 0.8);
                         };
                     };
                     reader.readAsDataURL(file);
@@ -2167,6 +2299,8 @@
                         const cleanedPets = (this.userData.pets || []).map(p => ({
                             name: p.name || '',
                             notes: p.notes || '',
+                            birthday: p.birthday || '',
+                            breed: p.breed || '',
                             photo: p.photo || ''
                         }));
 
@@ -2183,7 +2317,6 @@
                         this.isEditingPets = false;
                         alert('Pet profiles, home access & emergency contacts saved successfully!');
                     } catch (err) {
-                        console.error('Failed to save pet details:', err);
                         alert(`Error saving profile: ${err.message}`);
                     }
                 },
