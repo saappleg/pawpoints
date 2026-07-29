@@ -1808,7 +1808,8 @@
                         const snap = await db.collection('gallery_photos').orderBy('createdAt', 'desc').get();
                         if (!snap.empty) {
                             const dbPhotos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                            this.photoGrid = [...dbPhotos, ...this.photoGrid];
+                            // Filter out defaults so only persistent Firestore photos show up
+                            this.photoGrid = dbPhotos;
                         }
                     } catch (err) {
                         console.log('Using default gallery photos');
