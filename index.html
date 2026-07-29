@@ -61,13 +61,14 @@
         }
 
         .rainbow-ring {
-            padding: 2px; /* Reduces the gap to a thin, sharp border */
+            padding: 2px;
             background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
             border-radius: 9999px;
             box-shadow: 0 4px 15px rgba(234, 179, 8, 0.25);
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         .rainbow-ring img {
@@ -77,6 +78,7 @@
             object-fit: cover;
             border-radius: 9999px;
         }
+
         .rainbow-frame {
             position: relative;
             border-radius: 1.5rem;
@@ -97,8 +99,8 @@
             
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <div class="rainbow-ring transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="h-14 w-14 object-contain rounded-full bg-white p-0.5" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
+                <div class="rainbow-ring h-14 w-14 transition-transform hover:scale-105">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="object-cover rounded-full" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -191,8 +193,8 @@
                             </button>
                         </div>
                     </div>
-                    <div class="rainbow-ring shadow-2xl hidden md:block shrink-0">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="w-44 h-44 object-contain rounded-full bg-white p-1">
+                    <div class="rainbow-ring w-44 h-44 shadow-2xl hidden md:block shrink-0">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="object-cover rounded-full">
                     </div>
                 </div>
             </section>
@@ -299,8 +301,8 @@
             <!-- MEET THE SITTER BIO SECTION -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div class="rainbow-ring shrink-0">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="w-28 h-28 object-contain rounded-full bg-white p-0.5">
+                    <div class="rainbow-ring w-28 h-28 shrink-0">
+                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="object-cover rounded-full">
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
