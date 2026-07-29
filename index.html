@@ -72,6 +72,8 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            flex-shrink: 0;
+            aspect-ratio: 1 / 1;
         }
 
         .rainbow-ring img {
@@ -142,8 +144,9 @@
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <div class="rainbow-ring h-14 w-14 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="object-cover rounded-full" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                <!-- Cleaned up Logo Container without double ring -->
+                <div class="h-14 w-14 shrink-0 transition-transform hover:scale-105">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="w-full h-full object-cover rounded-full shadow-md" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -230,8 +233,8 @@
                             </button>
                         </div>
                     </div>
-                    <div class="rainbow-ring w-44 h-44 shadow-2xl hidden md:block shrink-0">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="object-cover rounded-full" loading="lazy">
+                    <div class="w-44 h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                 </div>
             </section>
@@ -333,8 +336,8 @@
 
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div class="rainbow-ring w-28 h-28 shrink-0">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="object-cover rounded-full" loading="lazy">
+                    <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md">
+                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
@@ -1493,13 +1496,12 @@
             </div>
         </div>
 
-        <div class="rainbow-ring">
-            <button @click="showChatWidget = !showChatWidget" class="bg-brand-600 hover:bg-brand-700 text-white p-3.5 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2 focus:outline-none">
+        <div class="h-12 w-12 rounded-full overflow-hidden shadow-lg border-2 border-brand-500">
+            <button @click="showChatWidget = !showChatWidget" class="w-full h-full bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
                 <svg x-show="!showChatWidget" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
                 </svg>
                 <span x-show="showChatWidget" class="text-lg font-bold" x-cloak>✕</span>
-                <span class="text-xs font-bold hidden sm:inline" x-show="!showChatWidget">Chat with us</span>
             </button>
         </div>
     </div>
@@ -1542,7 +1544,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Modern persistence syntax or graceful fallback
         if (db.settings) {
             try {
                 db.settings({ cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
