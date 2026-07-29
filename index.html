@@ -590,12 +590,15 @@
                         </div>
                     </div>
 
-                    <!-- Points Banner -->
+                    <!-- Points Banner & Tier Status -->
                     <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
                         <div>
-                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
+                            <div class="flex items-center gap-2">
+                                <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border" :class="clientTier.badgeColor" x-text="clientTier.name"></span>
+                            </div>
                             <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
-                            <p class="text-xs mt-2 text-slate-300">Earn 10 points for every $1 spent on pet sitting & walks.</p>
+                            <p class="text-xs mt-2 text-slate-300" x-text="clientTier.perk"></p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                             <button @click="showChecklistModal = true" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition shadow flex items-center justify-center gap-1.5">
@@ -700,12 +703,13 @@
                                             </div>
                                             <div>
                                                 <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
-                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Registered Pet</span>
+                                                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400" x-text="pet.breed || 'Registered Pet'"></span>
                                             </div>
                                         </div>
 
-                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
-                                            <p class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-1">Care Notes & Routine</p>
+                                        <div class="bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50 space-y-1">
+                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider" x-show="pet.birthday" x-text="'Birthday / Gotcha Day: ' + pet.birthday"></p>
+                                            <p class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider">Care Notes & Routine</p>
                                             <p class="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed" x-text="pet.notes || 'No special care instructions added yet.'"></p>
                                         </div>
                                     </div>
@@ -871,20 +875,22 @@
                         </div>
                     </div>
 
-                    <!-- DIRECT CLIENT REVIEW SUBMISSION CARD -->
+                    <!-- DIRECT CLIENT REVIEW SUBMISSION CARD (WITH 1-5 STARS) -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
                         <h3 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
                             <span>⭐ Leave a Review for Steven</span>
                         </h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Share your experience with future clients! Reviews are published after quick admin review.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Share your honest feedback! Reviews are published after quick admin review.</p>
 
                         <form @submit.prevent="submitClientReview()" class="space-y-3 text-xs">
                             <div>
                                 <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Rating</label>
                                 <select x-model.number="clientReviewForm.stars" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 outline-none">
                                     <option value="5">★★★★★ (5 Stars - Amazing!)</option>
-                                    <option value="4">★★★★☆ (4 Stars)</option>
-                                    <option value="3">★★★☆☆ (3 Stars)</option>
+                                    <option value="4">★★★★☆ (4 Stars - Great)</option>
+                                    <option value="3">★★★☆☆ (3 Stars - Good)</option>
+                                    <option value="2">★★☆☆☆ (2 Stars - Fair)</option>
+                                    <option value="1">★☆☆☆☆ (1 Star - Poor)</option>
                                 </select>
                             </div>
                             <div>
@@ -1196,8 +1202,9 @@
                 <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Reviews</button>
                 <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Photos</button>
                 <button @click="adminTab = 'faq'" :class="adminTab === 'faq' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">FAQ</button>
+                <button @click="adminTab = 'broadcast'" :class="adminTab === 'broadcast' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📢 Broadcast</button>
                 <button @click="adminTab = 'badge'; $nextTick(() => generateAdminBadge())" :class="adminTab === 'badge' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">🖨️ QR Badge</button>
-                <button @click="adminTab = 'export'" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📤 Walkies Export</button>
+                <button @click="adminTab = 'export'" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📤 Export</button>
             </div>
 
             <!-- TAB 1: POINTS MANAGEMENT -->
@@ -1241,7 +1248,7 @@
 
             <!-- TAB 3: REVIEW MODERATION & CREATION -->
             <div x-show="adminTab === 'reviews'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Add new client testimonials to feature on the homepage.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Add new client testimonials or moderate pending reviews.</p>
 
                 <div class="space-y-3">
                     <div>
@@ -1255,6 +1262,8 @@
                             <option value="5">★★★★★ (5 Stars)</option>
                             <option value="4">★★★★☆ (4 Stars)</option>
                             <option value="3">★★★☆☆ (3 Stars)</option>
+                            <option value="2">★★☆☆☆ (2 Stars)</option>
+                            <option value="1">★☆☆☆☆ (1 Star)</option>
                         </select>
                     </div>
 
@@ -1332,7 +1341,27 @@
                 </div>
             </div>
 
-            <!-- TAB 6: QR BADGE & FLYER GENERATOR -->
+            <!-- TAB 6: PUSH NOTIFICATION BROADCAST -->
+            <div x-show="adminTab === 'broadcast'" class="space-y-4" x-cloak>
+                <div class="bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 space-y-1">
+                    <p class="font-bold">📢 Send Device Broadcast</p>
+                    <p class="text-[11px] leading-relaxed">Broadcast an urgent update or announcement straight to all active client devices.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Notification Title</label>
+                        <input type="text" x-model="broadcastForm.title" placeholder="e.g. Holiday Booking Reminder 🎄" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Message Body</label>
+                        <textarea x-model="broadcastForm.body" rows="3" placeholder="Only 2 holiday slots remaining..." class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none"></textarea>
+                    </div>
+                    <button @click="sendBroadcastNotification()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg transition">Send Broadcast Now</button>
+                </div>
+            </div>
+
+            <!-- TAB 7: QR BADGE & FLYER GENERATOR -->
             <div x-show="adminTab === 'badge'" class="space-y-4" x-cloak>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Generate a custom QR badge for business cards, flyers, or fridge magnets.</p>
 
@@ -1350,7 +1379,7 @@
                 </div>
             </div>
 
-            <!-- TAB 7: WALKIES CSV DATA EXPORTER -->
+            <!-- TAB 8: WALKIES CSV DATA EXPORTER -->
             <div x-show="adminTab === 'export'" class="space-y-4" x-cloak>
                 <div class="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-900 dark:text-emerald-200 space-y-2">
                     <p class="font-bold text-sm">📤 Export Client & Pet Data for Walkies</p>
@@ -1415,7 +1444,7 @@
                     <span>Facebook Messenger</span>
                 </a>
 
-                <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I%20have%20a%20question%20about%20pet%20sitting!" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20send%20a%20tip!" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
                     <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                     </svg>
@@ -1478,7 +1507,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Enable Offline Persistence for High Performance & Speed
         db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
 
         auth.useDeviceLanguage();
@@ -1547,6 +1575,7 @@
                 petBirthdayAlert: false,
                 isFirstVisitCompleted: false,
                 clientReviewForm: { stars: 5, comment: '' },
+                broadcastForm: { title: '', body: '' },
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
@@ -1591,6 +1620,13 @@
                     { stars: 5, comment: 'Peace of mind while on vacation is priceless. Steven followed all feeding instructions to a T. Highly recommended!', author: 'Jessica T. (Multi-Pet Owner)' }
                 ],
                 newReview: { stars: 5, comment: '', author: '' },
+
+                get clientTier() {
+                    const pts = this.userData.points || 0;
+                    if (pts >= 15000) return { name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: 'Perk: 1.5x Points Multiplier & Holiday Priority Access' };
+                    if (pts >= 5001) return { name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: 'Perk: 1.25x Points Multiplier on all bookings' };
+                    return { name: '🥉 Bronze Paw Member', badgeColor: 'bg-amber-900/20 text-amber-700 border-amber-300', perk: 'Standard 10x Points per $1 spent' };
+                },
 
                 async init() {
                     this.scheduleNextToast();
@@ -1722,13 +1758,29 @@
                             author: this.userData.name || 'Client',
                             stars: this.clientReviewForm.stars,
                             comment: this.clientReviewForm.comment.trim(),
-                            approved: false, // Moderated by Steven
+                            approved: false,
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
                         this.clientReviewForm = { stars: 5, comment: '' };
                         alert('Thank you! Your review has been submitted for admin approval.');
                     } catch (err) {
                         alert('Error submitting review: ' + err.message);
+                    }
+                },
+
+                async sendBroadcastNotification() {
+                    if (!this.broadcastForm.title || !this.broadcastForm.body) return alert('Please enter both title and body.');
+                    try {
+                        await db.collection('broadcasts').add({
+                            title: this.broadcastForm.title,
+                            body: this.broadcastForm.body,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        firePwaNotification(this.broadcastForm.title, this.broadcastForm.body);
+                        this.broadcastForm = { title: '', body: '' };
+                        alert('Broadcast notification sent successfully to all devices!');
+                    } catch (err) {
+                        alert('Error sending broadcast: ' + err.message);
                     }
                 },
 
@@ -2106,8 +2158,7 @@
                             this.userData.referralCode = newRefCode;
                         }
 
-                        // Check Pet Birthday / Gotcha Day bonus logic
-                        const todayStr = new Date().toISOString().slice(5, 10); // MM-DD
+                        const todayStr = new Date().toISOString().slice(5, 10);
                         if (this.userData.pets && this.userData.pets.length > 0) {
                             const hasBirthdayToday = this.userData.pets.some(p => p.birthday && p.birthday.slice(5, 10) === todayStr);
                             if (hasBirthdayToday) {
@@ -2122,7 +2173,6 @@
                             }
                         }
 
-                        // First visit badge logic
                         this.isFirstVisitCompleted = !!this.userData.firstVisitCompleted;
 
                         if (!this.userData.pets || this.userData.pets.length === 0) {
@@ -2282,7 +2332,6 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
 
-                            // High-performance WebP compression
                             this.userData.pets[index].photo = canvas.toDataURL('image/webp', 0.8);
                         };
                     };
@@ -2352,7 +2401,9 @@
                 async redeemReward(cost, title) {
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
-                        const newBalance = this.userData.points - cost;
+                        const multiplier = this.clientTier.name.includes('Gold') ? 0.9 : 1; // Gold tier perk discount example
+                        const finalCost = Math.round(cost * multiplier);
+                        const newBalance = this.userData.points - finalCost;
                         
                         const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
                         const newCoupon = {
