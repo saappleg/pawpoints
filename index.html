@@ -612,7 +612,7 @@
                         </div>
                     </div>
 
-                    <!-- Points Banner & Tier Status -->
+                    <!-- Points Banner & Rolling Yearly Tier Status -->
                     <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
                         <div>
                             <div class="flex items-center gap-2">
@@ -1698,9 +1698,9 @@
                 newReview: { stars: 5, comment: '', author: '' },
 
                 get clientTier() {
-                    const pts = this.userData.points || 0;
-                    if (pts >= 15000) return { name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: 'Perk: 1.5x Points Multiplier & Holiday Priority Access' };
-                    if (pts >= 5001) return { name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: 'Perk: 1.25x Points Multiplier on all bookings' };
+                    const lifetimePts = this.userData.lifetimePoints || this.userData.points || 0;
+                    if (lifetimePts >= 15000) return { name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: 'Perk: 1.5x Points Multiplier & Holiday Priority Access' };
+                    if (lifetimePts >= 5001) return { name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: 'Perk: 1.25x Points Multiplier on all bookings' };
                     return { name: '🥉 Bronze Paw Member', badgeColor: 'bg-amber-900/20 text-amber-700 border-amber-300', perk: 'Standard 10x Points per $1 spent' };
                 },
 
@@ -2091,6 +2091,7 @@
                                 phone: '',
                                 address: '',
                                 points: 0,
+                                lifetimePoints: 0,
                                 coupons: [],
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
@@ -2131,8 +2132,10 @@
                                     });
 
                                     const refData = referrerDoc.data();
+                                    const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
                                     await db.collection('clients').doc(referredByUid).update({
                                         points: (refData.points || 0) + 1000,
+                                        lifetimePoints: refLifetime,
                                         referralsCount: (refData.referralsCount || 0) + 1
                                     });
                                 }
@@ -2144,6 +2147,7 @@
                                 phone: '',
                                 address: '',
                                 points: 0,
+                                lifetimePoints: 0,
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
@@ -2221,6 +2225,12 @@
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
 
+                        // Ensure lifetimePoints is initialized
+                        if (this.userData.lifetimePoints === undefined) {
+                            this.userData.lifetimePoints = this.userData.points || 0;
+                            await db.collection('clients').doc(uid).update({ lifetimePoints: this.userData.lifetimePoints });
+                        }
+
                         if (oldPoints !== undefined && oldPoints !== this.userData.points) {
                             firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${this.userData.points} Pts.`);
                         }
@@ -2245,8 +2255,10 @@
                                 const lastBdayBonus = localStorage.getItem('bday_bonus_' + new Date().getFullYear());
                                 if (!lastBdayBonus) {
                                     const newPts = (this.userData.points || 0) + 250;
-                                    await db.collection('clients').doc(uid).update({ points: newPts });
+                                    const newLifetime = (this.userData.lifetimePoints || 0) + 250;
+                                    await db.collection('clients').doc(uid).update({ points: newPts, lifetimePoints: newLifetime });
                                     this.userData.points = newPts;
+                                    this.userData.lifetimePoints = newLifetime;
                                     localStorage.setItem('bday_bonus_' + new Date().getFullYear(), 'true');
                                     this.petBirthdayAlert = true;
                                 }
@@ -2461,10 +2473,7 @@
                     this.adminTab = tab;
                     this.showAdminModal = true;
                     await this.fetchClientsList();
-                    if (tab === 'badge') {
-                        this.$nextTick(() => this.generateAdminBadge());
-                    }
-                    if (tab === 'flyer') {
+                    if (tab === 'badge' || tab === 'flyer') {
                         this.$nextTick(() => this.generateAdminBadge());
                     }
                 },
@@ -2484,9 +2493,7 @@
                 async redeemReward(cost, title) {
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
-                        const multiplier = this.clientTier.name.includes('Gold') ? 0.9 : 1;
-                        const finalCost = Math.round(cost * multiplier);
-                        const newBalance = this.userData.points - finalCost;
+                        const newBalance = this.userData.points - cost;
                         
                         const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
                         const newCoupon = {
@@ -2560,13 +2567,17 @@
                     if (!doc.exists) return alert('Client not found!');
                     
                     const currentPts = doc.data().points || 0;
-                    const newPts = currentPts + parseInt(this.adminForm.pointsDelta || 0);
+                    const currentLifetime = doc.data().lifetimePoints || currentPts;
+                    const delta = parseInt(this.adminForm.pointsDelta || 0);
+                    const newPts = currentPts + delta;
+                    const newLifetime = delta > 0 ? currentLifetime + delta : currentLifetime;
                     
-                    await targetRef.update({ points: newPts });
+                    await targetRef.update({ points: newPts, lifetimePoints: newLifetime });
                     alert(`Updated client points from ${currentPts} to ${newPts}!`);
                     
                     if (this.adminForm.targetUid === this.user.uid) {
                         this.userData.points = newPts;
+                        this.userData.lifetimePoints = newLifetime;
                         firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${newPts} Pts.`);
                     }
                     
