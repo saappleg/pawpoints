@@ -574,28 +574,48 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Your Balance</p>
-                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border" :class="clientTier.badgeColor" x-text="clientTier.name"></span>
+                    <!-- 🐾 PAW LEVELS & YEARLY PROGRESS GAUGE (Chick-fil-A Style Status) -->
+                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg space-y-6 border border-slate-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-800 pb-4">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Annual Status Tier (2026 Season)</p>
+                                    <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border" :class="clientTier.badgeColor" x-text="clientTier.name"></span>
+                                </div>
+                                <h2 class="text-3xl font-extrabold mt-1 text-white"><span x-text="userData.yearlyPoints || 0"></span> <span class="text-lg font-normal text-slate-300">Annual Pts</span> <span class="text-xs font-normal text-slate-400">(Spendable: <span x-text="userData.points || 0"></span> Pts)</span></h2>
                             </div>
-                            <h2 class="text-4xl font-extrabold mt-1 text-white"><span x-text="userData.points || 0"></span> <span class="text-xl font-normal text-slate-300">Pts</span></h2>
-                            <p class="text-xs mt-2 text-slate-300" x-text="clientTier.perk"></p>
+                            <div class="bg-slate-800/80 px-4 py-2 rounded-xl text-right border border-slate-700 text-xs">
+                                <span class="block text-slate-400 font-semibold">Status Reset Date:</span>
+                                <span class="font-bold text-amber-400">Dec 31, 2026</span>
+                            </div>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                            <button @click="showChecklistModal = true" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition shadow flex items-center justify-center gap-1.5">
+
+                        <!-- Progress Gauge Bar -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs font-bold">
+                                <span class="text-slate-300" x-text="tierProgress.currentTierName"></span>
+                                <span class="text-brand-400" x-text="tierProgress.nextTierText"></span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                                <div class="bg-gradient-to-r from-brand-500 to-emerald-400 h-full rounded-full transition-all duration-500" :style="`width: ${tierProgress.percentage}%`"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 italic" x-text="tierProgress.description"></p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-2 pt-2">
+                            <button @click="showChecklistModal = true" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition shadow flex items-center justify-center gap-1.5">
                                 📋 House & Care Sheet
                             </button>
-                            <button @click="showProfileModal = true" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700">
+                            <button @click="showProfileModal = true" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700 flex items-center justify-center gap-1.5">
                                 ⚙️ Account Profile
                             </button>
-                            <button @click="openDigitalPass()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
+                            <button @click="openDigitalPass()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
                                 <span>📱 Digital Pass</span>
                             </button>
                         </div>
                     </div>
 
+                    <!-- REFERRAL REWARDS CARD -->
                     <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
                         <div class="flex justify-between items-start">
                             <div>
@@ -1270,7 +1290,7 @@
                 </div>
 
                 <div class="space-y-2 max-h-48 overflow-y-auto">
-                    <template x-for="(p, idx) in photoGrid" :key="idx">
+                    <template x-for="(p, idx) in photoGrid" :key="p.id || idx">
                         <div class="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg text-xs">
                             <div class="flex items-center gap-2 overflow-hidden">
                                 <img :src="p.url" class="w-8 h-8 object-cover rounded-md shrink-0">
@@ -1626,12 +1646,7 @@
                     "A new client requested a free 15-minute Meet & Greet!",
                     "A client in Williamsburg reserved a 5-night sitting package!"
                 ],
-                photoGrid: [
-                    { url: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80", caption: "Neighborhood Walks" },
-                    { url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80", caption: "Cat Sitting Visits" },
-                    { url: "https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&w=400&q=80", caption: "In-Home Playtime" },
-                    { url: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80", caption: "Treats & Cuddles" }
-                ],
+                photoGrid: [],
                 newPhoto: { url: '', caption: '' },
                 faqList: [
                     { question: "📅 What is your cancellation policy?", answer: "Clients must cancel at least <strong>3 days before</strong> the scheduled service to avoid a 50% sitting charge. Cancellations within 3 days will be billed at 50% of the scheduled reservation total." },
@@ -1662,10 +1677,25 @@
                 newReview: { stars: 5, comment: '', author: '' },
 
                 get clientTier() {
-                    const lifetimePts = this.userData.lifetimePoints || this.userData.points || 0;
-                    if (lifetimePts >= 15000) return { name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: 'Perk: 1.5x Points Multiplier & Holiday Priority Access' };
-                    if (lifetimePts >= 5001) return { name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: 'Perk: 1.25x Points Multiplier on all bookings' };
-                    return { name: '🥉 Bronze Paw Member', badgeColor: 'bg-amber-900/20 text-amber-700 border-amber-300', perk: 'Standard 10x Points per $1 spent' };
+                    const yearlyPts = this.userData.yearlyPoints || 0;
+                    if (yearlyPts >= 15000) return { name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: 'Status Active for 2026: 1.5x Points Multiplier & Holiday Priority' };
+                    if (yearlyPts >= 5001) return { name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: 'Status Active for 2026: 1.25x Points Multiplier' };
+                    return { name: '🥉 Bronze Paw Member', badgeColor: 'bg-amber-900/20 text-amber-700 border-amber-300', perk: 'Building Status for 2026 Season' };
+                },
+
+                get tierProgress() {
+                    const pts = this.userData.yearlyPoints || 0;
+                    if (pts < 5001) {
+                        const needed = 5001 - pts;
+                        const pct = Math.min(100, Math.round((pts / 5001) * 100));
+                        return { currentTierName: 'Bronze Level', nextTierText: `${needed.toLocaleString()} Pts to Silver`, percentage: pct, description: 'Earn 5,001 annual points by Dec 31 to unlock Silver Status for the year!' };
+                    } else if (pts < 15000) {
+                        const needed = 15000 - pts;
+                        const pct = Math.min(100, Math.round(((pts - 5001) / (15000 - 5001)) * 100));
+                        return { currentTierName: 'Silver Level Achieved!', nextTierText: `${needed.toLocaleString()} Pts to Gold VIP`, percentage: pct, description: 'Silver status active! Earn up to 15,000 pts to lock in Gold VIP status for the year.' };
+                    } else {
+                        return { currentTierName: 'Gold Paw VIP Achieved! 🥇', nextTierText: 'Max Tier Reached', percentage: 100, description: 'Congratulations! Top annual tier secured through the end of the year.' };
+                    }
                 },
 
                 async init() {
@@ -1807,9 +1837,7 @@
                     try {
                         const snap = await db.collection('gallery_photos').orderBy('createdAt', 'desc').get();
                         if (!snap.empty) {
-                            const dbPhotos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                            // Filter out defaults so only persistent Firestore photos show up
-                            this.photoGrid = dbPhotos;
+                            this.photoGrid = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         }
                     } catch (err) {
                         console.log('Using default gallery photos');
@@ -2147,6 +2175,7 @@
                                 address: '',
                                 points: 0,
                                 lifetimePoints: 0,
+                                yearlyPoints: 0,
                                 coupons: [],
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
@@ -2188,9 +2217,11 @@
 
                                     const refData = referrerDoc.data();
                                     const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
+                                    const refYearly = (refData.yearlyPoints || 0) + 1000;
                                     await db.collection('clients').doc(referredByUid).update({
                                         points: (refData.points || 0) + 1000,
                                         lifetimePoints: refLifetime,
+                                        yearlyPoints: refYearly,
                                         referralsCount: (refData.referralsCount || 0) + 1
                                     });
                                 }
@@ -2216,6 +2247,7 @@
                                 address: '',
                                 points: 0,
                                 lifetimePoints: 0,
+                                yearlyPoints: 0,
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
@@ -2293,9 +2325,20 @@
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
 
+                        const currentYear = new Date().getFullYear().toString();
+                        if (this.userData.statusYear !== currentYear) {
+                            this.userData.yearlyPoints = 0;
+                            this.userData.statusYear = currentYear;
+                            await db.collection('clients').doc(uid).update({ yearlyPoints: 0, statusYear: currentYear });
+                        }
+
                         if (this.userData.lifetimePoints === undefined) {
                             this.userData.lifetimePoints = this.userData.points || 0;
                             await db.collection('clients').doc(uid).update({ lifetimePoints: this.userData.lifetimePoints });
+                        }
+                        if (this.userData.yearlyPoints === undefined) {
+                            this.userData.yearlyPoints = this.userData.points || 0;
+                            await db.collection('clients').doc(uid).update({ yearlyPoints: this.userData.yearlyPoints, statusYear: currentYear });
                         }
 
                         if (oldPoints !== undefined && oldPoints !== this.userData.points) {
@@ -2323,9 +2366,11 @@
                                 if (!lastBdayBonus) {
                                     const newPts = (this.userData.points || 0) + 250;
                                     const newLifetime = (this.userData.lifetimePoints || 0) + 250;
-                                    await db.collection('clients').doc(uid).update({ points: newPts, lifetimePoints: newLifetime });
+                                    const newYearly = (this.userData.yearlyPoints || 0) + 250;
+                                    await db.collection('clients').doc(uid).update({ points: newPts, lifetimePoints: newLifetime, yearlyPoints: newYearly });
                                     this.userData.points = newPts;
                                     this.userData.lifetimePoints = newLifetime;
+                                    this.userData.yearlyPoints = newYearly;
                                     localStorage.setItem('bday_bonus_' + new Date().getFullYear(), 'true');
                                     this.petBirthdayAlert = true;
                                 }
@@ -2631,7 +2676,7 @@
                 },
 
                 async updateClientPoints() {
-                    if (!this.adminForm.targetUid) return alert('Please select a client from the list.');
+                    if (!this.adminForm.targetUid) return alert('Select a client.');
                     
                     const targetRef = db.collection('clients').doc(this.adminForm.targetUid);
                     const doc = await targetRef.get();
@@ -2640,16 +2685,19 @@
                     
                     const currentPts = doc.data().points || 0;
                     const currentLifetime = doc.data().lifetimePoints || currentPts;
+                    const currentYearly = doc.data().yearlyPoints || currentPts;
                     const delta = parseInt(this.adminForm.pointsDelta || 0);
                     const newPts = currentPts + delta;
                     const newLifetime = delta > 0 ? currentLifetime + delta : currentLifetime;
+                    const newYearly = delta > 0 ? currentYearly + delta : currentYearly;
                     
-                    await targetRef.update({ points: newPts, lifetimePoints: newLifetime });
+                    await targetRef.update({ points: newPts, lifetimePoints: newLifetime, yearlyPoints: newYearly });
                     alert(`Updated client points from ${currentPts} to ${newPts}!`);
                     
                     if (this.adminForm.targetUid === this.user.uid) {
                         this.userData.points = newPts;
                         this.userData.lifetimePoints = newLifetime;
+                        this.userData.yearlyPoints = newYearly;
                         firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${newPts} Pts.`);
                     }
                     
