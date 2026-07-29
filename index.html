@@ -2176,6 +2176,7 @@
                                 points: 0,
                                 lifetimePoints: 0,
                                 yearlyPoints: 0,
+                                statusYear: new Date().getFullYear().toString(),
                                 coupons: [],
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
@@ -2248,6 +2249,7 @@
                                 points: 0,
                                 lifetimePoints: 0,
                                 yearlyPoints: 0,
+                                statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: false,
@@ -2401,7 +2403,8 @@
                             this.houseChecklist = { ...this.userData.houseChecklist };
                         }
                         
-                        this.isAdmin = !!this.userData.isAdmin || (this.user && this.user.email && this.user.email.includes('steven'));
+                        // 👑 RESTORED ADMIN RECOGNITION (matches email or explicit flag)
+                        this.isAdmin = !!this.userData.isAdmin || (this.user && this.user.email && (this.user.email.includes('steven') || this.user.email === 'madcathouse92@gmail.com'));
                     }
                 },
 
