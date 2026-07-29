@@ -1140,13 +1140,13 @@
                 <button @click="updateClientPoints()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Update Client Points</button>
             </div>
 
-            <!-- TAB 2: SERVICE AREA MANAGEMENT (BULK ADD) -->
+            <!-- TAB 2: SERVICE AREA MANAGEMENT (FIRESTORE BACKED) -->
             <div x-show="adminTab === 'areas'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names (e.g., <em>Madison, 47250, 45157</em>).</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names (e.g., <em>Madison, 47250, 40218</em>). Saved directly to Firestore.</p>
 
                 <div class="space-y-2">
                     <textarea x-model="bulkAreaInput" rows="3" placeholder="Paste locations separated by commas..." class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
-                    <button @click="addBulkServiceAreas()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-xs transition">Add All Locations</button>
+                    <button @click="addBulkServiceAreas()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-xs transition">Save & Sync to Firestore</button>
                 </div>
 
                 <div class="space-y-2 max-h-40 overflow-y-auto pt-2 border-t dark:border-gray-700">
@@ -1491,14 +1491,7 @@
                 clientList: [],
                 adminForm: { targetUid: '', pointsDelta: 0 },
                 adminTab: 'points',
-                serviceAreas: [
-                    { city: 'New Richmond', zips: ['45157', '45150'] },
-                    { city: 'Amelia', zips: ['45102', '45101'] },
-                    { city: 'Batavia', zips: ['45103'] },
-                    { city: 'Anderson', zips: ['45244', '45255'] },
-                    { city: 'Cincinnati', zips: ['45245', '45202', '45208', '40218'] },
-                    { city: 'Madison', zips: ['47250'] }
-                ],
+                serviceAreas: [],
                 bulkAreaInput: '',
                 reviewsList: [
                     { stars: 5, comment: 'Steven is absolute gold! He kept us updated with photos and detailed notes every visit. Our cats loved him right away!', author: 'Sarah M. (Cat Owner)' },
@@ -1507,8 +1500,9 @@
                 ],
                 newReview: { stars: 5, comment: '', author: '' },
 
-                init() {
+                async init() {
                     this.scheduleNextToast();
+                    await this.loadServiceAreasFromFirestore();
 
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
@@ -1544,6 +1538,29 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                async loadServiceAreasFromFirestore() {
+                    try {
+                        const docRef = db.collection('settings').doc('serviceConfig');
+                        const doc = await docRef.get();
+                        if (doc.exists) {
+                            this.serviceAreas = doc.data().areas || [];
+                        } else {
+                            // Default seed data if Firestore is empty
+                            this.serviceAreas = [
+                                { city: 'New Richmond', zips: ['45157', '45150'] },
+                                { city: 'Amelia', zips: ['45102', '45101'] },
+                                { city: 'Batavia', zips: ['45103'] },
+                                { city: 'Anderson', zips: ['45244', '45255'] },
+                                { city: 'Cincinnati', zips: ['45245', '45202', '45208', '40218'] },
+                                { city: 'Madison', zips: ['47250'] }
+                            ];
+                            await docRef.set({ areas: this.serviceAreas });
+                        }
+                    } catch (err) {
+                        console.error('Error loading service areas from Firestore:', err);
+                    }
                 },
 
                 scheduleNextToast() {
@@ -1600,7 +1617,7 @@
                     }
                 },
 
-                addBulkServiceAreas() {
+                async addBulkServiceAreas() {
                     if (!this.bulkAreaInput.trim()) return;
 
                     const newItems = this.bulkAreaInput
@@ -1626,12 +1643,24 @@
                         }
                     });
 
-                    this.bulkAreaInput = '';
-                    alert(`Successfully added ${addedCount} new location group(s)!`);
+                    try {
+                        await db.collection('settings').doc('serviceConfig').set({ areas: this.serviceAreas });
+                        this.bulkAreaInput = '';
+                        alert(`Successfully added ${addedCount} new location group(s) and synced to Firestore!`);
+                    } catch (err) {
+                        alert('Error saving to Firestore: ' + err.message);
+                    }
                 },
 
-                removeServiceArea(idx) {
-                    this.serviceAreas.splice(idx, 1);
+                async removeServiceArea(idx) {
+                    if (confirm('Remove this service location?')) {
+                        this.serviceAreas.splice(idx, 1);
+                        try {
+                            await db.collection('settings').doc('serviceConfig').set({ areas: this.serviceAreas });
+                        } catch (err) {
+                            alert('Error updating Firestore: ' + err.message);
+                        }
+                    }
                 },
 
                 addNewReview() {
