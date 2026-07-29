@@ -369,15 +369,18 @@
                 </div>
             </section>
 
+            <!-- DYNAMIC CLIENT REVIEWS SECTION -->
             <section class="space-y-4">
-                <div class="text-center max-w-lg mx-auto">
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto">
+                    <div class="text-center sm:text-left">
+                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <template x-for="(rev, idx) in reviewsList" :key="idx">
-                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2">
+                    <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2 relative group">
                             <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
                             <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
                             <p class="text-[11px] font-bold text-gray-900 dark:text-white" x-text="`— ${rev.author}`"></p>
@@ -1237,9 +1240,11 @@
 
             <!-- TAB 3: REVIEW MODERATION & APPROVAL -->
             <div x-show="adminTab === 'reviews'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Approve pending client reviews to publish them live to the homepage.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Approve pending client reviews to publish them live to the homepage, or delete unwanted reviews.</p>
 
-                <div class="space-y-3 max-h-64 overflow-y-auto">
+                <!-- Pending Reviews (Unapproved) -->
+                <div class="space-y-3 max-h-48 overflow-y-auto">
+                    <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Pending Approval:</p>
                     <template x-for="rev in pendingReviews" :key="rev.id">
                         <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border dark:border-gray-600 space-y-2 text-xs">
                             <div class="flex justify-between items-center">
@@ -1254,7 +1259,24 @@
                         </div>
                     </template>
                     <template x-if="pendingReviews.length === 0">
-                        <p class="text-gray-400 text-xs text-center py-4 italic">No pending reviews awaiting approval.</p>
+                        <p class="text-gray-400 text-xs italic">No pending reviews awaiting approval.</p>
+                    </template>
+                </div>
+
+                <!-- Published Reviews (Live on Site - Deletable) -->
+                <div class="space-y-3 max-h-48 overflow-y-auto pt-3 border-t dark:border-gray-700">
+                    <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Currently Published Reviews:</p>
+                    <template x-for="rev in reviewsList" :key="rev.id">
+                        <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border dark:border-gray-600 space-y-2 text-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-gray-900 dark:text-white" x-text="rev.author"></span>
+                                <span class="text-amber-400" x-text="'★'.repeat(rev.stars || 5)"></span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 italic" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
+                            <div class="flex justify-end pt-1">
+                                <button @click="deleteReview(rev.id)" class="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded-md transition text-[11px]">Delete Review</button>
+                            </div>
+                        </div>
                     </template>
                 </div>
 
@@ -1669,11 +1691,7 @@
                 adminTab: 'points',
                 serviceAreas: [],
                 bulkAreaInput: '',
-                reviewsList: [
-                    { stars: 5, comment: 'Steven is absolute gold! He kept us updated with photos and detailed notes every visit. Our cats loved him right away!', author: 'Sarah M. (Cat Owner)' },
-                    { stars: 5, comment: 'Super dependable for daily dog walks. Always on time, respectful of our home, and the Paw Points program is an awesome bonus.', author: 'David R. (Dog Owner)' },
-                    { stars: 5, comment: 'Peace of mind while on vacation is priceless. Steven followed all feeding instructions to a T. Highly recommended!', author: 'Jessica T. (Multi-Pet Owner)' }
-                ],
+                reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
 
                 get clientTier() {
@@ -1825,11 +1843,12 @@
                     try {
                         const snap = await db.collection('reviews').where('approved', '==', true).get();
                         if (!snap.empty) {
-                            const dbReviews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                            this.reviewsList = [...dbReviews];
+                            this.reviewsList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        } else {
+                            this.reviewsList = [];
                         }
                     } catch (err) {
-                        console.log('Using default reviews');
+                        console.log('Error loading reviews');
                     }
                 },
 
@@ -1870,7 +1889,7 @@
                             await db.collection('reviews').doc(reviewId).delete();
                             await this.fetchPendingReviews();
                             await this.loadApprovedReviews();
-                            alert('Review deleted permanently.');
+                            alert('Review deleted successfully.');
                         } catch (err) {
                             alert('Error deleting review: ' + err.message);
                         }
@@ -2086,14 +2105,20 @@
                     }
                 },
 
-                addNewFaq() {
+                async addNewFaq() {
                     if (this.newFaq.question.trim() && this.newFaq.answer.trim()) {
-                        this.faqList.push({
+                        const faqObj = {
                             question: this.newFaq.question.trim(),
                             answer: this.newFaq.answer.trim()
-                        });
-                        this.newFaq = { question: '', answer: '' };
-                        alert('New FAQ question published successfully!');
+                        };
+                        try {
+                            await db.collection('faqs').add(faqObj);
+                            this.faqList.push(faqObj);
+                            this.newFaq = { question: '', answer: '' };
+                            alert('FAQ published and saved to Firestore!');
+                        } catch (err) {
+                            alert('Error saving FAQ: ' + err.message);
+                        }
                     } else {
                         alert('Please enter both a question title and answer.');
                     }
@@ -2193,7 +2218,7 @@
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: [],
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
-                                isAdmin: false,
+                                isAdmin: res.user.email === 'madcathouse92@gmail.com' || res.user.email.includes('steven'),
                                 referralCode: personalRefCode,
                                 referralsCount: 0,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2266,7 +2291,7 @@
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
-                                isAdmin: false,
+                                isAdmin: this.authForm.email === 'madcathouse92@gmail.com' || this.authForm.email.includes('steven'),
                                 referralCode: personalRefCode,
                                 referredBy: referredByUid,
                                 referralsCount: 0,
@@ -2335,7 +2360,8 @@
                 },
 
                 async fetchUserData(uid) {
-                    const doc = await db.collection('clients').doc(uid).get();
+                    const userRef = db.collection('clients').doc(uid);
+                    const doc = await userRef.get();
                     if (doc.exists) {
                         const oldPoints = this.userData.points;
                         this.userData = doc.data();
@@ -2345,16 +2371,23 @@
                         if (this.userData.statusYear !== currentYear) {
                             this.userData.yearlyPoints = 0;
                             this.userData.statusYear = currentYear;
-                            await db.collection('clients').doc(uid).update({ yearlyPoints: 0, statusYear: currentYear });
+                            await userRef.update({ yearlyPoints: 0, statusYear: currentYear });
                         }
 
                         if (this.userData.lifetimePoints === undefined) {
                             this.userData.lifetimePoints = this.userData.points || 0;
-                            await db.collection('clients').doc(uid).update({ lifetimePoints: this.userData.lifetimePoints });
+                            await userRef.update({ lifetimePoints: this.userData.lifetimePoints });
                         }
                         if (this.userData.yearlyPoints === undefined) {
                             this.userData.yearlyPoints = this.userData.points || 0;
-                            await db.collection('clients').doc(uid).update({ yearlyPoints: this.userData.yearlyPoints, statusYear: currentYear });
+                            await userRef.update({ yearlyPoints: this.userData.yearlyPoints, statusYear: currentYear });
+                        }
+
+                        // Permanently ensure admin flag is true in database if email matches
+                        const isOwner = this.user && this.user.email && (this.user.email === 'madcathouse92@gmail.com' || this.user.email.includes('steven'));
+                        if (isOwner && !this.userData.isAdmin) {
+                            await userRef.update({ isAdmin: true });
+                            this.userData.isAdmin = true;
                         }
 
                         if (oldPoints !== undefined && oldPoints !== this.userData.points) {
@@ -2370,7 +2403,7 @@
 
                         if (!this.userData.referralCode) {
                             const newRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-                            await db.collection('clients').doc(uid).update({ referralCode: newRefCode });
+                            await userRef.update({ referralCode: newRefCode });
                             this.userData.referralCode = newRefCode;
                         }
 
@@ -2383,7 +2416,7 @@
                                     const newPts = (this.userData.points || 0) + 250;
                                     const newLifetime = (this.userData.lifetimePoints || 0) + 250;
                                     const newYearly = (this.userData.yearlyPoints || 0) + 250;
-                                    await db.collection('clients').doc(uid).update({ points: newPts, lifetimePoints: newLifetime, yearlyPoints: newYearly });
+                                    await userRef.update({ points: newPts, lifetimePoints: newLifetime, yearlyPoints: newYearly });
                                     this.userData.points = newPts;
                                     this.userData.lifetimePoints = newLifetime;
                                     this.userData.yearlyPoints = newYearly;
@@ -2417,8 +2450,7 @@
                             this.houseChecklist = { ...this.userData.houseChecklist };
                         }
                         
-                        // 👑 RESTORED ADMIN RECOGNITION
-                        this.isAdmin = !!this.userData.isAdmin || (this.user && this.user.email && (this.user.email.includes('steven') || this.user.email === 'madcathouse92@gmail.com'));
+                        this.isAdmin = !!this.userData.isAdmin || isOwner;
                     }
                 },
 
@@ -2606,6 +2638,7 @@
                     }
                     if (tab === 'reviews') {
                         await this.fetchPendingReviews();
+                        await this.loadApprovedReviews();
                     }
                     if (tab === 'badge' || tab === 'flyer') {
                         this.$nextTick(() => this.generateAdminBadge());
