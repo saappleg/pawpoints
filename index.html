@@ -1672,6 +1672,7 @@
                     this.scheduleNextToast();
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
+                    await this.loadGalleryPhotosFromFirestore();
 
                     window.addEventListener('pwa-install-ready', () => {
                         this.showInstallBanner = true;
@@ -1799,6 +1800,18 @@
                         }
                     } catch (err) {
                         console.log('Using default reviews');
+                    }
+                },
+
+                async loadGalleryPhotosFromFirestore() {
+                    try {
+                        const snap = await db.collection('gallery_photos').orderBy('createdAt', 'desc').get();
+                        if (!snap.empty) {
+                            const dbPhotos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                            this.photoGrid = [...dbPhotos, ...this.photoGrid];
+                        }
+                    } catch (err) {
+                        console.log('Using default gallery photos');
                     }
                 },
 
@@ -1995,22 +2008,38 @@
                     }
                 },
 
-                addGalleryPhoto() {
+                async addGalleryPhoto() {
                     if (this.newPhoto.url.trim()) {
-                        this.photoGrid.unshift({
+                        const photoObj = {
                             url: this.newPhoto.url.trim(),
-                            caption: this.newPhoto.caption.trim() || 'Visit Photo'
-                        });
-                        this.newPhoto = { url: '', caption: '' };
-                        alert('Photo added to daily care gallery!');
+                            caption: this.newPhoto.caption.trim() || 'Visit Photo',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+
+                        try {
+                            const docRef = await db.collection('gallery_photos').add(photoObj);
+                            this.photoGrid.unshift({ id: docRef.id, ...photoObj });
+                            this.newPhoto = { url: '', caption: '' };
+                            alert('Photo saved and added to gallery permanently!');
+                        } catch (err) {
+                            alert('Error saving photo to Firestore: ' + err.message);
+                        }
                     } else {
                         alert('Please enter a valid image URL.');
                     }
                 },
 
-                removeGalleryPhoto(idx) {
+                async removeGalleryPhoto(idx) {
                     if (confirm('Are you sure you want to remove this photo from the gallery?')) {
+                        const photoToRemove = this.photoGrid[idx];
                         this.photoGrid.splice(idx, 1);
+                        if (photoToRemove && photoToRemove.id) {
+                            try {
+                                await db.collection('gallery_photos').doc(photoToRemove.id).delete();
+                            } catch (err) {
+                                console.error('Error deleting photo from Firestore:', err);
+                            }
+                        }
                     }
                 },
 
@@ -2098,7 +2127,7 @@
                         if (!doc.exists) {
                             const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
                             
-                            // 🚀 Make Webhook Payload for Google Signup
+                            // Webhook trigger for Google Sign-up
                             fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -2167,7 +2196,7 @@
                                 }
                             }
 
-                            // 🚀 Make Webhook Payload for Email Signup
+                            // Webhook trigger for Email Sign-up
                             fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
