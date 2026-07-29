@@ -61,12 +61,22 @@
         }
 
         .rainbow-ring {
-            padding: 4px;
+            padding: 2px; /* Reduces the gap to a thin, sharp border */
             background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
             border-radius: 9999px;
             box-shadow: 0 4px 15px rgba(234, 179, 8, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .rainbow-ring img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 9999px;
+        }
         .rainbow-frame {
             position: relative;
             border-radius: 1.5rem;
