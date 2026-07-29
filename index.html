@@ -1547,7 +1547,6 @@
                         if (doc.exists) {
                             this.serviceAreas = doc.data().areas || [];
                         } else {
-                            // Default seed data if Firestore is empty
                             this.serviceAreas = [
                                 { city: 'New Richmond', zips: ['45157', '45150'] },
                                 { city: 'Amelia', zips: ['45102', '45101'] },
@@ -1584,7 +1583,7 @@
                     localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
                 },
 
-                checkServiceArea() {
+                async checkServiceArea() {
                     const rawQuery = this.zipInput.trim();
                     if (!rawQuery || rawQuery.length < 2) {
                         this.serviceResult = null;
@@ -1600,7 +1599,9 @@
                         return matchesCity || matchesZip;
                     });
 
+                    let isCovered = false;
                     if (matchedArea) {
+                        isCovered = true;
                         this.serviceResult = {
                             covered: true,
                             message: `🎉 Match found! ${matchedArea.city} (${matchedArea.zips.join(', ')}) is in our primary coverage area.`
@@ -1613,7 +1614,18 @@
                             };
                         } else {
                             this.serviceResult = null;
+                            return;
                         }
+                    }
+
+                    try {
+                        await db.collection('search_logs').add({
+                            query: rawQuery,
+                            covered: isCovered,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } catch (err) {
+                        console.error('Failed to log search input:', err);
                     }
                 },
 
