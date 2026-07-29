@@ -1219,15 +1219,15 @@
 
             <!-- Tab Switcher -->
             <div class="flex gap-1.5 border-b dark:border-gray-700 pb-3 text-xs font-bold overflow-x-auto">
-                <button @click="adminTab = 'points'" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Points</button>
+                <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Points</button>
                 <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Areas</button>
                 <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Reviews</button>
                 <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Photos</button>
                 <button @click="adminTab = 'faq'" :class="adminTab === 'faq' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">FAQ</button>
-                <button @click="adminTab = 'flyer'" :class="adminTab === 'flyer' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📄 Flyer</button>
+                <button @click="adminTab = 'flyer'; $nextTick(() => generateAdminBadge())" :class="adminTab === 'flyer' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📄 Flyer</button>
                 <button @click="adminTab = 'broadcast'" :class="adminTab === 'broadcast' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📢 Broadcast</button>
                 <button @click="adminTab = 'badge'; $nextTick(() => generateAdminBadge())" :class="adminTab === 'badge' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">🖨️ QR Badge</button>
-                <button @click="adminTab = 'export'" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📤 Export</button>
+                <button @click="adminTab = 'export'; fetchClientsList()" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📤 Export</button>
             </div>
 
             <!-- TAB 1: POINTS MANAGEMENT -->
@@ -1430,7 +1430,7 @@
         </div>
     </div>
 
-    <!-- PRINTABLE FLYER TEMPLATE (STYLED LIKE REFERENCE) -->
+    <!-- PRINTABLE FLYER TEMPLATE -->
     <div id="printable-flyer" class="hidden print:block bg-white text-black p-8 max-w-2xl mx-auto space-y-6 text-center border-4 border-purple-900 rounded-2xl">
         <div class="bg-purple-900 text-white p-6 rounded-xl space-y-2">
             <span class="text-xs uppercase font-black tracking-widest bg-amber-400 text-purple-950 px-3 py-1 rounded-full">Professional In-Home Care</span>
@@ -1463,7 +1463,7 @@
             <template x-for="i in 5">
                 <div class="border-2 border-purple-900 p-2 rounded flex flex-col justify-between h-40 bg-white">
                     <span class="font-black text-[9px] leading-tight">PET CARE BY STEVEN</span>
-                    <span class="font-mono text-[11px] my-auto font-black rotate-90 sm:rotate-0" x-text="flyerData.phone"></span>
+                    <span class="font-mono text-[11px] my-auto font-black" x-text="flyerData.phone"></span>
                     <span class="text-[8px] truncate text-gray-500" x-text="flyerData.url"></span>
                 </div>
             </template>
