@@ -58,7 +58,6 @@
     <style>
         [x-cloak] { display: none !important; }
         
-        /* BOLD & DISTINCT RAINBOW BORDER STYLING */
         .rainbow-top-bar {
             height: 6px;
             background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
@@ -91,7 +90,6 @@
             box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
         }
 
-        /* SMOOTH LAG-FREE ACCORDION TRANSITION */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -103,7 +101,6 @@
             opacity: 1;
         }
 
-        /* PRINT STYLING FOR FLYER & TEAR-OFFS */
         @media print {
             body * {
                 visibility: hidden;
@@ -128,10 +125,8 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
 
-    <!-- Rainbow Accent Bar Top -->
     <div class="rainbow-top-bar sticky top-0 z-40"></div>
 
-    <!-- PWA INSTALL BANNER PROMPT -->
     <div x-show="showInstallBanner" x-transition x-cloak class="bg-brand-600 text-white px-4 py-2 text-xs font-bold flex justify-between items-center shadow-md">
         <div class="flex items-center gap-2">
             <span>📱</span>
@@ -143,11 +138,9 @@
         </div>
     </div>
 
-    <!-- Navigation Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
-            <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="rainbow-ring h-14 w-14 transition-transform hover:scale-105">
                     <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="object-cover rounded-full" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
@@ -158,7 +151,6 @@
                 </div>
             </div>
 
-            <!-- Main Navigation Links -->
             <nav class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl">
                 <button @click="currentView = 'home'" :class="currentView === 'home' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition">
                     🏠 Home
@@ -169,7 +161,6 @@
                 </button>
             </nav>
 
-            <!-- Actions Bar -->
             <div class="flex items-center space-x-2">
                 <template x-if="user && isAdmin">
                     <button 
@@ -203,7 +194,6 @@
             </div>
         </div>
 
-        <!-- Mobile View Switcher Bar -->
         <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
             <button @click="currentView = 'home'" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
                 🏠 Home & Services
@@ -214,7 +204,6 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8">
 
         <div x-show="loading" class="text-center py-12">
@@ -222,10 +211,8 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <!-- VIEW 1: BUSINESS HOME PAGE -->
         <div x-show="!loading && currentView === 'home'" class="space-y-10">
             
-            <!-- Hero Section framed with Distinct Rainbow Frame -->
             <section class="rainbow-frame shadow-xl">
                 <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.25rem] p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -249,7 +236,6 @@
                 </div>
             </section>
 
-            <!-- FREE MEET & GREET REQUEST BANNER -->
             <section class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="space-y-1 text-center md:text-left">
                     <div class="flex items-center justify-center md:justify-start gap-2">
@@ -265,7 +251,6 @@
                 </a>
             </section>
 
-            <!-- Services Grid -->
             <section class="space-y-4">
                 <div class="text-center max-w-lg mx-auto">
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
@@ -297,7 +282,6 @@
                 </div>
             </section>
 
-            <!-- DYNAMIC DAILY VISIT HIGHLIGHTS PHOTO GALLERY -->
             <section class="space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto">
                     <div class="text-center sm:text-left">
@@ -319,7 +303,6 @@
                 </div>
             </section>
 
-            <!-- INTERACTIVE PAW POINTS REWARDS ESTIMATOR -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
@@ -348,7 +331,6 @@
                 </div>
             </section>
 
-            <!-- MEET THE SITTER BIO SECTION -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <div class="rainbow-ring w-28 h-28 shrink-0">
@@ -369,7 +351,6 @@
                 </div>
             </section>
 
-            <!-- SERVICE AREA / SMART AUTO-SEARCH CHECKER -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
@@ -394,7 +375,6 @@
                 </div>
             </section>
 
-            <!-- DYNAMIC CLIENT REVIEWS & TESTIMONIALS -->
             <section class="space-y-4">
                 <div class="text-center max-w-lg mx-auto">
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
@@ -412,7 +392,6 @@
                 </div>
             </section>
 
-            <!-- FULLY DYNAMIC ACCORDION FAQ SECTION -->
             <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto">
                     <div class="text-center sm:text-left">
@@ -440,7 +419,6 @@
                 </div>
             </section>
 
-            <!-- Quick Action CTA -->
             <section class="text-center py-8 bg-indigo-50 dark:bg-gray-800 rounded-2xl border border-indigo-100 dark:border-gray-700 p-6 shadow-sm">
                 <h4 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h4>
                 <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium">Access your client account to view coupons, referral links, and pet notes.</p>
@@ -450,14 +428,11 @@
             </section>
         </div>
 
-        <!-- VIEW 2: PAW POINTS LOYALTY & CLIENT DASHBOARD -->
         <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
             
-            <!-- AUTHENTICATION VIEW -->
             <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
                 <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
-                <!-- GOOGLE SIGN IN BUTTON -->
                 <div x-show="authMode !== 'forgot'">
                     <button @click="handleGoogleAuth()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border border-gray-300 dark:border-gray-600 text-sm shadow-sm transition">
                         <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -475,7 +450,6 @@
                     </div>
                 </div>
 
-                <!-- EMAIL LOGIN / SIGNUP FORM -->
                 <form x-show="authMode !== 'forgot'" @submit.prevent="handleAuth()" class="space-y-4">
                     <template x-if="authMode === 'signup'">
                         <div>
@@ -512,7 +486,6 @@
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
-                <!-- FORGOT PASSWORD FORM -->
                 <form x-show="authMode !== 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     
@@ -536,7 +509,6 @@
                 </div>
             </div>
 
-            <!-- UNVERIFIED EMAIL BANNER (IF LOGGED IN BUT UNVERIFIED) -->
             <template x-if="user && !isVerified">
                 <div class="max-w-md mx-auto p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl shadow-sm text-amber-900 dark:text-amber-200 space-y-3">
                     <div class="flex items-center gap-2">
@@ -557,17 +529,14 @@
                 </div>
             </template>
 
-            <!-- LOGGED-IN & VERIFIED DASHBOARD -->
             <template x-if="user && isVerified">
                 <div class="space-y-6">
 
-                    <!-- Admin Notice Banner (Appears only when Admin Mode Switch is ON) -->
                     <div x-show="isAdmin && adminModeActive" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
                         <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Controls Active</span>
                         <button @click="openAdminModal('points')" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
                     </div>
 
-                    <!-- PET BIRTHDAY & FIRST VISIT BADGE BANNER -->
                     <template x-if="petBirthdayAlert || isFirstVisitCompleted">
                         <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between gap-4 text-xs">
                             <div class="flex items-center gap-3">
@@ -580,7 +549,6 @@
                         </div>
                     </template>
 
-                    <!-- ONBOARDING GUIDE FOR CLIENTS -->
                     <div x-data="{ showGuide: true }" class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-5 shadow-sm space-y-3">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-2">
@@ -592,7 +560,7 @@
                             </button>
                         </div>
 
-                        <div x-show="showGuide" x-collapse class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs">
+                        <div class="accordion-content grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs" :class="{ 'open': showGuide }">
                             <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border dark:border-gray-700 space-y-1">
                                 <span class="font-black text-brand-600 dark:text-brand-400 text-xs">1. Free Meet & Greet</span>
                                 <p class="text-[11px] text-gray-600 dark:text-gray-300 leading-snug">Schedule a quick 15-min in-person intro to cover feedings, walk routes, and home keys.</p>
@@ -612,7 +580,6 @@
                         </div>
                     </div>
 
-                    <!-- Points Banner & Rolling Yearly Tier Status -->
                     <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 border border-slate-800">
                         <div>
                             <div class="flex items-center gap-2">
@@ -635,7 +602,6 @@
                         </div>
                     </div>
 
-                    <!-- REFERRAL REWARDS CARD -->
                     <div class="bg-indigo-600 dark:bg-indigo-950 border border-indigo-700 dark:border-indigo-800 text-white p-6 rounded-2xl shadow-md space-y-4">
                         <div class="flex justify-between items-start">
                             <div>
@@ -662,7 +628,6 @@
                         </div>
                     </div>
 
-                    <!-- PET PROFILES & VET DETAILS SECTION -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-700 pb-4">
                             <div>
@@ -694,7 +659,6 @@
                             </div>
                         </div>
 
-                        <!-- EMERGENCY VET AUTHORIZATION RELEASE CARD -->
                         <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                             <div class="space-y-0.5 text-center sm:text-left">
                                 <span class="font-bold text-amber-950 dark:text-amber-200 flex items-center gap-1.5 justify-center sm:justify-start">
@@ -709,7 +673,6 @@
                             </button>
                         </div>
 
-                        <!-- DISPLAY MODE -->
                         <div x-show="!isEditingPets" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
@@ -738,7 +701,6 @@
                                 </template>
                             </div>
 
-                            <!-- HOME ACCESS & LOCKBOX -->
                             <div class="border-t dark:border-gray-700 pt-4">
                                 <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access & Key Instructions</h4>
                                 <div class="bg-gray-50/60 dark:bg-gray-800/60 p-4 rounded-xl border dark:border-gray-700 space-y-3 text-xs">
@@ -759,7 +721,6 @@
                                 </div>
                             </div>
 
-                            <!-- EMERGENCY CONTACTS & AUTHORIZED PICKUP ROSTER (DISPLAY) -->
                             <div class="border-t dark:border-gray-700 pt-4">
                                 <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">👥 Emergency Contacts & Authorized Pickup Roster</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -795,7 +756,6 @@
                             </div>
                         </div>
 
-                        <!-- EDITABLE PANEL MODE -->
                         <div x-show="isEditingPets" class="space-y-6" x-cloak>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
@@ -845,7 +805,6 @@
                                 </template>
                             </div>
 
-                            <!-- HOME ACCESS EDIT -->
                             <div class="border-t dark:border-gray-700 pt-4 mt-4">
                                 <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access Details</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
@@ -864,7 +823,6 @@
                                 </div>
                             </div>
 
-                            <!-- EMERGENCY CONTACTS EDITABLE ROSTER -->
                             <div class="border-t dark:border-gray-700 pt-4 mt-4 space-y-3">
                                 <div class="flex justify-between items-center">
                                     <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider">👥 Emergency Contacts & Authorized Pickup Roster</h4>
@@ -897,7 +855,6 @@
                         </div>
                     </div>
 
-                    <!-- DIRECT CLIENT REVIEW SUBMISSION CARD (WITH 1-5 STARS) -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
                         <h3 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
                             <span>⭐ Leave a Review for Steven</span>
@@ -925,7 +882,6 @@
                         </form>
                     </div>
 
-                    <!-- Active Coupons Section -->
                     <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="font-bold text-base mb-3 text-gray-900 dark:text-white">Your Redeemed Coupons</h3>
                         <div class="space-y-3">
@@ -949,7 +905,6 @@
                         </div>
                     </div>
 
-                    <!-- REWARDS SECTION & SUPPORT TIPPING -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
                         <div class="flex justify-between items-center border-b dark:border-gray-700 pb-4">
                             <div>
@@ -958,7 +913,6 @@
                             </div>
                         </div>
 
-                        <!-- Tip Sitter / Buy a Treat Widget -->
                         <div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 p-4 rounded-xl space-y-3">
                             <div class="flex items-center justify-between">
                                 <h4 class="font-bold text-xs text-indigo-950 dark:text-indigo-200">☕ Leave a Tip / Buy Steven a Treat (Earns 10x Bonus Pts!)</h4>
@@ -978,7 +932,6 @@
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- $10 Reward -->
                             <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col justify-between gap-3 bg-gray-50/40 dark:bg-gray-800/80">
                                 <div class="flex justify-between items-start">
                                     <div>
@@ -1001,7 +954,6 @@
                                 </button>
                             </div>
 
-                            <!-- $20 Reward -->
                             <div class="border dark:border-gray-700 p-4 rounded-xl flex flex-col justify-between gap-3 bg-gray-50/40 dark:bg-gray-800/80">
                                 <div class="flex justify-between items-start">
                                     <div>
