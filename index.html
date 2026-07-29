@@ -117,11 +117,11 @@
                 top: 0;
                 width: 100%;
                 margin: 0;
-                padding: 20px;
+                padding: 10px;
                 background: white !important;
                 color: black !important;
                 box-shadow: none !important;
-                border: none !important;
+                border: 2px solid #000 !important;
             }
         }
     </style>
@@ -2225,7 +2225,6 @@
                         this.userData = doc.data();
                         this.userData.coupons = this.userData.coupons || [];
 
-                        // Ensure lifetimePoints is initialized
                         if (this.userData.lifetimePoints === undefined) {
                             this.userData.lifetimePoints = this.userData.points || 0;
                             await db.collection('clients').doc(uid).update({ lifetimePoints: this.userData.lifetimePoints });
