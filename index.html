@@ -72,8 +72,6 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            flex-shrink: 0;
-            aspect-ratio: 1 / 1;
         }
 
         .rainbow-ring img {
@@ -129,22 +127,10 @@
 
     <div class="rainbow-top-bar sticky top-0 z-40"></div>
 
-    <div x-show="showInstallBanner" x-transition x-cloak class="bg-brand-600 text-white px-4 py-2 text-xs font-bold flex justify-between items-center shadow-md">
-        <div class="flex items-center gap-2">
-            <span>📱</span>
-            <span>Install Pet Care by Steven for quick access and offline support!</span>
-        </div>
-        <div class="flex items-center space-x-2">
-            <button @click="installPwa()" class="bg-white text-brand-700 px-3 py-1 rounded-lg shadow-sm hover:bg-brand-50 transition">Install App</button>
-            <button @click="showInstallBanner = false" class="text-white hover:text-indigo-200 px-1">✕</button>
-        </div>
-    </div>
-
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <!-- Cleaned up Logo Container without double ring -->
                 <div class="h-14 w-14 shrink-0 transition-transform hover:scale-105">
                     <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="w-full h-full object-cover rounded-full shadow-md" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
@@ -173,6 +159,11 @@
                         <span x-text="adminModeActive ? '👑 Admin Mode: ON' : '👁️ Client View (Admin OFF)'"></span>
                     </button>
                 </template>
+
+                <button @click="installPwa()" class="text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <span>📱</span>
+                    <span class="hidden sm:inline">Install App</span>
+                </button>
 
                 <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <span>🐕</span>
@@ -1745,6 +1736,8 @@
                             this.showInstallBanner = false;
                         }
                         deferredPrompt = null;
+                    } else {
+                        alert("To install this app on your phone or computer:\n\n• iPhone/Safari: Tap the 'Share' button at the bottom and select 'Add to Home Screen'.\n• Android/Chrome: Tap the three dots menu in the top right and select 'Install app' or 'Add to Home screen'.");
                     }
                 },
 
@@ -2104,6 +2097,20 @@
 
                         if (!doc.exists) {
                             const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                            
+                            // 🚀 Make Webhook Payload for Google Signup
+                            fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    uid: res.user.uid,
+                                    name: res.user.displayName || 'Google Client',
+                                    email: res.user.email,
+                                    referralCode: personalRefCode,
+                                    createdAt: new Date().toISOString()
+                                })
+                            }).catch(err => console.log('Webhook error:', err));
+
                             await userRef.set({
                                 name: res.user.displayName || 'Client',
                                 email: res.user.email,
@@ -2159,6 +2166,20 @@
                                     });
                                 }
                             }
+
+                            // 🚀 Make Webhook Payload for Email Signup
+                            fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    uid: res.user.uid,
+                                    name: this.authForm.name,
+                                    email: this.authForm.email,
+                                    referralCode: personalRefCode,
+                                    referredBy: referredByUid || 'None',
+                                    createdAt: new Date().toISOString()
+                                })
+                            }).catch(err => console.log('Webhook error:', err));
 
                             await db.collection('clients').doc(res.user.uid).set({
                                 name: this.authForm.name,
