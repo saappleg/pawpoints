@@ -102,6 +102,28 @@
             max-height: 400px;
             opacity: 1;
         }
+
+        /* PRINT STYLING FOR FLYER & TEAR-OFFS */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-flyer, #printable-flyer * {
+                visibility: visible;
+            }
+            #printable-flyer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
@@ -1189,7 +1211,7 @@
 
     <!-- ADMIN PANEL MODAL -->
     <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-lg w-full p-6 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
+        <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-xl w-full p-6 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
                 <h3 class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Portal Panel</h3>
                 <button @click="showAdminModal = false" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
@@ -1198,10 +1220,11 @@
             <!-- Tab Switcher -->
             <div class="flex gap-1.5 border-b dark:border-gray-700 pb-3 text-xs font-bold overflow-x-auto">
                 <button @click="adminTab = 'points'" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Points</button>
-                <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Service Areas</button>
+                <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Areas</button>
                 <button @click="adminTab = 'reviews'" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Reviews</button>
                 <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Photos</button>
                 <button @click="adminTab = 'faq'" :class="adminTab === 'faq' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">FAQ</button>
+                <button @click="adminTab = 'flyer'" :class="adminTab === 'flyer' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📄 Flyer</button>
                 <button @click="adminTab = 'broadcast'" :class="adminTab === 'broadcast' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📢 Broadcast</button>
                 <button @click="adminTab = 'badge'; $nextTick(() => generateAdminBadge())" :class="adminTab === 'badge' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">🖨️ QR Badge</button>
                 <button @click="adminTab = 'export'" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">📤 Export</button>
@@ -1227,7 +1250,7 @@
                 <button @click="updateClientPoints()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Update Client Points</button>
             </div>
 
-            <!-- TAB 2: SERVICE AREA MANAGEMENT (FIRESTORE BACKED) -->
+            <!-- TAB 2: SERVICE AREA MANAGEMENT -->
             <div x-show="adminTab === 'areas'" class="space-y-4" x-cloak>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names. Saved directly to Firestore.</p>
 
@@ -1246,9 +1269,9 @@
                 </div>
             </div>
 
-            <!-- TAB 3: REVIEW MODERATION & CREATION -->
+            <!-- TAB 3: REVIEW MODERATION -->
             <div x-show="adminTab === 'reviews'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Add new client testimonials or moderate pending reviews.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Add new client testimonials to feature on the homepage.</p>
 
                 <div class="space-y-3">
                     <div>
@@ -1278,11 +1301,6 @@
 
             <!-- TAB 4: PHOTO VISIT GALLERY -->
             <div x-show="adminTab === 'photos'" class="space-y-4" x-cloak>
-                <div class="bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 space-y-1">
-                    <p class="font-bold">🐕 Sync Walkies Page Photos</p>
-                    <p class="text-[11px] leading-relaxed">Right-click any photo from your Walkies gallery and select <strong>"Copy Image Address"</strong>, then paste it below!</p>
-                </div>
-
                 <div class="space-y-3 border-b dark:border-gray-700 pb-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Image URL / Walkies Photo Link</label>
@@ -1310,10 +1328,8 @@
                 </div>
             </div>
 
-            <!-- TAB 5: FAQ MANAGEMENT PANEL -->
+            <!-- TAB 5: FAQ MANAGEMENT -->
             <div x-show="adminTab === 'faq'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Add new custom questions and answers to your site FAQ section.</p>
-
                 <div class="space-y-3 border-b dark:border-gray-700 pb-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Question Title</label>
@@ -1341,13 +1357,41 @@
                 </div>
             </div>
 
-            <!-- TAB 6: PUSH NOTIFICATION BROADCAST -->
-            <div x-show="adminTab === 'broadcast'" class="space-y-4" x-cloak>
+            <!-- TAB 6: FLYER & TEAR-OFF POSTER GENERATOR -->
+            <div x-show="adminTab === 'flyer'" class="space-y-4" x-cloak>
                 <div class="bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 space-y-1">
-                    <p class="font-bold">📢 Send Device Broadcast</p>
-                    <p class="text-[11px] leading-relaxed">Broadcast an urgent update or announcement straight to all active client devices.</p>
+                    <p class="font-bold">📄 Printable Bulletin Board Flyer</p>
+                    <p class="text-[11px] leading-relaxed">Customize your flyer text below and click print to generate a poster with vertical tear-off strips!</p>
                 </div>
 
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Main Headline</label>
+                        <input type="text" x-model="flyerData.headline" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Subheadline / Pitch</label>
+                        <textarea x-model="flyerData.subheadline" rows="2" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Contact Phone</label>
+                            <input type="text" x-model="flyerData.phone" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Website URL</label>
+                            <input type="text" x-model="flyerData.url" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none font-mono">
+                        </div>
+                    </div>
+
+                    <button onclick="window.print()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold rounded-lg transition shadow-md flex items-center justify-center gap-2">
+                        <span>🖨️ Print Flyer & Tear-Offs</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 7: PUSH NOTIFICATION BROADCAST -->
+            <div x-show="adminTab === 'broadcast'" class="space-y-4" x-cloak>
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Notification Title</label>
@@ -1361,37 +1405,63 @@
                 </div>
             </div>
 
-            <!-- TAB 7: QR BADGE & FLYER GENERATOR -->
+            <!-- TAB 8: QR BADGE & FLYER GENERATOR -->
             <div x-show="adminTab === 'badge'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Generate a custom QR badge for business cards, flyers, or fridge magnets.</p>
-
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Target URL for QR Code</label>
                         <input type="url" x-model="qrBadgeUrl" @input="generateAdminBadge()" placeholder="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none font-mono">
                     </div>
-
                     <button @click="generateAdminBadge()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Generate QR Badge</button>
                 </div>
-
                 <div class="flex justify-center p-4 bg-white rounded-xl border border-gray-200 min-h-[160px] items-center">
                     <div id="admin-qrcode"></div>
                 </div>
             </div>
 
-            <!-- TAB 8: WALKIES CSV DATA EXPORTER -->
+            <!-- TAB 9: WALKIES CSV DATA EXPORTER -->
             <div x-show="adminTab === 'export'" class="space-y-4" x-cloak>
-                <div class="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-900 dark:text-emerald-200 space-y-2">
-                    <p class="font-bold text-sm">📤 Export Client & Pet Data for Walkies</p>
-                    <p class="leading-relaxed">Download a formatted CSV file containing all registered client names, contact emails, phone numbers, home addresses, lockbox instructions, and pet care notes for importing into Walkies.</p>
-                </div>
-
                 <button @click="exportWalkiesCSV()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl transition shadow-md flex items-center justify-center gap-2">
                     📥 Download Walkies Client CSV
                 </button>
             </div>
 
             <button @click="showAdminModal = false" class="w-full py-2 bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-lg">Close Admin Panel</button>
+        </div>
+    </div>
+
+    <!-- PRINTABLE FLYER TEMPLATE (HIDDEN UNTIL PRINTED) -->
+    <div id="printable-flyer" class="hidden print:block bg-white text-black p-8 max-w-2xl mx-auto space-y-6 text-center border-2 border-black">
+        <div class="space-y-2 border-b-2 border-black pb-6">
+            <span class="text-xs uppercase font-black tracking-widest bg-black text-white px-3 py-1 rounded-full">Trusted Local Pet Care</span>
+            <h1 class="text-3xl font-black uppercase tracking-tight mt-2" x-text="flyerData.headline"></h1>
+            <p class="text-base font-semibold leading-relaxed" x-text="flyerData.subheadline"></p>
+            <div class="pt-2 flex justify-center gap-4 text-sm font-bold">
+                <span>🐕 Dog Walking</span>
+                <span>•</span>
+                <span>🏡 In-Home Sitting</span>
+                <span>•</span>
+                <span>🐾 Paw Points Rewards</span>
+            </div>
+        </div>
+
+        <div class="py-4 space-y-1">
+            <p class="text-sm font-bold uppercase text-gray-600">Scan to Book & Check Service Areas</p>
+            <div class="flex justify-center p-2">
+                <div id="flyer-qrcode" class="w-32 h-32 inline-block"></div>
+            </div>
+            <p class="text-xs font-mono font-bold" x-text="flyerData.url"></p>
+        </div>
+
+        <!-- TEAR-OFF STRIPS -->
+        <div class="pt-8 border-t-2 border-dashed border-gray-400 grid grid-cols-5 gap-1 text-[10px] font-bold">
+            <template x-for="i in 5">
+                <div class="border-2 border-black p-2 rounded rotate-0 flex flex-col justify-between h-40 vertical-text bg-gray-50">
+                    <span class="font-black">PET CARE BY STEVEN</span>
+                    <span class="font-mono text-xs my-auto font-black" x-text="flyerData.phone"></span>
+                    <span class="text-[9px] truncate" x-text="flyerData.url"></span>
+                </div>
+            </template>
         </div>
     </div>
 
@@ -1576,6 +1646,12 @@
                 isFirstVisitCompleted: false,
                 clientReviewForm: { stars: 5, comment: '' },
                 broadcastForm: { title: '', body: '' },
+                flyerData: {
+                    headline: 'Professional In-Home Pet Sitting & Dog Walking',
+                    subheadline: 'Loving, reliable care tailored to your pets daily routine in your home!',
+                    phone: '(513) 302-5418',
+                    url: 'https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1'
+                },
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
@@ -1947,14 +2023,18 @@
 
                 generateAdminBadge() {
                     const badgeDiv = document.getElementById("admin-qrcode");
+                    const flyerQrDiv = document.getElementById("flyer-qrcode");
+                    
                     if (badgeDiv) {
                         badgeDiv.innerHTML = "";
                         if (typeof QRCode !== 'undefined' && this.qrBadgeUrl.trim()) {
-                            new QRCode(badgeDiv, {
-                                text: this.qrBadgeUrl.trim(),
-                                width: 140,
-                                height: 140
-                            });
+                            new QRCode(badgeDiv, { text: this.qrBadgeUrl.trim(), width: 140, height: 140 });
+                        }
+                    }
+                    if (flyerQrDiv) {
+                        flyerQrDiv.innerHTML = "";
+                        if (typeof QRCode !== 'undefined' && this.flyerData.url.trim()) {
+                            new QRCode(flyerQrDiv, { text: this.flyerData.url.trim(), width: 120, height: 120 });
                         }
                     }
                 },
@@ -2384,6 +2464,9 @@
                     if (tab === 'badge') {
                         this.$nextTick(() => this.generateAdminBadge());
                     }
+                    if (tab === 'flyer') {
+                        this.$nextTick(() => this.generateAdminBadge());
+                    }
                 },
 
                 async fetchClientsList() {
@@ -2401,7 +2484,7 @@
                 async redeemReward(cost, title) {
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
-                        const multiplier = this.clientTier.name.includes('Gold') ? 0.9 : 1; // Gold tier perk discount example
+                        const multiplier = this.clientTier.name.includes('Gold') ? 0.9 : 1;
                         const finalCost = Math.round(cost * multiplier);
                         const newBalance = this.userData.points - finalCost;
                         
