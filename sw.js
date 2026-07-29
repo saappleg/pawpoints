@@ -1,16 +1,16 @@
 const DYNAMIC_CACHE = 'paw-points-dynamic';
 
-// Install Event - Immediately take control
+// Install Event
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+    self.skipWaiting();
 });
 
-// Activate Event - Claim clients immediately
+// Activate Event
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+    event.waitUntil(self.clients.claim());
 });
 
-// Notification Click Event - Open app when notification is clicked
+// Notification Click Event
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
     event.waitUntil(
@@ -29,25 +29,29 @@ self.addEventListener('notificationclick', (event) => {
     );
 });
 
-// Fetch Event - Network First, fallback to Cache (Ignoring extensions)
+// Fetch Event - Safe Network-First Handler
 self.addEventListener('fetch', (event) => {
-  // Ignore non-http/https requests (like chrome-extension://)
-  if (!event.request.url.startsWith('http')) return;
-  if (event.request.method !== 'GET') return;
+    if (!event.request.url.startsWith('http')) return;
+    if (event.request.method !== 'GET') return;
 
-  event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(DYNAMIC_CACHE).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
-  );
+    event.respondWith(
+        fetch(event.request)
+            .then((networkResponse) => {
+                if (networkResponse && networkResponse.status === 200) {
+                    const responseToCache = networkResponse.clone();
+                    caches.open(DYNAMIC_CACHE).then((cache) => {
+                        cache.put(event.request, responseToCache);
+                    });
+                }
+                return networkResponse;
+            })
+            .catch(() => {
+                return caches.match(event.request).then((cachedResponse) => {
+                    return cachedResponse || new Response('Network error occurred', {
+                        status: 408,
+                        headers: { 'Content-Type': 'text/plain' }
+                    });
+                });
+            })
+    );
 });
