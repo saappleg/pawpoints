@@ -39,8 +39,7 @@
         }
     </script>
 
-    <!-- Alpine.js & Collapse Plugin -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Reliable QR Code Generator CDN -->
@@ -85,6 +84,18 @@
             padding: 4px;
             background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
             box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
+        }
+
+        /* SMOOTH LAG-FREE ACCORDION TRANSITION */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease-out, opacity 0.2s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.open {
+            max-height: 400px;
+            opacity: 1;
         }
     </style>
 </head>
@@ -381,7 +392,9 @@
                                 <span x-text="faq.question"></span>
                                 <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === idx }">▼</span>
                             </button>
-                            <div x-show="activeFaq === idx" x-collapse x-cloak class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium" x-html="faq.answer">
+                            <div class="accordion-content p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium"
+                                 :class="{ 'open': activeFaq === idx }" 
+                                 x-html="faq.answer">
                             </div>
                         </div>
                     </template>
