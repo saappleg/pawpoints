@@ -319,28 +319,25 @@
                 </div>
             </section>
 
-            <!-- SERVICE AREA / ZIP CODE CHECKER -->
+            <!-- SERVICE AREA / SMART AUTO-SEARCH CHECKER -->
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Check if your neighborhood or zip code is in our primary coverage area.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Start typing your zip code or city name for instant coverage verification.</p>
                 </div>
 
                 <div class="max-w-md mx-auto space-y-3">
-                    <div class="flex gap-2">
+                    <div class="relative">
                         <input 
                             type="text" 
                             x-model="zipInput" 
-                            @keyup.enter="checkServiceArea()"
-                            placeholder="Enter your Zip Code or City (e.g., 45157, New Richmond)" 
-                            class="flex-1 px-4 py-2 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
-                        <button @click="checkServiceArea()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">
-                            Check Area
-                        </button>
+                            @input="checkServiceArea()"
+                            placeholder="Start typing your Zip or City (e.g., Madison, 45157)" 
+                            class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
                     </div>
 
                     <template x-if="serviceResult">
-                        <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3 rounded-xl border text-xs font-semibold text-center">
+                        <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3 rounded-xl border text-xs font-semibold text-center transition-all duration-200">
                             <span x-text="serviceResult.message"></span>
                         </div>
                     </template>
@@ -1143,16 +1140,16 @@
                 <button @click="updateClientPoints()" class="w-full py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition">Update Client Points</button>
             </div>
 
-            <!-- TAB 2: SERVICE AREA MANAGEMENT -->
+            <!-- TAB 2: SERVICE AREA MANAGEMENT (BULK ADD) -->
             <div x-show="adminTab === 'areas'" class="space-y-4" x-cloak>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Add or remove covered Zip Codes and City names for the public lookup tool.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Paste a comma-separated list of cities or zip codes to add them all at once (e.g., <em>Madison, Milton, 45157</em>).</p>
 
-                <div class="flex gap-2">
-                    <input type="text" x-model="newAreaInput" placeholder="Add Zip or City (e.g. 45106 or Amelia)" class="flex-1 px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
-                    <button @click="addServiceArea()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-lg text-xs">Add Area</button>
+                <div class="space-y-2">
+                    <textarea x-model="bulkAreaInput" rows="3" placeholder="Paste cities or zips separated by commas..." class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                    <button @click="addBulkServiceAreas()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-xs transition">Add All Locations</button>
                 </div>
 
-                <div class="space-y-2 max-h-40 overflow-y-auto">
+                <div class="space-y-2 max-h-40 overflow-y-auto pt-2 border-t dark:border-gray-700">
                     <template x-for="(area, idx) in serviceAreas" :key="idx">
                         <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg text-xs">
                             <span class="font-mono font-bold text-gray-800 dark:text-gray-200" x-text="area"></span>
@@ -1495,7 +1492,7 @@
                 adminForm: { targetUid: '', pointsDelta: 0 },
                 adminTab: 'points',
                 serviceAreas: ['45157', '45106', '45102', '45103', '45150', '45244', '45245', '45255', 'new richmond', 'amelia', 'batavia', 'anderson', 'cincinnati'],
-                newAreaInput: '',
+                bulkAreaInput: '',
                 reviewsList: [
                     { stars: 5, comment: 'Steven is absolute gold! He kept us updated with photos and detailed notes every visit. Our cats loved him right away!', author: 'Sarah M. (Cat Owner)' },
                     { stars: 5, comment: 'Super dependable for daily dog walks. Always on time, respectful of our home, and the Paw Points program is an awesome bonus.', author: 'David R. (Dog Owner)' },
@@ -1564,33 +1561,54 @@
                 },
 
                 checkServiceArea() {
-                    const query = this.zipInput.trim().toLowerCase();
-                    if (!query) {
+                    const rawQuery = this.zipInput.trim();
+                    if (!rawQuery || rawQuery.length < 2) {
                         this.serviceResult = null;
                         return;
                     }
 
-                    const isMatch = this.serviceAreas.some(area => query.includes(area.toLowerCase()));
+                    const cleanQuery = rawQuery.toLowerCase().replace(/[,.-]/g, ' ').replace(/\s+/g, ' ');
+
+                    const isMatch = this.serviceAreas.some(area => {
+                        const cleanArea = area.toLowerCase().replace(/[,.-]/g, ' ').replace(/\s+/g, ' ');
+                        return cleanArea.includes(cleanQuery) || cleanQuery.includes(cleanArea);
+                    });
 
                     if (isMatch) {
                         this.serviceResult = {
                             covered: true,
-                            message: '🎉 Great news! You are in our primary pet sitting & walking service area!'
+                            message: '🎉 Match found! You are in our primary service coverage area.'
                         };
                     } else {
-                        this.serviceResult = {
-                            covered: false,
-                            message: '📍 You are slightly outside our standard zone, but we may still accommodate visits! Message Steven to double check.'
-                        };
+                        if (rawQuery.length >= 3) {
+                            this.serviceResult = {
+                                covered: false,
+                                message: '📍 That location is outside our standard zone, but we may still accommodate visits! Message Steven to double-check.'
+                            };
+                        } else {
+                            this.serviceResult = null;
+                        }
                     }
                 },
 
-                addServiceArea() {
-                    if (this.newAreaInput.trim()) {
-                        this.serviceAreas.push(this.newAreaInput.trim().toLowerCase());
-                        this.newAreaInput = '';
-                        alert('New service area added successfully!');
-                    }
+                addBulkServiceAreas() {
+                    if (!this.bulkAreaInput.trim()) return;
+
+                    const newItems = this.bulkAreaInput
+                        .split(/[\n,]+/)
+                        .map(item => item.trim().toLowerCase())
+                        .filter(item => item.length > 0);
+
+                    let addedCount = 0;
+                    newItems.forEach(item => {
+                        if (!this.serviceAreas.includes(item)) {
+                            this.serviceAreas.push(item);
+                            addedCount++;
+                        }
+                    });
+
+                    this.bulkAreaInput = '';
+                    alert(`Successfully added ${addedCount} new service area(s)!`);
                 },
 
                 removeServiceArea(idx) {
