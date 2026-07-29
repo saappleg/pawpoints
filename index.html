@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven</title>
         
-    <!-- PWA Manifest & Theme Color -->
+    <!-- Dedicated Favicons for Browser Tabs -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- Apple iOS Home Screen Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
     <!-- PWA Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
-    <link rel="shortcut icon" href="logo.png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -85,7 +88,7 @@
             <!-- Branding / Logo -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="rainbow-ring transition-transform hover:scale-105">
-                    <img src="logo.png" alt="Pet Care by Steven Logo" class="h-14 w-14 object-contain rounded-full bg-white p-0.5" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="h-14 w-14 object-contain rounded-full bg-white p-0.5" onerror="this.src='https://via.placeholder.com/64?text=🐾'">
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -179,7 +182,7 @@
                         </div>
                     </div>
                     <div class="rainbow-ring shadow-2xl hidden md:block shrink-0">
-                        <img src="logo.png" alt="Pet Care Patch Logo" class="w-44 h-44 object-contain rounded-full bg-white p-1">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="w-44 h-44 object-contain rounded-full bg-white p-1">
                     </div>
                 </div>
             </section>
@@ -287,7 +290,7 @@
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <div class="rainbow-ring shrink-0">
-                        <img src="logo.png" alt="Steven Sitter Profile" class="w-28 h-28 object-contain rounded-full bg-white p-0.5">
+                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="w-28 h-28 object-contain rounded-full bg-white p-0.5">
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
@@ -1408,12 +1411,12 @@
                     navigator.serviceWorker.ready.then(registration => {
                         registration.showNotification(title, {
                             body: body,
-                            icon: 'logo.png',
-                            badge: 'logo.png'
+                            icon: 'android-chrome-192x192.png',
+                            badge: 'android-chrome-192x192.png'
                         });
                     });
                 } else {
-                    new Notification(title, { body: body, icon: 'logo.png' });
+                    new Notification(title, { body: body, icon: 'android-chrome-192x192.png' });
                 }
             }
         }
