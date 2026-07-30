@@ -11,6 +11,7 @@
     <meta property="og:description" content="Reliable, loving pet sitting and dog walking. Earn Paw Points and manage pet profiles.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1">
+    <meta property="og:image" content="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1/preview.png">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="canonical" href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1">
         
@@ -57,7 +58,7 @@
     <!-- Reliable QR Code Generator CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Application Controller Logic (Defined before Alpine loads to eliminate scope race conditions) -->
+    <!-- Application Controller Logic (Must be parsed BEFORE Alpine evaluates x-data) -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
@@ -73,23 +74,12 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Safe Firestore settings without host override warnings
         if (db.settings) {
             try {
                 db.settings({ cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
             } catch(e) {}
         }
-        
-        // Use modern cache settings instead of deprecated indexedDbPersistence if supported, with safe fallback
-        if (db.enablePersistence) {
-            db.enablePersistence({ synchronizeTabs: true }).catch(err => {
-                if (err.code == 'failed-precondition') {
-                    console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
-                } else if (err.code == 'unimplemented') {
-                    console.warn('The current browser does not support persistence.');
-                }
-            });
-        }
+        db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
 
         auth.useDeviceLanguage();
 
@@ -1319,79 +1309,6 @@
 
     <!-- Alpine.js Core (Loaded last after `pawApp` definition is fully parsed) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Fallback for users with JS disabled -->
-    <noscript>
-        <style>
-            [x-cloak] { display: none !important; }
-            .no-js-warning { padding: 20px; background: #fee2e2; color: #991b1b; text-align: center; font-weight: bold; }
-        </style>
-        <div class="no-js-warning">JavaScript is required to run the Pet Care by Steven interactive dashboard and portal. Please enable JavaScript in your browser settings.</div>
-    </noscript>
-
-    <style>
-        [x-cloak] { display: none !important; }
-        
-        /* Hardware GPU Acceleration & Touch Responsiveness */
-        .fixed, .absolute, .accordion-content {
-            will-change: transform, opacity, max-height;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-
-        button, a {
-            -webkit-tap-highlight-color: transparent;
-        }
-        button:active, a:active {
-            transform: scale(0.97);
-            transition: transform 0.1s ease;
-        }
-        
-        .rainbow-top-bar {
-            height: 6px;
-            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
-        }
-
-        .rainbow-frame {
-            position: relative;
-            border-radius: 1.5rem;
-            padding: 4px;
-            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
-            box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
-        }
-
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.25s ease-out, opacity 0.2s ease-out;
-            opacity: 0;
-        }
-        .accordion-content.open {
-            max-height: 400px;
-            opacity: 1;
-        }
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printable-flyer, #printable-flyer * {
-                visibility: visible;
-            }
-            #printable-flyer {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 10px;
-                background: white !important;
-                color: black !important;
-                box-shadow: none !important;
-                border: 2px solid #000 !important;
-            }
-        }
-    </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
 
@@ -1513,8 +1430,8 @@
                             </button>
                         </div>
                     </div>
-                    <div class="w-36 h-36 sm:w-44 sm:h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden bg-indigo-800 flex items-center justify-center">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="512" height="512" class="w-full h-full object-cover rounded-full" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>';">
+                    <div class="w-36 h-36 sm:w-44 sm:h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="512" height="512" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                 </div>
             </section>
