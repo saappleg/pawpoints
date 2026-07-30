@@ -27,6 +27,9 @@
   "launch_handler": {
     "client_mode": "focus-existing"
   },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "file_handlers": [
     {
       "action": "/",
