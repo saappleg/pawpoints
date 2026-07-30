@@ -99,9 +99,7 @@
             });
         }
 
-        // Cleaned up course fetch function to prevent 404 timeout hanging
         async function loadCoursesData() {
-            // Endpoint removed or disabled for pet sitting client portal
             console.info("Courses API call skipped.");
             return [];
         }
@@ -219,7 +217,7 @@
 
                 async init() {
                     this.scheduleNextToast();
-                    await loadCoursesData(); // Safe hook execution
+                    await loadCoursesData();
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
@@ -278,6 +276,37 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                // Register Background Sync when performing an action offline
+                async scheduleBackgroundSync() {
+                    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                        try {
+                            const registration = await navigator.serviceWorker.ready;
+                            await registration.sync.register('sync-petcare-data');
+                            console.log('Background sync registered successfully!');
+                            alert('Offline data sync scheduled successfully.');
+                        } catch (err) {
+                            console.error('Background sync registration failed:', err);
+                        }
+                    } else {
+                        console.warn('Background Sync is not supported by this browser.');
+                    }
+                },
+
+                // Request Push Notification permission from the user
+                async requestNotificationPermission() {
+                    if ('Notification' in window) {
+                        const permission = await Notification.requestPermission();
+                        if (permission === 'granted') {
+                            console.log('Notification permission granted.');
+                            alert('Notifications enabled successfully!');
+                        } else {
+                            alert('Notification permission was denied.');
+                        }
+                    } else {
+                        alert('Notifications are not supported by your browser.');
+                    }
                 },
 
                 debouncedCheckServiceArea: (function() {
@@ -1311,21 +1340,6 @@
 
     <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <style>
-        [x-cloak] { display: none !important; }
-        .fixed, .absolute, .accordion-content {
-            will-change: transform, opacity, max-height;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-        button, a { -webkit-tap-highlight-color: transparent; }
-        button:active, a:active { transform: scale(0.97); transition: transform 0.1s ease; }
-        .rainbow-top-bar {
-            height: 6px;
-            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
-        }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between transition-colors duration-200">
 
@@ -1453,6 +1467,25 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Gallery Grid Section -->
+            <section class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white">Daily Care Gallery</h3>
+                        <p class="text-xs text-slate-500">Snapshots from daily dog walks and drop-ins.</p>
+                    </div>
+                    <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" class="text-xs bg-amber-600 text-white font-bold px-3 py-1.5 rounded-lg">Manage Photos</button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <template x-for="(photo, idx) in photoGrid" :key="idx">
+                        <div class="aspect-square rounded-2xl bg-slate-200 dark:bg-slate-700 overflow-hidden shadow-sm relative group border dark:border-slate-700">
+                            <img :src="photo.url" :alt="photo.caption" width="400" height="400" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
+                        </div>
+                    </template>
+                </div>
+            </section>
         </div>
 
         <!-- LOYALTY & DASHBOARD VIEW -->
@@ -1499,7 +1532,11 @@
                                 <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded-full border" :class="clientTier.badgeColor" x-text="clientTier.name"></span>
                                 <h2 class="text-4xl font-black mt-2"><span x-text="userData.yearlyPoints || 0"></span> Annual Pts</h2>
                             </div>
-                            <button @click="openDigitalPass()" class="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl shadow">📱 Open Digital QR Pass</button>
+                            <div class="flex flex-wrap gap-3">
+                                <button @click="openDigitalPass()" class="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl shadow">📱 Open Digital QR Pass</button>
+                                <button @click="requestNotificationPermission()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-3 rounded-xl shadow transition text-xs">🔔 Enable Notifications</button>
+                                <button @click="scheduleBackgroundSync()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-3 rounded-xl shadow transition text-xs">🔄 Sync Offline Data</button>
+                            </div>
                         </div>
                     </div>
                 </div>
