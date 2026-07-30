@@ -5,6 +5,11 @@
   "id": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
   "description": "Professional and reliable pet-sitting services to keep your furry friends happy and safe while you're away.",
