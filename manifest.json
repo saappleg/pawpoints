@@ -3,6 +3,7 @@
   "short_name": "Pet Care",
   "start_url": "/",
   "id": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
