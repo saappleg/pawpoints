@@ -1459,7 +1459,10 @@
 
         if (db.settings) {
             try {
-                db.settings({ cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
+                db.settings({ 
+                    merge: true, 
+                    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED 
+                });
             } catch(e) {}
         }
         db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
