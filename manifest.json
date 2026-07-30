@@ -24,6 +24,9 @@
   "prefer_related_applications": false,
   "related_applications": [],
   "iarc_rating_id": "0",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "shortcuts": [
     {
       "name": "Paw Points Portal",
