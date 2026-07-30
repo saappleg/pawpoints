@@ -35,7 +35,7 @@
                             100: '#e0e7ff',
                             400: '#818cf8',
                             500: '#6366f1',
-                            600: '#4f46e5',
+                            600: '#6366f1',
                             700: '#4338ca',
                         }
                     }
@@ -57,6 +57,21 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Hardware GPU Acceleration & Touch Responsiveness */
+        .fixed, .absolute, .accordion-content {
+            will-change: transform, opacity, max-height;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active, a:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
         
         .rainbow-top-bar {
             height: 6px;
@@ -113,7 +128,7 @@
             
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-12 w-12 sm:h-14 sm:w-14 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="w-full h-full object-cover rounded-full shadow-md" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="64" height="64" class="w-full h-full object-cover rounded-full shadow-md" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-base sm:text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -206,7 +221,7 @@
                         </div>
                     </div>
                     <div class="w-36 h-36 sm:w-44 sm:h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="512" height="512" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                 </div>
             </section>
@@ -271,7 +286,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <template x-for="(photo, idx) in photoGrid" :key="idx">
                         <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                            <img :src="photo.url" :alt="photo.caption" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                            <img :src="photo.url" :alt="photo.caption" width="400" height="400" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
                         </div>
                     </template>
@@ -309,7 +324,7 @@
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-full overflow-hidden shadow-md">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" width="192" height="192" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
@@ -475,6 +490,18 @@
                         <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Controls Active</span>
                         <button @click="openAdminModal('points')" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
                     </div>
+
+                    <template x-if="petBirthdayAlert || isFirstVisitCompleted">
+                        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between gap-4 text-xs">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🎉</span>
+                                <div>
+                                    <p class="font-black text-sm" x-text="petBirthdayAlert ? 'Happy Birthday / Gotcha Day to your pet! (+250 Pts Awarded)' : 'First-Visit Welcome Badge Unlocked!'"></p>
+                                    <p class="text-indigo-100 text-[11px]" x-text="petBirthdayAlert ? 'Enjoy your surprise points bonus today!' : 'Thank you for booking your first visit with Pet Care by Steven.'"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
 
                     <!-- 🐾 PAW LEVELS & YEARLY PROGRESS GAUGE -->
                     <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg space-y-6 border border-slate-800">
@@ -1225,7 +1252,7 @@
                     <template x-for="(p, idx) in photoGrid" :key="p.id || idx">
                         <div class="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg text-xs">
                             <div class="flex items-center gap-2 overflow-hidden">
-                                <img :src="p.url" class="w-8 h-8 object-cover rounded-md shrink-0">
+                                <img :src="p.url" width="32" height="32" class="w-8 h-8 object-cover rounded-md shrink-0" loading="lazy">
                                 <span class="truncate font-semibold text-gray-800 dark:text-gray-200" x-text="p.caption || 'Photo'"></span>
                             </div>
                             <button @click="removeGalleryPhoto(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
@@ -2650,7 +2677,6 @@
                     const newLifetime = delta > 0 ? currentLifetime + delta : currentLifetime;
                     let newYearly = delta > 0 ? currentYearly + delta : currentYearly;
 
-                    // Manual Tier Override handling
                     if (this.adminForm.overrideYearlyPoints !== '') {
                         newYearly = parseInt(this.adminForm.overrideYearlyPoints);
                     }
