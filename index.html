@@ -99,13 +99,6 @@
             });
         }
 
-        // Cleaned up course fetch function to prevent 404 timeout hanging
-        async function loadCoursesData() {
-            // Endpoint removed or disabled for pet sitting client portal
-            console.info("Courses API call skipped.");
-            return [];
-        }
-
         function firePwaNotification(title, body) {
             if (window.Notification && Notification.permission === 'granted') {
                 if ('serviceWorker' in navigator) {
@@ -219,7 +212,6 @@
 
                 async init() {
                     this.scheduleNextToast();
-                    await loadCoursesData(); // Safe hook execution
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
@@ -1309,34 +1301,94 @@
         }
     </script>
 
-    <!-- Alpine.js Core -->
+    <!-- Alpine.js Core (Loaded last after `pawApp` definition is fully parsed) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Fallback for users with JS disabled -->
+    <noscript>
+        <style>
+            [x-cloak] { display: none !important; }
+            .no-js-warning { padding: 20px; background: #fee2e2; color: #991b1b; text-align: center; font-weight: bold; }
+        </style>
+        <div class="no-js-warning">JavaScript is required to run the Pet Care by Steven interactive dashboard and portal. Please enable JavaScript in your browser settings.</div>
+    </noscript>
 
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Hardware GPU Acceleration & Touch Responsiveness */
         .fixed, .absolute, .accordion-content {
             will-change: transform, opacity, max-height;
             transform: translateZ(0);
             backface-visibility: hidden;
         }
-        button, a { -webkit-tap-highlight-color: transparent; }
-        button:active, a:active { transform: scale(0.97); transition: transform 0.1s ease; }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active, a:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
+        
         .rainbow-top-bar {
             height: 6px;
             background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+        }
+
+        .rainbow-frame {
+            position: relative;
+            border-radius: 1.5rem;
+            padding: 4px;
+            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+            box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease-out, opacity 0.2s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.open {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-flyer, #printable-flyer * {
+                visibility: visible;
+            }
+            #printable-flyer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 10px;
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+            }
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between transition-colors duration-200">
 
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-3 py-2 bg-white border rounded-md shadow-lg text-xs font-bold text-blue-600">Skip to content</a>
+    <!-- Skip link for keyboard users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-3 py-2 bg-white dark:bg-gray-800 border rounded-md shadow-lg text-xs font-bold text-brand-600">Skip to content</a>
+
     <div class="rainbow-top-bar sticky top-0 z-40" aria-hidden="true"></div>
 
     <!-- Header / Navigation -->
-    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-[6px] z-50">
+    <header class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-slate-700 sticky top-[6px] z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'" role="button" tabindex="0">
-                <img src="/logo.png" alt="Pet Care by Steven Logo" width="40" height="40" class="w-10 h-10 object-contain rounded-full shadow-sm" onerror="this.src='/favicon-32x32.png'">
+                <img src="/logo.png" alt="Pet Care by Steven Logo" class="w-10 h-10 object-contain rounded-full shadow-sm" onerror="this.src='/favicon-32x32.png'">
                 <span class="font-bold text-lg text-slate-900 dark:text-white">Pet Care by Steven</span>
             </div>
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
@@ -1451,6 +1503,25 @@
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white">Paw Points Rewards</h3>
                         <p class="text-slate-600 dark:text-slate-300 text-sm">Earn automatic loyalty points with every completed session to lower the cost of future pet care services.</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Gallery Grid Section -->
+            <section class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white">Daily Care Gallery</h3>
+                        <p class="text-xs text-slate-500">Snapshots from daily dog walks and drop-ins.</p>
+                    </div>
+                    <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" class="text-xs bg-amber-600 text-white font-bold px-3 py-1.5 rounded-lg">Manage Photos</button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <template x-for="(photo, idx) in photoGrid" :key="idx">
+                        <div class="aspect-square rounded-2xl bg-slate-200 dark:bg-slate-700 overflow-hidden shadow-sm relative group border dark:border-slate-700">
+                            <img :src="photo.url" :alt="photo.caption" width="400" height="400" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
+                        </div>
+                    </template>
                 </div>
             </section>
         </div>
@@ -1570,7 +1641,7 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
+    <!-- Profile & Checklist Modals -->
     <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-slate-800 max-w-md w-full p-6 rounded-3xl shadow-xl space-y-4">
             <h3 class="font-bold text-lg dark:text-white">Account Profile</h3>
