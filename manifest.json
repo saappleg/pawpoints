@@ -37,6 +37,12 @@
       }
     }
   ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+petcare",
+      "url": "/?action=%s"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Paw Points Portal",
