@@ -42,25 +42,13 @@
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/android-chrome-maskable-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/android-chrome-maskable-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -69,7 +57,14 @@
       "short_name": "Pets",
       "description": "Open your pets list",
       "url": "/pets",
-      "icons": [{ "src": "/icons/shortcut-pets-96.png", "sizes": "96x96", "type": "image/png" }]
+      "icons": [{ "src": "/icons/shortcut-pets.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Add Pet",
+      "short_name": "Add",
+      "description": "Add a new pet profile",
+      "url": "/pets/new",
+      "icons": [{ "src": "/icons/shortcut-add.png", "sizes": "96x96", "type": "image/png" }]
     }
   ],
   "related_applications": [],
