@@ -2,46 +2,20 @@
   "name": "Pet Care by Steven",
   "short_name": "Pet Care",
   "start_url": "/",
-  "id": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
+  
   "description": "Professional and reliable pet-sitting services to keep your furry friends happy and safe while you're away.",
+  
   "orientation": "portrait",
+  
   "categories": [
     "lifestyle",
     "utilities",
     "business"
   ],
+  
   "lang": "en",
-  "dir": "ltr",
-  "icons": [
-    {
-      "src": "/images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/images/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/images/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Dashboard view of Pet Care app"
-    },
-    {
-      "src": "/images/screenshot-mobile.png",
-      "sizes": "750x1334",
-      "type": "image/png",
-      "label": "Mobile view of Pet Care app"
-    }
-  ]
+  "dir": "ltr"
 }
