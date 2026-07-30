@@ -24,6 +24,21 @@
   "prefer_related_applications": false,
   "related_applications": [],
   "iarc_rating_id": "0",
+  "shortcuts": [
+    {
+      "name": "Paw Points Portal",
+      "short_name": "Portal",
+      "description": "Open your client portal to track points and bookings",
+      "url": "/#portal",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
