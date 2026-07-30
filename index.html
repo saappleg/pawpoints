@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven</title>
     <meta name="description" content="Pet Care by Steven — professional, reliable in-home pet sitting and dog walking. Schedule a meet & greet, earn Paw Points, and manage your pet profiles.">
+    
+    <!-- Social / Link previews -->
+    <meta property="og:title" content="Pet Care by Steven — In-Home Pet Sitting & Dog Walking">
+    <meta property="og:description" content="Reliable, loving pet sitting and dog walking. Earn Paw Points and manage pet profiles.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1">
+    <meta property="og:image" content="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1/preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pet Care by Steven">
+    <meta name="twitter:description" content="Reliable, loving pet sitting and dog walking.">
+    <meta name="twitter:image" content="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1/preview.png">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="canonical" href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1">
         
-    <!-- CDN Preconnects for High-Speed Asset Loading -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://www.gstatic.com">
-    <link rel="preconnect" href="https://images.unsplash.com">
+    <!-- Preconnect common CDNs with crossorigin -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="preload" as="image" href="android-chrome-192x192.png">
 
     <!-- Dedicated Favicons for Browser Tabs -->
@@ -57,6 +69,15 @@
     <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Fallback for users with JS disabled -->
+    <noscript>
+        <style>
+            [x-cloak] { display: none !important; }
+            .no-js-warning { padding: 20px; background: #fee2e2; color: #991b1b; text-align: center; font-weight: bold; }
+        </style>
+        <div class="no-js-warning">JavaScript is required to run the Pet Care by Steven interactive dashboard and portal. Please enable JavaScript in your browser settings.</div>
+    </noscript>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -124,6 +145,9 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
 
+    <!-- Skip link for keyboard users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-3 py-2 bg-white dark:bg-gray-800 border rounded-md shadow-lg text-xs font-bold text-brand-600">Skip to content</a>
+
     <div class="rainbow-top-bar sticky top-0 z-40" aria-hidden="true"></div>
 
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30" role="banner">
@@ -131,7 +155,7 @@
             
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'" role="button" tabindex="0">
                 <div class="h-12 w-12 sm:h-14 sm:w-14 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="64" height="64" class="w-full h-full object-cover rounded-full shadow-md" loading="eager" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="64" height="64" class="w-full h-full object-cover rounded-full shadow-md" loading="eager" onerror="this.onerror=null; this.src='favicon-32x32.png';">
                 </div>
                 <div>
                     <h1 class="font-bold text-base sm:text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -154,12 +178,13 @@
                     <button 
                         @click="adminModeActive = !adminModeActive" 
                         :class="adminModeActive ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600'" 
-                        class="text-[11px] font-bold px-2 py-1.5 rounded-lg border transition flex items-center gap-1 shadow-sm">
+                        class="text-[11px] font-bold px-2 py-1.5 rounded-lg border transition flex items-center gap-1 shadow-sm"
+                        aria-label="Toggle Admin View Mode">
                         <span x-text="adminModeActive ? '👑 Admin: ON' : '👁️ Admin: OFF'"></span>
                     </button>
                 </template>
 
-                <button @click="installPwa()" class="text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold px-2.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1">
+                <button @click="installPwa()" class="text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold px-2.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1" aria-label="Install App">
                     <span>📱</span>
                     <span class="hidden sm:inline">Install</span>
                 </button>
@@ -171,7 +196,7 @@
                     </a>
                 </template>
                 <template x-if="!bookingConfig.isBookingOpen">
-                    <button @click="alert(bookingConfig.bookingFullMessage)" class="text-xs bg-amber-600 text-white font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1">
+                    <button @click="alert(bookingConfig.bookingFullMessage)" class="text-xs bg-amber-600 text-white font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1" aria-label="Bookings Full Notice">
                         <span>🔒</span>
                         <span class="hidden sm:inline">Bookings Full</span>
                     </button>
@@ -184,7 +209,7 @@
 
                 <template x-if="user">
                     <div class="flex items-center space-x-1.5">
-                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-2.5 py-2 rounded-lg font-bold transition">
+                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-2.5 py-2 rounded-lg font-bold transition" aria-label="Account Profile">
                             👤
                         </button>
                         <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-slate-200 px-2.5 py-2 rounded-lg font-bold transition">
@@ -205,7 +230,7 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8" role="main">
+    <main id="main-content" class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8" role="main">
 
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
@@ -1508,7 +1533,7 @@
         </div>
 
         <div class="h-12 w-12 rounded-full overflow-hidden shadow-lg border-2 border-brand-500">
-            <button @click="showChatWidget = !showChatWidget" class="w-full h-full bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
+            <button @click="showChatWidget = !showChatWidget" class="w-full h-full bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center transition transform hover:scale-105 focus:outline-none" aria-label="Toggle Support Chat">
                 <svg x-show="!showChatWidget" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
                 </svg>
@@ -1518,7 +1543,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500">
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500" role="contentinfo">
         <div class="max-w-5xl mx-auto px-4 space-y-4">
             <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
                 <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
