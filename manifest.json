@@ -30,6 +30,11 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
+  "scope_extensions": [
+    {
+      "origin": "https://petcarebysteven.me"
+    }
+  ],
   "widgets": [
     {
       "name": "Pet Care Dashboard Widget",
