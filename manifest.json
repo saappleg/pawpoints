@@ -18,6 +18,7 @@
   "dir": "ltr",
   "prefer_related_applications": false,
   "related_applications": [],
+  "iarc_rating_id": "0",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
