@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven</title>
-    <meta name="description" content="Pet Care by Steven — professional, reliable in-home pet sitting and dog walking. Schedule a meet & greet, earn Paw Points, and manage your pet profiles.">
-    <link rel="canonical" href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1">
         
     <!-- CDN Preconnects for High-Speed Asset Loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://www.gstatic.com">
     <link rel="preconnect" href="https://images.unsplash.com">
-    <link rel="preload" as="image" href="android-chrome-192x192.png">
 
     <!-- Dedicated Favicons for Browser Tabs -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -51,12 +48,12 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Reliable QR Code Generator CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
     <!-- Firebase Web SDKs (Compat Version) -->
-    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -124,14 +121,14 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
 
-    <div class="rainbow-top-bar sticky top-0 z-40" aria-hidden="true"></div>
+    <div class="rainbow-top-bar sticky top-0 z-40"></div>
 
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30" role="banner">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             
-            <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'" role="button" tabindex="0">
+            <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-12 w-12 sm:h-14 sm:w-14 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="64" height="64" class="w-full h-full object-cover rounded-full shadow-md" loading="eager" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="64" height="64" class="w-full h-full object-cover rounded-full shadow-md" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-base sm:text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -139,7 +136,7 @@
                 </div>
             </div>
 
-            <nav class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl" aria-label="Main Navigation">
+            <nav class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl">
                 <button @click="currentView = 'home'" :class="currentView === 'home' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition">
                     🏠 Home
                 </button>
@@ -164,6 +161,7 @@
                     <span class="hidden sm:inline">Install</span>
                 </button>
 
+                <!-- DYNAMIC BOOKING BUTTON (Handles online vs booking full status) -->
                 <template x-if="bookingConfig.isBookingOpen">
                     <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1">
                         <span>🐕</span>
@@ -177,7 +175,7 @@
                     </button>
                 </template>
 
-                <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" aria-label="Toggle Dark Mode">
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                     <span x-show="!darkMode">🌙</span>
                     <span x-show="darkMode" x-cloak>☀️</span>
                 </button>
@@ -195,7 +193,7 @@
             </div>
         </div>
 
-        <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold" aria-label="Mobile Navigation">
+        <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
             <button @click="currentView = 'home'" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
                 🏠 Home & Services
             </button>
@@ -205,7 +203,7 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8" role="main">
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8">
 
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
