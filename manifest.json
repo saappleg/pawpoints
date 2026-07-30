@@ -1,72 +1,22 @@
 {
-  "id": "/",
+  "id": "pet-care-by-steven-app",
   "name": "Pet Care by Steven",
-  "short_name": "PawPoints",
-  "description": "Manage your pet's health, appointments, reminders, and rewards with PawPoints.",
-  "lang": "en-US",
-  "dir": "ltr",
-  "start_url": "/?utm_source=pwa",
+  "short_name": "Pet Care",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
-  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
-  "categories": ["productivity", "health"],
   "icons": [
-    {
-      "src": "/icons/icon-48.png",
-      "sizes": "48x48",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any"
-    },
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "My Pets",
-      "short_name": "Pets",
-      "description": "Open your pets list",
-      "url": "/pets",
-      "icons": [{ "src": "/icons/shortcut-pets.png", "sizes": "96x96", "type": "image/png" }]
-    },
-    {
-      "name": "Add Pet",
-      "short_name": "Add",
-      "description": "Add a new pet profile",
-      "url": "/pets/new",
-      "icons": [{ "src": "/icons/shortcut-add.png", "sizes": "96x96", "type": "image/png" }]
-    }
-  ],
-  "related_applications": [],
-  "prefer_related_applications": false
+  ]
 }
