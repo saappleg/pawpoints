@@ -161,10 +161,19 @@
                     <span class="hidden sm:inline">Install</span>
                 </button>
 
-                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1">
-                    <span>🐕</span>
-                    <span class="hidden sm:inline">Book</span>
-                </a>
+                <!-- DYNAMIC BOOKING BUTTON (Handles online vs booking full status) -->
+                <template x-if="bookingConfig.isBookingOpen">
+                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1">
+                        <span>🐕</span>
+                        <span class="hidden sm:inline">Book</span>
+                    </a>
+                </template>
+                <template x-if="!bookingConfig.isBookingOpen">
+                    <button @click="alert(bookingConfig.bookingFullMessage)" class="text-xs bg-amber-600 text-white font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1">
+                        <span>🔒</span>
+                        <span class="hidden sm:inline">Bookings Full</span>
+                    </button>
+                </template>
 
                 <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                     <span x-show="!darkMode">🌙</span>
@@ -212,9 +221,16 @@
                             Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                         </p>
                         <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-                            <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md transition text-center">
-                                📅 Schedule & Book Walkies
-                            </a>
+                            <template x-if="bookingConfig.isBookingOpen">
+                                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md transition text-center">
+                                    📅 Schedule & Book Walkies
+                                </a>
+                            </template>
+                            <template x-if="!bookingConfig.isBookingOpen">
+                                <button @click="alert(bookingConfig.bookingFullMessage)" class="w-full sm:w-auto bg-amber-400 text-amber-950 px-6 py-3 rounded-xl font-extrabold text-xs sm:text-sm shadow-md transition text-center">
+                                    🔒 Bookings Currently Full
+                                </button>
+                            </template>
                             <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-indigo-800/80 hover:bg-indigo-800 text-white border border-indigo-400/40 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm transition text-center">
                                 🎁 View Client Rewards
                             </button>
@@ -351,7 +367,7 @@
                         <input 
                             type="text" 
                             x-model="zipInput" 
-                            @input="checkServiceArea()"
+                            @input="debouncedCheckServiceArea()"
                             placeholder="Start typing City or Zip (e.g., Felicity, 45120)" 
                             class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
                     </div>
@@ -1115,6 +1131,7 @@
             <!-- Tab Switcher -->
             <div class="flex gap-1.5 border-b dark:border-gray-700 pb-3 text-xs font-bold overflow-x-auto">
                 <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Points</button>
+                <button @click="adminTab = 'config'; fetchBookingConfig()" :class="adminTab === 'config' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Booking</button>
                 <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Areas</button>
                 <button @click="adminTab = 'reviews'; fetchPendingReviews()" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Reviews</button>
                 <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-1.5 rounded-lg transition shrink-0">Photos</button>
@@ -1154,6 +1171,28 @@
                 </div>
 
                 <button @click="updateClientPoints()" class="w-full py-2.5 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition shadow-sm">Update Client Points & Tier</button>
+            </div>
+
+            <!-- TAB 1.5: BOOKING STATUS CONFIGURATION -->
+            <div x-show="adminTab === 'config'" class="space-y-4" x-cloak>
+                <div class="bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200">
+                    <p class="font-bold">📅 Online Booking Availability Control</p>
+                    <p class="text-[11px] leading-relaxed mt-0.5">Toggle online bookings on or off when your schedule is full or during holidays.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border dark:border-gray-600 cursor-pointer">
+                        <input type="checkbox" x-model="bookingConfig.isBookingOpen" class="w-4 h-4 accent-brand-600">
+                        <span class="text-xs font-bold text-gray-900 dark:text-white">Accepting New Bookings Online</span>
+                    </label>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Notice Message When Full</label>
+                        <input type="text" x-model="bookingConfig.bookingFullMessage" class="w-full px-3 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700 text-xs outline-none">
+                    </div>
+
+                    <button @click="saveBookingConfig()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition shadow-sm">Save Booking Status to Firestore</button>
+                </div>
             </div>
 
             <!-- TAB 2: SERVICE AREA MANAGEMENT -->
@@ -1589,6 +1628,7 @@
                 clientReviewForm: { stars: 5, comment: '' },
                 broadcastForm: { title: '', body: '' },
                 pendingReviews: [],
+                bookingConfig: { isBookingOpen: true, bookingFullMessage: 'Our books are currently full for new reservations. Check back soon or contact Steven directly!' },
                 flyerData: {
                     headline: 'NEED A PET SITTER?',
                     subheadline: 'Professional in-home pet sitting, feeding & dog walking tailored to your pets.',
@@ -1658,6 +1698,7 @@
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
+                    await this.fetchBookingConfig();
 
                     window.addEventListener('pwa-install-ready', () => {
                         this.showInstallBanner = true;
@@ -1712,6 +1753,39 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                debouncedCheckServiceArea: (function() {
+                    let timeout;
+                    return function() {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => {
+                            this.checkServiceArea();
+                        }, 300);
+                    };
+                })(),
+
+                async fetchBookingConfig() {
+                    try {
+                        const doc = await db.collection('settings').doc('bookingConfig').get();
+                        if (doc.exists) {
+                            this.bookingConfig = { ...this.bookingConfig, ...doc.data() };
+                        } else {
+                            await db.collection('settings').doc('bookingConfig').set(this.bookingConfig);
+                        }
+                    } catch (err) {
+                        console.log('Using default booking config');
+                    }
+                },
+
+                async saveBookingConfig() {
+                    try {
+                        await db.collection('settings').doc('bookingConfig').set(this.bookingConfig);
+                        alert('Booking status configuration saved successfully!');
+                        this.showAdminModal = false;
+                    } catch (err) {
+                        alert('Error saving booking configuration: ' + err.message);
+                    }
                 },
 
                 async installPwa() {
