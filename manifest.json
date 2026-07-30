@@ -30,9 +30,6 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
-  "note_taking": {
-    "new_note_url": "/?action=new-note"
-  },
   "scope_extensions": [
     {
       "origin": "https://petcarebysteven.me"
