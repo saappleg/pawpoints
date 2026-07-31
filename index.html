@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven</title>
 
-    <!-- CDN Preconnects for High-Speed Asset Loading -->
+    <!-- CDN Preconnects for High-Speed Asset Delivery -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://images.unsplash.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,10 +32,10 @@
     <!-- Compiled Local Tailwind CSS Output -->
     <link rel="stylesheet" href="output.css">
 
-    <!-- Reliable QR Code Generator CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- Deferred QR Code Generator CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase Web SDKs (Loaded synchronously so auth is ready before Alpine mounts) -->
+    <!-- Firebase Web SDKs (Synchronous initialization to unblock Alpine mount) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -95,7 +96,7 @@
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-14 w-14 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="w-full h-full object-cover rounded-full shadow-md" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" class="w-full h-full object-cover rounded-full shadow-md" fetchpriority="high" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -185,7 +186,7 @@
                         </div>
                     </div>
                     <div class="w-44 h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" class="w-full h-full object-cover rounded-full" fetchpriority="high">
                     </div>
                 </div>
             </section>
