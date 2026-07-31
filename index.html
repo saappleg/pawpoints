@@ -430,8 +430,8 @@
             </section>
         </div>
 
-        <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
-            <div x-show="!user" x-cloak class="max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
+        <div x-show="!loading && currentView === 'loyalty'" class="flex flex-col items-center justify-center w-full gap-6">
+            <div x-show="!user" x-cloak class="max-w-md w-full bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
                 <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
                 <div x-show="authMode !== 'forgot'">
@@ -522,7 +522,7 @@
             </template>
 
             <template x-if="user && isVerified">
-                <div class="space-y-6">
+                <div class="space-y-6 w-full">
                     <div x-show="isAdmin && adminModeActive" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl flex justify-between items-center">
                         <span class="text-xs text-amber-800 dark:text-amber-200 font-bold">👑 Admin Controls Active</span>
                         <button @click="openAdminModal('points')" class="text-xs bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-amber-700 transition">Open Admin Panel</button>
