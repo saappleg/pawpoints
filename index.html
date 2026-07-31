@@ -1440,29 +1440,24 @@
             measurementId: "G-6MPSER0Z6L"
         };
 
-        let auth, db;
-
-        function initFirebase() {
-            if (typeof firebase !== 'undefined' && (!firebase.apps || !firebase.apps.length)) {
-                firebase.initializeApp(firebaseConfig);
-                auth = firebase.auth();
-                db = firebase.firestore();
-
-                if (db.settings) {
-                    try {
-                        db.settings({ 
-                            merge: true, 
-                            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED 
-                        });
-                    } catch(e) {}
-                }
-                db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
-                auth.useDeviceLanguage();
-            } else if (typeof firebase !== 'undefined') {
-                auth = firebase.auth();
-                db = firebase.firestore();
-            }
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
+        
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        if (db.settings) {
+            try {
+                db.settings({ 
+                    merge: true, 
+                    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED 
+                });
+            } catch(e) {}
+        }
+        
+        db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
+        auth.useDeviceLanguage();
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -1589,21 +1584,6 @@
                 },
 
                 async init() {
-                    // Poll for Firebase SDK availability to handle network latency cleanly
-                    let retries = 0;
-                    while (typeof firebase === 'undefined' && retries < 20) {
-                        await new Promise(resolve => setTimeout(resolve, 100));
-                        retries++;
-                    }
-
-                    initFirebase();
-
-                    if (!auth || !db) {
-                        console.error('Firebase SDK is missing or blocked by an extension.');
-                        this.loading = false;
-                        return;
-                    }
-
                     this.scheduleNextToast();
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
@@ -2039,20 +2019,10 @@
 
                 async handleGoogleAuth() {
                     this.authError = '';
-
-                    if (typeof firebase === 'undefined' || !firebase.auth) {
-                        this.authError = 'Firebase authentication is initializing. Please wait a moment and try again.';
-                        return;
-                    }
-
-                    if (!auth) {
-                        initFirebase();
-                    }
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    provider.setCustomParameters({ prompt: 'select_account' });
 
                     try {
-                        const provider = new firebase.auth.GoogleAuthProvider();
-                        provider.setCustomParameters({ prompt: 'select_account' });
-
                         const res = await auth.signInWithPopup(provider);
                         const userRef = db.collection('clients').doc(res.user.uid);
                         const doc = await userRef.get();
@@ -2090,19 +2060,13 @@
                             });
                         }
                     } catch (err) {
-                        this.authError = err.message || 'An error occurred during Google Authentication.';
+                        this.authError = err.message;
                     }
                 },
 
                 async handleAuth() {
                     this.authError = '';
                     this.authSuccess = '';
-
-                    if (typeof firebase === 'undefined' || !firebase.auth || !auth) {
-                        this.authError = 'Authentication service is initializing. Please try again in a moment.';
-                        return;
-                    }
-
                     try {
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
@@ -2183,14 +2147,14 @@
                             }
                         }
                     } catch (err) {
-                        this.authError = err.message || 'Authentication failed.';
+                        this.authError = err.message;
                     }
                 },
 
                 async resendVerificationEmail() {
                     this.authError = '';
                     this.authSuccess = '';
-                    if (auth && auth.currentUser) {
+                    if (auth.currentUser) {
                         try {
                             await auth.currentUser.sendEmailVerification();
                             alert('Verification email resent! Please check your inbox.');
@@ -2201,7 +2165,7 @@
                 },
 
                 async checkVerificationStatus() {
-                    if (auth && auth.currentUser) {
+                    if (auth.currentUser) {
                         await auth.currentUser.reload();
                         const isGoogleUser = auth.currentUser.providerData.some(p => p.providerId === 'google.com');
                         this.isVerified = auth.currentUser.emailVerified || isGoogleUser;
@@ -2222,16 +2186,11 @@
                         return;
                     }
 
-                    if (typeof firebase === 'undefined' || !firebase.auth || !auth) {
-                        this.authError = 'Authentication service is initializing. Please try again in a moment.';
-                        return;
-                    }
-
                     try {
                         await auth.sendPasswordResetEmail(this.authForm.email);
                         this.authSuccess = 'Password reset link sent! Check your email inbox.';
                     } catch (err) {
-                        this.authError = err.message || 'Failed to send password reset email.';
+                        this.authError = err.message;
                     }
                 },
 
@@ -2640,9 +2599,7 @@
                 },
 
                 async logout() {
-                    if (auth) {
-                        await auth.signOut();
-                    }
+                    await auth.signOut();
                     this.user = null;
                     this.userData = {};
                     this.isVerified = false;
