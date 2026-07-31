@@ -9,6 +9,12 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://www.gstatic.com">
     <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Preload Critical Inter Font (Prevents Layout Shift) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <!-- Dedicated Favicons for Browser Tabs -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -29,6 +35,9 @@
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
                         brand: {
                             50: '#eef2ff',
@@ -50,10 +59,10 @@
     <!-- Reliable QR Code Generator CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase Web SDKs (Compat Version) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Web SDKs (Deferred for Fast Non-Blocking Paint) -->
+    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -259,7 +268,7 @@
                         📸 Manage Gallery & Walkies Photos
                     </button>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[220px]">
                     <template x-for="(photo, idx) in photoGrid" :key="idx">
                         <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
                             <img :src="photo.url" :alt="photo.caption" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
@@ -344,7 +353,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[160px]">
                     <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
                         <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2 relative group">
                             <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
@@ -1453,21 +1462,33 @@
             measurementId: "G-6MPSER0Z6L"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        let auth, db;
 
-        if (db.settings) {
-            try {
-                db.settings({ 
-                    merge: true, 
-                    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED 
-                });
-            } catch(e) {}
+        function initFirebase() {
+            if (typeof firebase !== 'undefined' && (!firebase.apps || !firebase.apps.length)) {
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+
+                if (db.settings) {
+                    try {
+                        db.settings({ 
+                            merge: true, 
+                            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED 
+                        });
+                    } catch(e) {}
+                }
+                db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
+                auth.useDeviceLanguage();
+            } else if (typeof firebase !== 'undefined') {
+                auth = firebase.auth();
+                db = firebase.firestore();
+            }
         }
-        db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
 
-        auth.useDeviceLanguage();
+        window.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+        });
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -1594,6 +1615,10 @@
                 },
 
                 async init() {
+                    if (typeof firebase !== 'undefined' && (!auth || !db)) {
+                        initFirebase();
+                    }
+
                     this.scheduleNextToast();
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
