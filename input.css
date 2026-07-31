@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Component & Layout Styles */
+[x-cloak] { display: none !important; }
+
+.rainbow-top-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+}
+
+.rainbow-ring {
+    padding: 2px;
+    background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+    border-radius: 9999px;
+    box-shadow: 0 4px 15px rgba(234, 179, 8, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.rainbow-ring img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 9999px;
+}
+
+.rainbow-frame {
+    position: relative;
+    border-radius: 1.5rem;
+    padding: 4px;
+    background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+    box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease-out, opacity 0.2s ease-out;
+    opacity: 0;
+}
+.accordion-content.open {
+    max-height: 400px;
+    opacity: 1;
+}
