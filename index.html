@@ -1464,10 +1464,6 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initFirebase();
-        });
-
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1593,8 +1589,14 @@
                 },
 
                 async init() {
-                    if (typeof firebase !== 'undefined' && (!auth || !db)) {
-                        initFirebase();
+                    // Synchronously initialize Firebase SDK before performing operations
+                    initFirebase();
+
+                    // Fallback to prevent stuck loading state if Firebase SDK fails or is blocked
+                    if (!auth || !db) {
+                        console.error('Firebase failed to initialize or was blocked.');
+                        this.loading = false;
+                        return;
                     }
 
                     this.scheduleNextToast();
@@ -1619,7 +1621,7 @@
                                     }
                                 }
                             });
-                        });
+                        }, err => console.log('Broadcast listener notice:', err));
 
                     auth.onAuthStateChanged(async (u) => {
                         this.user = u;
