@@ -37,7 +37,7 @@
     <!-- Reliable QR Code Generator CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase Web SDKs (Deferred for Fast Non-Blocking Paint) -->
+    <!-- Firebase Web SDKs -->
     <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -428,7 +428,8 @@
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
-                <form x-show="authMode !== 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
+                <!-- FIXED: Correct x-show to authMode === 'forgot' -->
+                <form x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
@@ -1589,10 +1590,8 @@
                 },
 
                 async init() {
-                    // Synchronously initialize Firebase SDK before performing operations
                     initFirebase();
 
-                    // Fallback to prevent stuck loading state if Firebase SDK fails or is blocked
                     if (!auth || !db) {
                         console.error('Firebase failed to initialize or was blocked.');
                         this.loading = false;
@@ -2034,10 +2033,21 @@
 
                 async handleGoogleAuth() {
                     this.authError = '';
-                    const provider = new firebase.auth.GoogleAuthProvider();
-                    provider.setCustomParameters({ prompt: 'select_account' });
+
+                    // Ensure Firebase is initialized before accessing Auth SDK
+                    if (typeof firebase === 'undefined' || !firebase.auth) {
+                        this.authError = 'Firebase authentication is still initializing. Please wait a moment and try again.';
+                        return;
+                    }
+
+                    if (!auth) {
+                        initFirebase();
+                    }
 
                     try {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        provider.setCustomParameters({ prompt: 'select_account' });
+
                         const res = await auth.signInWithPopup(provider);
                         const userRef = db.collection('clients').doc(res.user.uid);
                         const doc = await userRef.get();
@@ -2075,13 +2085,19 @@
                             });
                         }
                     } catch (err) {
-                        this.authError = err.message;
+                        this.authError = err.message || 'An error occurred during Google Authentication.';
                     }
                 },
 
                 async handleAuth() {
                     this.authError = '';
                     this.authSuccess = '';
+
+                    if (typeof firebase === 'undefined' || !firebase.auth || !auth) {
+                        this.authError = 'Authentication service is initializing. Please try again in a moment.';
+                        return;
+                    }
+
                     try {
                         if (this.authMode === 'signup') {
                             const res = await auth.createUserWithEmailAndPassword(this.authForm.email, this.authForm.password);
@@ -2162,14 +2178,14 @@
                             }
                         }
                     } catch (err) {
-                        this.authError = err.message;
+                        this.authError = err.message || 'Authentication failed.';
                     }
                 },
 
                 async resendVerificationEmail() {
                     this.authError = '';
                     this.authSuccess = '';
-                    if (auth.currentUser) {
+                    if (auth && auth.currentUser) {
                         try {
                             await auth.currentUser.sendEmailVerification();
                             alert('Verification email resent! Please check your inbox.');
@@ -2180,7 +2196,7 @@
                 },
 
                 async checkVerificationStatus() {
-                    if (auth.currentUser) {
+                    if (auth && auth.currentUser) {
                         await auth.currentUser.reload();
                         const isGoogleUser = auth.currentUser.providerData.some(p => p.providerId === 'google.com');
                         this.isVerified = auth.currentUser.emailVerified || isGoogleUser;
@@ -2201,11 +2217,16 @@
                         return;
                     }
 
+                    if (typeof firebase === 'undefined' || !firebase.auth || !auth) {
+                        this.authError = 'Authentication service is initializing. Please try again in a moment.';
+                        return;
+                    }
+
                     try {
                         await auth.sendPasswordResetEmail(this.authForm.email);
                         this.authSuccess = 'Password reset link sent! Check your email inbox.';
                     } catch (err) {
-                        this.authError = err.message;
+                        this.authError = err.message || 'Failed to send password reset email.';
                     }
                 },
 
@@ -2614,7 +2635,9 @@
                 },
 
                 async logout() {
-                    await auth.signOut();
+                    if (auth) {
+                        await auth.signOut();
+                    }
                     this.user = null;
                     this.userData = {};
                     this.isVerified = false;
