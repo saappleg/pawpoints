@@ -13,7 +13,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Preload Critical Inter Font (Prevents Layout Shift) -->
+    <!-- Preload Critical Assets & Fonts -->
+    <link rel="preload" as="image" href="android-chrome-192x192.png">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
@@ -103,7 +104,10 @@
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-14 w-14 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Business Logo" width="56" height="56" fetchpriority="high" class="w-full h-full object-cover rounded-full shadow-md" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <picture>
+                        <source srcset="android-chrome-192x192.webp" type="image/webp">
+                        <img src="android-chrome-192x192.png" alt="Pet Care by Steven Business Logo" width="56" height="56" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-md" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    </picture>
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -124,7 +128,7 @@
             <div class="flex items-center space-x-2">
                 <template x-if="user && isAdmin">
                     <button 
-                        @click="adminModeActive = !adminModeActive" 
+                        @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" 
                         :class="adminModeActive ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600'"
                         class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition flex items-center gap-1.5 shadow-sm">
                         <span x-text="adminModeActive ? '👑 Admin Mode: ON' : '👁️ Client View (Admin OFF)'"></span>
@@ -148,7 +152,7 @@
 
                 <template x-if="user">
                     <div class="flex items-center space-x-2">
-                        <button x-show="isVerified" @click="showProfileModal = true" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                        <button x-show="isVerified" @click="triggerViewTransition(() => { showProfileModal = true })" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                             <span>👤 Profile</span>
                         </button>
                         <button @click="logout()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-slate-200 px-3 py-2 rounded-lg font-bold transition">
@@ -193,7 +197,7 @@
                         </div>
                     </div>
                     <div class="w-44 h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="176" height="176" fetchpriority="high" class="w-full h-full object-cover rounded-full">
+                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="176" height="176" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full">
                     </div>
                 </div>
             </section>
@@ -257,7 +261,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[220px]">
                     <template x-for="(photo, idx) in photoGrid" :key="idx">
                         <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                            <img :src="photo.url" alt="Pet Visit Photo" width="300" height="300" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                            <img :src="photo.url" alt="Pet Visit Photo" width="300" height="300" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
                         </div>
                     </template>
@@ -292,7 +296,7 @@
             <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" width="112" height="112" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" width="112" height="112" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
@@ -1503,7 +1507,6 @@
             }
         }
 
-        // View Transition Helper API
         function triggerViewTransition(callback) {
             if (!document.startViewTransition) {
                 callback();
