@@ -62,6 +62,10 @@
             background-color: #111827;
         }
 
+        body {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
         body.modal-open {
             overflow: hidden;
         }
@@ -69,12 +73,24 @@
         .rainbow-top-bar {
             height: var(--top-bar-height);
             background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+            z-index: 40;
         }
 
         header {
             position: sticky;
             top: var(--top-bar-height);
-            z-index: 30;
+            z-index: 45; /* Sits above rainbow-top-bar to prevent menu clipping */
+        }
+
+        /* Accessibility: Enforce minimum 44px touch targets for mobile usability */
+        .theme-toggle-btn, 
+        footer a,
+        footer button {
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .rainbow-ring {
@@ -122,8 +138,8 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
-    <div class="rainbow-top-bar sticky top-0 z-40"></div>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col">
+    <div class="rainbow-top-bar sticky top-0"></div>
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
@@ -166,7 +182,7 @@
                     <span class="hidden sm:inline">Book Service</span>
                 </a>
 
-                <button @click="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                <button @click="toggleDarkMode()" class="theme-toggle-btn p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" aria-label="Toggle Dark Mode">
                     <span x-show="!darkMode">🌙</span>
                     <span x-show="darkMode" x-cloak>☀️</span>
                 </button>
