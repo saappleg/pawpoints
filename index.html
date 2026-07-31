@@ -185,13 +185,13 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 space-y-8">
+    <main class="flex flex-col flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 gap-8">
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <div x-show="!loading && currentView === 'home'" class="space-y-10">
+        <div x-show="!loading && currentView === 'home'" class="flex flex-col gap-10">
             <section class="rainbow-frame shadow-xl">
                 <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.25rem] p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -403,7 +403,7 @@
         </div>
 
         <div x-show="!loading && currentView === 'loyalty'" class="space-y-6">
-            <div x-show="!user" x-cloak class="max-w-md mx-auto my-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
+            <div x-show="!user" x-cloak class="max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
                 <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
                 <div x-show="authMode !== 'forgot'">
@@ -1459,7 +1459,7 @@
             apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
             authDomain: "paw-points-app.firebaseapp.com",
             projectId: "paw-points-app",
-            storageBucket: "paw-points-app.firebasestorage.app",
+            storageBucket: "paw-points-app.appspot.com",
             messagingSenderId: "252239990659",
             appId: "1:252239990659:web:627f4bd85785e0bdcfb0b6",
             measurementId: "G-6MPSER0Z6L"
