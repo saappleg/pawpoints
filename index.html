@@ -58,12 +58,16 @@
             --top-bar-height: 6px;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         html.dark {
             background-color: #111827;
         }
 
         body {
-            transition: background-color 0.2s ease, color 0.2s ease;
+            transition: background-color 0.3s ease, color 0.2s ease;
         }
 
         body.modal-open {
@@ -79,10 +83,9 @@
         header {
             position: sticky;
             top: var(--top-bar-height);
-            z-index: 45; /* Sits above rainbow-top-bar to prevent menu clipping */
+            z-index: 45;
         }
 
-        /* Accessibility: Enforce minimum 44px touch targets for mobile usability */
         .theme-toggle-btn, 
         footer a,
         footer button {
@@ -139,6 +142,9 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col">
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only p-3 bg-brand-600 text-white z-50 absolute top-2 left-2 rounded-lg font-bold shadow-lg">Skip to main content</a>
+
     <div class="rainbow-top-bar sticky top-0"></div>
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -209,7 +215,7 @@
         </div>
     </header>
 
-    <main class="flex flex-col flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 gap-8">
+    <main id="main-content" class="flex flex-col flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 gap-8">
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
@@ -1400,13 +1406,15 @@
             <p class="font-bold text-amber-400">Recent Activity</p>
             <p class="text-slate-300 text-[11px]" x-text="toastMessage"></p>
         </div>
-        <button @click="showToast = false" class="text-slate-400 hover:text-white text-xs font-bold ml-auto">✕</button>
+        <button @click="showToast = false" aria-label="Close toast notification" class="text-slate-400 hover:text-white text-xs font-bold ml-auto">✕</button>
     </div>
 
-    <!-- FLOATING MULTI-CHANNEL CHAT WIDGET -->
+    <!-- FLOATING ACCESSIBLE MULTI-CHANNEL CHAT WIDGET -->
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
-        <div 
+        <nav 
             x-show="showChatWidget" 
+            role="menu"
+            aria-label="Chat options"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 scale-95 transform translate-y-2"
             x-transition:enter-end="opacity-100 scale-100 transform translate-y-0"
@@ -1422,33 +1430,37 @@
                     <h4 class="font-bold text-sm text-gray-900 dark:text-white">Chat with Steven 💬</h4>
                     <p class="text-[10px] text-gray-500 dark:text-gray-400">Choose your preferred channel</p>
                 </div>
-                <button @click="showChatWidget = false" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
+                <button @click="showChatWidget = false" aria-label="Close chat menu" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
             </div>
 
-            <div class="space-y-2">
-                <a href="https://m.me/petcarebysteven" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800 transition text-xs font-bold">
-                    <svg class="w-5 h-5 fill-current text-blue-600" viewBox="0 0 24 24">
-                        <path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.91 1.45 5.515 3.717 7.185V22l3.391-1.862c.928.257 1.91.396 2.892.396 5.523 0 10-4.145 10-9.258C22 6.145 17.523 2 12 2zm1.066 12.434l-2.562-2.733-5.003 2.733 5.503-5.84 2.625 2.733 4.94-2.733-5.503 5.84z"/>
-                    </svg>
-                    <span>Facebook Messenger</span>
-                </a>
-
-                <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20send%20a%20tip!" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
-                    <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-                    </svg>
-                    <span>WhatsApp Chat</span>
-                </a>
-
-                <a href="mailto:support@petcarebysteven.me?subject=Pet%20Sitting%20Inquiry" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition text-xs font-bold">
-                    <span class="text-base">✉️</span>
-                    <span>Send Email Message</span>
-                </a>
-            </div>
-        </div>
+            <ul class="space-y-2">
+                <li role="none">
+                    <a href="https://m.me/petcarebysteven" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 border border-blue-200 dark:border-blue-800 transition text-xs font-bold">
+                        <svg class="w-5 h-5 fill-current text-blue-600" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.91 1.45 5.515 3.717 7.185V22l3.391-1.862c.928.257 1.91.396 2.892.396 5.523 0 10-4.145 10-9.258C22 6.145 17.523 2 12 2zm1.066 12.434l-2.562-2.733-5.003 2.733 5.503-5.84 2.625 2.733 4.94-2.733-5.503 5.84z"/>
+                        </svg>
+                        <span>Facebook Messenger</span>
+                    </a>
+                </li>
+                <li role="none">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20send%20a%20tip!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                        <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                        </svg>
+                        <span>WhatsApp Chat</span>
+                    </a>
+                </li>
+                <li role="none">
+                    <a href="mailto:support@petcarebysteven.me?subject=Pet%20Sitting%20Inquiry" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition text-xs font-bold">
+                        <span class="text-base" aria-hidden="true">✉️</span>
+                        <span>Send Email Message</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         <div class="h-12 w-12 rounded-full overflow-hidden shadow-lg border-2 border-brand-500">
-            <button @click="showChatWidget = !showChatWidget" class="w-full h-full bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
-                <svg x-show="!showChatWidget" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <button @click="showChatWidget = !showChatWidget" :aria-expanded="showChatWidget" aria-label="Toggle chat options" class="w-full h-full bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
+                <svg x-show="!showChatWidget" class="w-6 h-6 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
                 </svg>
                 <span x-show="showChatWidget" class="text-lg font-bold" x-cloak>✕</span>
@@ -1457,7 +1469,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-8 text-xs text-gray-500 dark:text-gray-300">
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-0 py-8 text-xs text-gray-500 dark:text-gray-300">
         <div class="max-w-5xl mx-auto px-4 space-y-4">
             <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
                 <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
