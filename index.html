@@ -31,16 +31,16 @@
     <!-- Compiled Local Tailwind CSS Output -->
     <link rel="stylesheet" href="output.css">
 
-    <!-- Alpine.js Core -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
     <!-- Reliable QR Code Generator CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase Web SDKs -->
-    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Web SDKs (Loaded synchronously so auth is ready before Alpine mounts) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Alpine.js Core -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -428,7 +428,6 @@
                     <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition shadow-sm" x-text="authMode === 'login' ? 'Log In' : 'Sign Up'"></button>
                 </form>
 
-                <!-- FIXED: Correct x-show to authMode === 'forgot' -->
                 <form x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4" x-cloak>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     <div>
@@ -1590,10 +1589,17 @@
                 },
 
                 async init() {
+                    // Poll for Firebase SDK availability to handle network latency cleanly
+                    let retries = 0;
+                    while (typeof firebase === 'undefined' && retries < 20) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        retries++;
+                    }
+
                     initFirebase();
 
                     if (!auth || !db) {
-                        console.error('Firebase failed to initialize or was blocked.');
+                        console.error('Firebase SDK is missing or blocked by an extension.');
                         this.loading = false;
                         return;
                     }
@@ -2034,9 +2040,8 @@
                 async handleGoogleAuth() {
                     this.authError = '';
 
-                    // Ensure Firebase is initialized before accessing Auth SDK
                     if (typeof firebase === 'undefined' || !firebase.auth) {
-                        this.authError = 'Firebase authentication is still initializing. Please wait a moment and try again.';
+                        this.authError = 'Firebase authentication is initializing. Please wait a moment and try again.';
                         return;
                     }
 
