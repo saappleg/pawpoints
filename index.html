@@ -47,9 +47,26 @@
     <style>
         [x-cloak] { display: none !important; }
 
+        :root {
+            --top-bar-height: 6px;
+        }
+
+        html.dark {
+            background-color: #111827;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
         .rainbow-top-bar {
-            height: 6px;
+            height: var(--top-bar-height);
             background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
+        }
+
+        header {
+            position: sticky;
+            top: var(--top-bar-height);
         }
 
         .rainbow-ring {
@@ -71,7 +88,6 @@
             border-radius: 9999px;
         }
 
-        /* Performance Optimization: Layout containment hints */
         .rainbow-frame {
             position: relative;
             border-radius: 1.5rem;
@@ -100,14 +116,11 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
     <div class="rainbow-top-bar sticky top-0 z-40"></div>
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-[6px] z-30">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-14 w-14 shrink-0 transition-transform hover:scale-105">
-                    <picture>
-                        <source srcset="android-chrome-192x192.webp" type="image/webp">
-                        <img src="android-chrome-192x192.png" alt="Pet Care by Steven Business Logo" width="56" height="56" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-md" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
-                    </picture>
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Business Logo" width="56" height="56" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-md" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -558,10 +571,10 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-2 pt-2">
-                            <button @click="showChecklistModal = true" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition shadow flex items-center justify-center gap-1.5">
+                            <button @click="triggerViewTransition(() => { showChecklistModal = true })" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition shadow flex items-center justify-center gap-1.5">
                                 📋 House & Care Sheet
                             </button>
-                            <button @click="showProfileModal = true" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700 flex items-center justify-center gap-1.5">
+                            <button @click="triggerViewTransition(() => { showProfileModal = true })" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition border border-gray-700 flex items-center justify-center gap-1.5">
                                 ⚙️ Account Profile
                             </button>
                             <button @click="openDigitalPass()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center space-x-2">
@@ -636,7 +649,7 @@
                                 </span>
                                 <p class="text-[11px] text-amber-800 dark:text-amber-300">Formally grant permission and set a financial limit for emergency medical care if an issue arises while you are away.</p>
                             </div>
-                            <button @click="showVetAuthModal = true" class="shrink-0 bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg transition shadow-sm">
+                            <button @click="triggerViewTransition(() => { showVetAuthModal = true })" class="shrink-0 bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg transition shadow-sm">
                                 <span x-text="userData.vetAuth?.isSigned ? 'View & Edit Authorization' : 'Review & Sign'"></span>
                             </button>
                         </div>
@@ -949,7 +962,7 @@
     </main>
 
     <!-- HOUSE CARE & MEDICATION CHECKLIST MODAL -->
-    <div x-show="showChecklistModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div x-show="showChecklistModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div @click.away="showChecklistModal = false" class="bg-white dark:bg-gray-800 max-w-2xl w-full p-6 md:p-8 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-start border-b dark:border-gray-700 pb-4">
                 <div>
@@ -1001,7 +1014,7 @@
     </div>
 
     <!-- VET AUTHORIZATION MODAL -->
-    <div x-show="showVetAuthModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div x-show="showVetAuthModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div @click.away="showVetAuthModal = false" class="bg-white dark:bg-gray-800 max-w-2xl w-full p-6 md:p-8 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-start border-b dark:border-gray-700 pb-4">
                 <div>
@@ -1068,7 +1081,7 @@
     </div>
 
     <!-- ACCOUNT PROFILE MODAL -->
-    <div x-show="showProfileModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div x-show="showProfileModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-gray-800 max-w-md w-full p-6 rounded-2xl shadow-xl space-y-5">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h3>
@@ -1109,7 +1122,7 @@
     </div>
 
     <!-- DIGITAL PASS QR MODAL -->
-    <div x-show="showQRModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div x-show="showQRModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div @click.away="showQRModal = false" class="bg-white dark:bg-gray-800 max-w-sm w-full p-6 rounded-2xl shadow-xl text-center space-y-4">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Your Paw Pass</h3>
             <p class="text-xs text-gray-500 dark:text-slate-300 font-medium">Scan this code at checkout or visits to quickly access your account.</p>
@@ -1127,7 +1140,7 @@
     </div>
 
     <!-- ADMIN PANEL MODAL -->
-    <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div x-show="showAdminModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div @click.away="showAdminModal = false" class="bg-white dark:bg-gray-800 max-w-xl w-full p-6 rounded-2xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8">
             <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
                 <h3 class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Portal Panel</h3>
