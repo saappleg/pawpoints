@@ -88,11 +88,6 @@
             z-index: 45;
         }
 
-        #main-content {
-            padding-top: 113px;
-            container-type: inline-size;
-        }
-
         .theme-toggle-btn, 
         footer a,
         footer button {
@@ -219,224 +214,255 @@
         </div>
     </header>
 
-    <main id="main-content" class="flex flex-col flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 gap-10">
+    <main id="main-content" class="flex flex-col flex-grow w-full">
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <div x-show="!loading && currentView === 'home'" class="flex flex-col gap-12 md:gap-16">
-            <section class="rainbow-frame shadow-xl">
-                <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.25rem] p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div class="space-y-4 max-w-xl text-center md:text-left z-10">
-                        <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
-                        <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
-                        <p class="text-indigo-100 text-sm md:text-base leading-relaxed">
-                            Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
-                        </p>
-                        <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-                            <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
-                                📅 Schedule & Book Walkies
-                            </a>
-                            <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-indigo-700/90 hover:bg-indigo-700 text-white border border-indigo-400/40 px-6 py-3 rounded-xl font-bold text-sm transition text-center focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
-                                🎁 View Client Rewards
-                            </button>
-                        </div>
-                    </div>
-                    <div class="w-44 h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="176" height="176" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full">
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="space-y-1 text-center md:text-left">
-                    <div class="flex items-center justify-center md:justify-start gap-2">
-                        <span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Clients</span>
-                        <h3 class="font-extrabold text-base text-emerald-950 dark:text-emerald-100">Schedule a Free Meet & Greet</h3>
-                    </div>
-                    <p class="text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed max-w-xl">
-                        Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 15-minute consultation to learn feedings, walk paths, and house notes.
-                    </p>
-                </div>
-                <a href="https://wa.me/15133025418?text=Hi%20Steven!%20I%20would%20like%20to%20schedule%20a%20free%20Meet%20%26%20Greet." target="_blank" rel="noopener noreferrer" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-xl transition shadow-sm text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
-                    <span>☕ Schedule Free Meet & Greet</span>
-                </a>
-            </section>
-
-            <section class="space-y-6">
-                <div class="text-center max-w-lg mx-auto mb-6">
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Professional care designed to keep your pets happy, safe, and exercised.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
-                        <div class="text-3xl">🐕‍🦺</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dog Walking</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                            Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
-                        </p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
-                        <div class="text-3xl">🏡</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                            Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
-                        </p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-2xl shadow-sm space-y-3">
-                        <div class="text-3xl">🎁</div>
-                        <h4 class="font-bold text-lg text-gray-900 dark:text-white">Paw Points Loyalty</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                            Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto mb-4">
-                    <div class="text-center sm:text-left">
-                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
-                    </div>
-                    <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
-                        📸 Manage Gallery & Walkies Photos
-                    </button>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[220px]">
-                    <template x-for="(photo, idx) in photoGrid" :key="idx">
-                        <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
-                            <img :src="photo.url" alt="Pet Visit Photo" width="300" height="300" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
-                        </div>
-                    </template>
-                </div>
-            </section>
-
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
-                <div class="text-center max-w-lg mx-auto space-y-1">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">🧮 How Much Can You Earn?</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Slide your estimated monthly pet care budget to see your annual savings.</p>
-                </div>
-                <div class="max-w-md mx-auto space-y-4 bg-gray-50 dark:bg-gray-700/30 p-5 rounded-2xl border dark:border-gray-700">
-                    <div class="flex justify-between items-center text-xs font-bold text-gray-700 dark:text-gray-200">
-                        <span>Monthly Spend:</span>
-                        <span class="text-brand-600 dark:text-brand-400 text-sm font-black" x-text="`$${calcSpend}`"></span>
-                    </div>
-                    <input type="range" min="30" max="500" step="10" x-model.number="calcSpend" class="w-full accent-brand-600 cursor-pointer">
-                    <div class="grid grid-cols-2 gap-3 text-center pt-2">
-                        <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border dark:border-gray-700">
-                            <span class="block text-[10px] font-bold text-gray-400 uppercase">Monthly Points</span>
-                            <span class="text-lg font-black text-gray-900 dark:text-white" x-text="`${(calcSpend * 10).toLocaleString()} Pts`"></span>
-                        </div>
-                        <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border dark:border-gray-700">
-                            <span class="block text-[10px] font-bold text-gray-400 uppercase">Yearly Discounts</span>
-                            <span class="text-lg font-black text-emerald-600 dark:text-emerald-400" x-text="`$${Math.floor((calcSpend * 120) / 500) * 10}`"></span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
-                <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" width="112" height="112" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
-                    </div>
-                    <div class="space-y-2 text-center md:text-left">
-                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Meet Steven</h3>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                            With years of hands-on experience caring for cats and dogs, I am dedicated to providing a comfortable, stress-free routine for your furry family members. Whether it's high-energy daily walks or quiet drop-in cuddles, every visit is managed with safety, clear communication, and personalized care.
-                        </p>
-                        <div class="pt-1 flex flex-wrap justify-center md:justify-start gap-2 text-[11px] font-bold text-gray-700 dark:text-gray-300">
-                            <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ Pet CPR & First Aid Trained</span>
-                            <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ Background Checked</span>
-                            <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ In-Home Care Specialist</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
-                <div class="text-center max-w-lg mx-auto space-y-1">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Start typing your city name or zip code for instant coverage verification.</p>
-                </div>
-                <div class="max-w-md mx-auto space-y-3">
-                    <div class="relative">
-                        <input 
-                            type="text" 
-                            x-model="zipInput" 
-                            @input="checkServiceArea()"
-                            placeholder="Start typing City or Zip (e.g., Felicity, 45120, 47250)" 
-                            class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
-                    </div>
-                    <template x-if="serviceResult">
-                        <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3 rounded-xl border text-xs font-semibold text-center transition-all duration-200">
-                            <span x-text="serviceResult.message"></span>
-                        </div>
-                    </template>
-                </div>
-            </section>
-
-            <!-- DYNAMIC CLIENT REVIEWS SECTION -->
-            <section class="space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto mb-4">
-                    <div class="text-center sm:text-left">
-                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Real feedback from pet owners who trust Pet Care by Steven.</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[160px]">
-                    <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
-                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2 relative group">
-                            <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
-                            <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
-                            <p class="text-[11px] font-bold text-gray-900 dark:text-white" x-text="`— ${rev.author}`"></p>
-                        </div>
-                    </template>
-                </div>
-            </section>
-
-            <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto mb-4">
-                    <div class="text-center sm:text-left">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Click any question below to reveal detailed policies and answers.</p>
-                    </div>
-                    <button x-show="isAdmin && adminModeActive" @click="openAdminModal('faq')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">
-                        ❓ Manage FAQ Items
-                    </button>
-                </div>
-                <div class="space-y-3 max-w-2xl mx-auto text-xs">
-                    <template x-for="(faq, idx) in faqList" :key="idx">
-                        <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
-                            <button @click="activeFaq = activeFaq === idx ? null : idx" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
-                                <span x-text="faq.question"></span>
-                                <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === idx }">▼</span>
-                            </button>
-                            <div class="accordion-content p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium"
-                                 :class="{ 'open': activeFaq === idx }" 
-                                 x-html="faq.answer">
+        <div x-show="!loading && currentView === 'home'" class="flex flex-col w-full">
+            <!-- Hero Section (Band 1) -->
+            <section class="w-full py-12 md:py-20 px-4 md:px-6 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                <div class="max-w-5xl mx-auto">
+                    <div class="rainbow-frame shadow-xl">
+                        <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.25rem] p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div class="space-y-4 max-w-xl text-center md:text-left z-10">
+                                <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
+                                <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
+                                <p class="text-indigo-100 text-sm md:text-base leading-relaxed">
+                                    Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
+                                </p>
+                                <div class="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
+                                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white text-indigo-900 hover:bg-indigo-50 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition text-center focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                        📅 Schedule & Book Walkies
+                                    </a>
+                                    <button @click="currentView = 'loyalty'" class="w-full sm:w-auto bg-indigo-700/90 hover:bg-indigo-700 text-white border border-indigo-400/40 px-6 py-3 rounded-xl font-bold text-sm transition text-center focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                        🎁 View Client Rewards
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="w-44 h-44 shadow-2xl hidden md:block shrink-0 rounded-full overflow-hidden">
+                                <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="176" height="176" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full">
                             </div>
                         </div>
-                    </template>
+                    </div>
                 </div>
             </section>
 
-            <section class="text-center py-8 bg-indigo-50 dark:bg-gray-800 rounded-2xl border border-indigo-100 dark:border-gray-700 p-6 shadow-sm">
-                <h4 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h4>
-                <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium">Access your client account to view coupons, referral links, and pet notes.</p>
-                <button @click="currentView = 'loyalty'" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-sm">
-                    Open Paw Points Client Dashboard
-                </button>
+            <!-- Meet & Greet Notice (Band 2) -->
+            <section class="w-full py-10 px-4 md:px-6 bg-white dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-800">
+                <div class="max-w-5xl mx-auto">
+                    <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="space-y-1 text-center md:text-left">
+                            <div class="flex items-center justify-center md:justify-start gap-2">
+                                <span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Clients</span>
+                                <h3 class="font-extrabold text-base text-emerald-950 dark:text-emerald-100">Schedule a Free Meet & Greet</h3>
+                            </div>
+                            <p class="text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed max-w-xl">
+                                Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 15-minute consultation to learn feedings, walk paths, and house notes.
+                            </p>
+                        </div>
+                        <a href="https://wa.me/15133025418?text=Hi%20Steven!%20I%20would%20like%20to%20schedule%20a%20free%20Meet%20%26%20Greet." target="_blank" rel="noopener noreferrer" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-xl transition shadow-sm text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                            <span>☕ Schedule Free Meet & Greet</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Section (Band 3) -->
+            <section class="w-full py-16 px-4 md:px-6 bg-gray-50/70 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="text-center max-w-lg mx-auto">
+                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Professional care designed to keep your pets happy, safe, and exercised.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/80 p-6 rounded-2xl shadow-sm space-y-3">
+                            <div class="text-3xl">🐕‍🦺</div>
+                            <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dog Walking</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/80 p-6 rounded-2xl shadow-sm space-y-3">
+                            <div class="text-3xl">🏡</div>
+                            <h4 class="font-bold text-lg text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/80 p-6 rounded-2xl shadow-sm space-y-3">
+                            <div class="text-3xl">🎁</div>
+                            <h4 class="font-bold text-lg text-gray-900 dark:text-white">Paw Points Loyalty</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gallery Section (Band 4) -->
+            <section class="w-full py-16 px-4 md:px-6 bg-white dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-800">
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                        <div class="text-center sm:text-left">
+                            <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
+                        </div>
+                        <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
+                            📸 Manage Gallery & Walkies Photos
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 min-h-[220px]">
+                        <template x-for="(photo, idx) in photoGrid" :key="idx">
+                            <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 overflow-hidden shadow-sm relative group border dark:border-gray-700">
+                                <img :src="photo.url" alt="Pet Visit Photo" width="300" height="300" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calculator & About Steven (Band 5) -->
+            <section class="w-full py-16 px-4 md:px-6 bg-gray-50/70 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                <div class="max-w-5xl mx-auto space-y-12">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
+                        <div class="text-center max-w-lg mx-auto space-y-1">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">🧮 How Much Can You Earn?</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Slide your estimated monthly pet care budget to see your annual savings.</p>
+                        </div>
+                        <div class="max-w-md mx-auto space-y-4 bg-gray-50 dark:bg-gray-700/30 p-5 rounded-2xl border dark:border-gray-700">
+                            <div class="flex justify-between items-center text-xs font-bold text-gray-700 dark:text-gray-200">
+                                <span>Monthly Spend:</span>
+                                <span class="text-brand-600 dark:text-brand-400 text-sm font-black" x-text="`$${calcSpend}`"></span>
+                            </div>
+                            <input type="range" min="30" max="500" step="10" x-model.number="calcSpend" class="w-full accent-brand-600 cursor-pointer">
+                            <div class="grid grid-cols-2 gap-3 text-center pt-2">
+                                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border dark:border-gray-700">
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase">Monthly Points</span>
+                                    <span class="text-lg font-black text-gray-900 dark:text-white" x-text="`${(calcSpend * 10).toLocaleString()} Pts`"></span>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border dark:border-gray-700">
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase">Yearly Discounts</span>
+                                    <span class="text-lg font-black text-emerald-600 dark:text-emerald-400" x-text="`$${Math.floor((calcSpend * 120) / 500) * 10}`"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md">
+                                <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" width="112" height="112" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
+                            </div>
+                            <div class="space-y-2 text-center md:text-left">
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Meet Steven</h3>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                                    With years of hands-on experience caring for cats and dogs, I am dedicated to providing a comfortable, stress-free routine for your furry family members. Whether it's high-energy daily walks or quiet drop-in cuddles, every visit is managed with safety, clear communication, and personalized care.
+                                </p>
+                                <div class="pt-1 flex flex-wrap justify-center md:justify-start gap-2 text-[11px] font-bold text-gray-700 dark:text-gray-300">
+                                    <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ Pet CPR & First Aid Trained</span>
+                                    <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ Background Checked</span>
+                                    <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-200 dark:border-indigo-800">✓ In-Home Care Specialist</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Area Checker & Client Reviews (Band 6) -->
+            <section class="w-full py-16 px-4 md:px-6 bg-white dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-800">
+                <div class="max-w-5xl mx-auto space-y-12">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
+                        <div class="text-center max-w-lg mx-auto space-y-1">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Start typing your city name or zip code for instant coverage verification.</p>
+                        </div>
+                        <div class="max-w-md mx-auto space-y-3">
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    x-model="zipInput" 
+                                    @input="checkServiceArea()"
+                                    placeholder="Start typing City or Zip (e.g., Felicity, 45120, 47250)" 
+                                    class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-600 dark:bg-gray-700 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
+                            </div>
+                            <template x-if="serviceResult">
+                                <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3 rounded-xl border text-xs font-semibold text-center transition-all duration-200">
+                                    <span x-text="serviceResult.message"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Client Reviews -->
+                    <div class="space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto mb-4">
+                            <div class="text-center sm:text-left">
+                                <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Real feedback from pet owners who trust Pet Care by Steven.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[160px]">
+                            <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
+                                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 rounded-2xl shadow-sm space-y-2 relative group">
+                                    <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
+                                    <p class="text-[11px] font-bold text-gray-900 dark:text-white" x-text="`— ${rev.author}`"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ & CTA Section (Band 7) -->
+            <section class="w-full py-16 px-4 md:px-6 bg-gray-50/70 dark:bg-gray-900">
+                <div class="max-w-5xl mx-auto space-y-12">
+                    <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto mb-4">
+                            <div class="text-center sm:text-left">
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Click any question below to reveal detailed policies and answers.</p>
+                            </div>
+                            <button x-show="isAdmin && adminModeActive" @click="openAdminModal('faq')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">
+                                ❓ Manage FAQ Items
+                            </button>
+                        </div>
+                        <div class="space-y-3 max-w-2xl mx-auto text-xs">
+                            <template x-for="(faq, idx) in faqList" :key="idx">
+                                <div class="border dark:border-gray-700 rounded-xl overflow-hidden transition">
+                                    <button @click="activeFaq = activeFaq === idx ? null : idx" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                                        <span x-text="faq.question"></span>
+                                        <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === idx }">▼</span>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed font-medium"
+                                         :class="{ 'open': activeFaq === idx }" 
+                                         x-html="faq.answer">
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </section>
+
+                    <section class="text-center py-10 bg-indigo-50 dark:bg-gray-800 rounded-2xl border border-indigo-100 dark:border-gray-700 p-6 shadow-sm">
+                        <h4 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h4>
+                        <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium">Access your client account to view coupons, referral links, and pet notes.</p>
+                        <button @click="currentView = 'loyalty'" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-sm">
+                            Open Paw Points Client Dashboard
+                        </button>
+                    </section>
+                </div>
             </section>
         </div>
 
-        <div x-show="!loading && currentView === 'loyalty'" class="flex flex-col items-center justify-center w-full gap-6">
+        <div x-show="!loading && currentView === 'loyalty'" class="flex flex-col items-center justify-center w-full gap-6 py-8">
             <div x-show="!user" x-cloak class="max-w-md w-full bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 space-y-5">
                 <h2 class="text-xl font-bold text-center" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
