@@ -219,13 +219,13 @@
         </div>
     </header>
 
-    <main id="main-content" class="flex flex-col flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 gap-8">
+    <main id="main-content" class="flex flex-col flex-grow max-w-5xl w-full mx-auto p-4 md:p-6 gap-10">
         <div x-show="loading" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-600 border-t-transparent"></div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <div x-show="!loading && currentView === 'home'" class="flex flex-col gap-10">
+        <div x-show="!loading && currentView === 'home'" class="flex flex-col gap-14 md:gap-16">
             <section class="rainbow-frame shadow-xl">
                 <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.25rem] p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -265,9 +265,9 @@
             </section>
 
             <section class="space-y-4">
-                <div class="text-center max-w-lg mx-auto">
+                <div class="text-center max-w-lg mx-auto mb-6">
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional care designed to keep your pets happy, safe, and exercised.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Professional care designed to keep your pets happy, safe, and exercised.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -296,10 +296,10 @@
             </section>
 
             <section class="space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto mb-4">
                     <div class="text-center sm:text-left">
                         <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
                     </div>
                     <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
                         📸 Manage Gallery & Walkies Photos
@@ -384,10 +384,10 @@
 
             <!-- DYNAMIC CLIENT REVIEWS SECTION -->
             <section class="space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-5xl mx-auto mb-4">
                     <div class="text-center sm:text-left">
                         <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Real feedback from pet owners who trust Pet Care by Steven.</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[160px]">
@@ -402,10 +402,10 @@
             </section>
 
             <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto mb-4">
                     <div class="text-center sm:text-left">
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Click any question below to reveal detailed policies and answers.</p>
                     </div>
                     <button x-show="isAdmin && adminModeActive" @click="openAdminModal('faq')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">
                         ❓ Manage FAQ Items
