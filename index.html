@@ -120,9 +120,13 @@
         .rainbow-frame {
             position: relative;
             border-radius: 1.75rem;
-            padding: 3px;
+            padding: 4px;
             background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7);
             box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.15);
+        }
+
+        .rainbow-frame-inner {
+            border-radius: calc(1.75rem - 4px);
             overflow: hidden;
         }
 
@@ -220,7 +224,7 @@
             
             <!-- 1. Hero Call Out at the top -->
             <section class="rainbow-frame shadow-xl">
-                <div class="bg-indigo-600 dark:bg-indigo-950 text-white rounded-[1.6rem] p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="rainbow-frame-inner bg-indigo-600 dark:bg-indigo-950 text-white p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
                         <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
                         <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
