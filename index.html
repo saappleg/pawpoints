@@ -387,15 +387,16 @@
                 </div>
             </section>
 
-            <!-- 8. What clients say -->
-            <section class="space-y-4">
-                <div class="text-center sm:text-left">
+            <!-- 8. What clients say (Harmonized Container) -->
+            <section class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
+                <div class="text-center sm:text-left space-y-1">
+                    <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[160px]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
                     <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
-                        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 rounded-3xl shadow-sm space-y-3 relative flex flex-col justify-between">
+                        <div class="bg-gray-50 dark:bg-slate-950/50 border border-gray-100 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-3 relative flex flex-col justify-between">
                             <div class="space-y-2">
                                 <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
@@ -406,10 +407,11 @@
                 </div>
             </section>
 
-            <!-- 9. FAQ -->
-            <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-3xl p-8 md:p-10 shadow-sm space-y-4">
+            <!-- 9. FAQ (Harmonized Container) -->
+            <section x-data="{ activeFaq: null }" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto">
-                    <div class="text-center sm:text-left">
+                    <div class="text-center sm:text-left space-y-1">
+                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">FAQ</span>
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
                     </div>
@@ -419,8 +421,8 @@
                 </div>
                 <div class="space-y-3 max-w-2xl mx-auto text-xs">
                     <template x-for="(faq, idx) in faqList" :key="idx">
-                        <div class="border dark:border-gray-700 rounded-2xl overflow-hidden transition">
-                            <button @click="activeFaq = activeFaq === idx ? null : idx" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center bg-gray-50/50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
+                        <div class="border dark:border-gray-700 rounded-2xl overflow-hidden transition bg-gray-50/50 dark:bg-slate-950/50">
+                            <button @click="activeFaq = activeFaq === idx ? null : idx" class="w-full text-left p-4 font-bold text-gray-900 dark:text-white flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700/60 transition">
                                 <span x-text="faq.question"></span>
                                 <span class="text-sm transition-transform duration-200" :class="{ 'rotate-180': activeFaq === idx }">▼</span>
                             </button>
