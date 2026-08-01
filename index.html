@@ -143,6 +143,15 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0f19] text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+    <!-- HOLIDAY EASTER EGG BANNER (DYNAMICALLY SHOWN ON SPECIAL DATES) -->
+    <template x-if="activeHolidayBanner">
+        <div class="bg-gradient-to-r from-amber-500 via-brand-600 to-indigo-600 text-white text-xs font-bold py-2 px-4 text-center shadow-md flex items-center justify-center gap-2 z-50">
+            <span x-text="activeHolidayBanner.icon"></span>
+            <span x-text="activeHolidayBanner.message"></span>
+            <button @click="activeHolidayBanner = null" class="ml-4 opacity-80 hover:opacity-100 text-sm">✕</button>
+        </div>
+    </template>
+
     <div class="rainbow-top-bar sticky top-0 z-40"></div>
     <header class="bg-white dark:bg-[#111827] shadow-sm border-b border-gray-200 dark:border-gray-800 z-30">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -151,8 +160,8 @@
                     <img src="android-chrome-192x192.png" alt="Pet Care by Steven Business Logo" width="48" height="48" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-sm" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
+                    <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white" x-text="holidayBranding.title">Pet Care by Steven</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="holidayBranding.subtitle">Professional Pet Sitting & Dog Walking</p>
                 </div>
             </div>
 
@@ -1614,6 +1623,8 @@
                 clientReviewForm: { stars: 5, comment: '' },
                 broadcastForm: { title: '', body: '' },
                 pendingReviews: [],
+                activeHolidayBanner: null,
+                holidayBranding: { title: 'Pet Care by Steven', subtitle: 'Professional Pet Sitting & Dog Walking' },
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
@@ -1673,6 +1684,7 @@
                 },
 
                 async init() {
+                    this.checkHolidayEasterEggs();
                     this.scheduleNextToast();
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
@@ -1731,6 +1743,38 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                checkHolidayEasterEggs() {
+                    const now = new Date();
+                    const month = now.getMonth() + 1; // 1 - 12
+                    const day = now.getDate();
+
+                    // Halloween (Oct 25 - Nov 2)
+                    if ((month === 10 && day >= 25) || (month === 11 && day <= 2)) {
+                        this.activeHolidayBanner = { icon: '🎃', message: 'Spooky Season Special! Double Paw Points on all weekend sittings!' };
+                        this.holidayBranding = { title: 'Spooky Pet Care by Steven 🦇', subtitle: 'Haunted Walks & Monster Cuddles' };
+                    }
+                    // Thanksgiving Week (Nov 20 - Nov 30)
+                    else if (month === 11 && day >= 20 && day <= 30) {
+                        this.activeHolidayBanner = { icon: '🦃', message: 'Turkey Trot Special! Free treat bag added to all holiday drop-ins!' };
+                        this.holidayBranding = { title: 'Thankful Pet Care by Steven 🍂', subtitle: 'Gracious In-Home Sitting & Walks' };
+                    }
+                    // Christmas / Winter Holidays (Dec 15 - Jan 2)
+                    else if ((month === 12 && day >= 15) || (month === 1 && day <= 2)) {
+                        this.activeHolidayBanner = { icon: '🎄', message: 'Holiday Season! Special priority booking active for VIP members.' };
+                        this.holidayBranding = { title: 'Holiday Pet Care by Steven ❄️', subtitle: 'Festive Sitting & Winter Walkies' };
+                    }
+                    // Valentine's Day (Feb 10 - Feb 16)
+                    else if (month === 2 && day >= 10 && day <= 16) {
+                        this.activeHolidayBanner = { icon: '💖', message: 'Valentine Special! Show your furry best friend extra love with free bonus treats!' };
+                        this.holidayBranding = { title: 'Cupid Pet Care by Steven 💘', subtitle: 'Full of Puppy Love & Kitty Cuddles' };
+                    }
+                    // Easter / Spring (March/April dynamic or early Spring weekend check)
+                    else if (month === 4 && day >= 1 && day <= 15) {
+                        this.activeHolidayBanner = { icon: '🐰', message: 'Spring Hoppy-ness! Double points on morning walks!' };
+                        this.holidayBranding = { title: 'Spring Pet Care by Steven 🌷', subtitle: 'Sunny Walks & Fresh Air Visits' };
+                    }
                 },
 
                 async installPwa() {
@@ -1885,6 +1929,7 @@
 
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
+                    document.documentElement.classList.toggle('dark', this.darkMode);
                     localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
                 },
 
