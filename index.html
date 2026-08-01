@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-data="pawApp()" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="pawApp()" :class="{ 'dark': darkMode }" :style="darkMode ? 'background-color: #0b0f19;' : 'background-color: #f9fafb;'">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,8 @@
     <script>
         if (localStorage.getItem('theme') === 'dark' || !localStorage.getItem('theme')) {
             document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
     </script>
 
@@ -143,7 +145,8 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0f19] text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
-    <!-- HOLIDAY EASTER EGG BANNER (DYNAMICALLY SHOWN ON SPECIAL DATES) -->
+    
+    <!-- HOLIDAY EASTER EGG BANNER -->
     <template x-if="activeHolidayBanner">
         <div class="bg-gradient-to-r from-amber-500 via-brand-600 to-indigo-600 text-white text-xs font-bold py-2 px-4 text-center shadow-md flex items-center justify-center gap-2 z-50">
             <span x-text="activeHolidayBanner.icon"></span>
@@ -228,7 +231,7 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading Pet Care Portal...</p>
         </div>
 
-        <!-- HOME VIEW: MATCHING THE DASHBOARD CARD STYLING & LARGE BUTTONS -->
+        <!-- HOME VIEW -->
         <div x-show="!loading && currentView === 'home'" class="flex flex-col space-y-8">
             
             <!-- 1. Hero Call Out Section -->
@@ -386,10 +389,10 @@
                             x-model="zipInput" 
                             @input="checkServiceArea()"
                             placeholder="Start typing City or Zip (e.g., Felicity, 45120, 47250)" 
-                            class="w-full px-4 py-3.5 rounded-2xl border dark:border-gray-700 dark:bg-gray-800 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
+                            class="w-full px-4 py-3.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
                     </div>
                     <template x-if="serviceResult">
-                        <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3.5 rounded-2xl border text-xs font-semibold text-center transition-all duration-200">
+                        <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3.5 rounded-xl border text-xs font-semibold text-center transition-all duration-200">
                             <span x-text="serviceResult.message"></span>
                         </div>
                     </template>
@@ -1747,31 +1750,22 @@
 
                 checkHolidayEasterEggs() {
                     const now = new Date();
-                    const month = now.getMonth() + 1; // 1 - 12
+                    const month = now.getMonth() + 1;
                     const day = now.getDate();
 
-                    // Halloween (Oct 25 - Nov 2)
                     if ((month === 10 && day >= 25) || (month === 11 && day <= 2)) {
                         this.activeHolidayBanner = { icon: '🎃', message: 'Spooky Season Special! Double Paw Points on all weekend sittings!' };
                         this.holidayBranding = { title: 'Spooky Pet Care by Steven 🦇', subtitle: 'Haunted Walks & Monster Cuddles' };
-                    }
-                    // Thanksgiving Week (Nov 20 - Nov 30)
-                    else if (month === 11 && day >= 20 && day <= 30) {
+                    } else if (month === 11 && day >= 20 && day <= 30) {
                         this.activeHolidayBanner = { icon: '🦃', message: 'Turkey Trot Special! Free treat bag added to all holiday drop-ins!' };
                         this.holidayBranding = { title: 'Thankful Pet Care by Steven 🍂', subtitle: 'Gracious In-Home Sitting & Walks' };
-                    }
-                    // Christmas / Winter Holidays (Dec 15 - Jan 2)
-                    else if ((month === 12 && day >= 15) || (month === 1 && day <= 2)) {
+                    } else if ((month === 12 && day >= 15) || (month === 1 && day <= 2)) {
                         this.activeHolidayBanner = { icon: '🎄', message: 'Holiday Season! Special priority booking active for VIP members.' };
                         this.holidayBranding = { title: 'Holiday Pet Care by Steven ❄️', subtitle: 'Festive Sitting & Winter Walkies' };
-                    }
-                    // Valentine's Day (Feb 10 - Feb 16)
-                    else if (month === 2 && day >= 10 && day <= 16) {
+                    } else if (month === 2 && day >= 10 && day <= 16) {
                         this.activeHolidayBanner = { icon: '💖', message: 'Valentine Special! Show your furry best friend extra love with free bonus treats!' };
                         this.holidayBranding = { title: 'Cupid Pet Care by Steven 💘', subtitle: 'Full of Puppy Love & Kitty Cuddles' };
-                    }
-                    // Easter / Spring (March/April dynamic or early Spring weekend check)
-                    else if (month === 4 && day >= 1 && day <= 15) {
+                    } else if (month === 4 && day >= 1 && day <= 15) {
                         this.activeHolidayBanner = { icon: '🐰', message: 'Spring Hoppy-ness! Double points on morning walks!' };
                         this.holidayBranding = { title: 'Spring Pet Care by Steven 🌷', subtitle: 'Sunny Walks & Fresh Air Visits' };
                     }
@@ -1929,8 +1923,13 @@
 
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
-                    document.documentElement.classList.toggle('dark', this.darkMode);
-                    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+                    if (this.darkMode) {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    }
                 },
 
                 async checkServiceArea() {
