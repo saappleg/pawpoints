@@ -282,9 +282,9 @@
                         Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 15-minute consultation to learn feedings, walk paths, and house notes.
                     </p>
                 </div>
-                <a href="https://wa.me/15133025418?text=Hi%20Steven!%20I%20would%20like%20to%20schedule%20a%20free%20Meet%20%26%20Greet." target="_blank" rel="noopener noreferrer" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                <button @click="showMeetGreetModal = true" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
                     <span>☕ Schedule Free Meet & Greet</span>
-                </a>
+                </button>
             </section>
 
             <!-- 3. Our Pet Care Services Section -->
@@ -1655,6 +1655,7 @@
                 toastMessage: '',
                 showInstallBanner: false,
                 showIOSInstallModal: false,
+                showMeetGreetModal: false,
                 showVetAuthModal: false,
                 showChecklistModal: false,
                 showProfileModal: false,
