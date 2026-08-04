@@ -1,7 +1,7 @@
 {
   "id": "pet-care-by-steven-app",
   "name": "Pet Care by Steven",
-  "short_name": "Pet Care",
+  "short_name": "Pet Care by Steven",
   "description": "Loyalty Program and Pet Care Portal for Pet Care by Steven",
   "start_url": "/",
   "scope": "/",
