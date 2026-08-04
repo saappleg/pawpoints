@@ -63,17 +63,18 @@
 
         :root {
             --top-bar-height: 6px;
-            color-scheme: light dark; /* Ensures native UI elements match theme */
         }
 
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 100px;
+            color-scheme: light; /* Explicitly tie color scheme to HTML class state */
         }
 
         html.dark {
             background-color: #111827;
             color: #f3f4f6;
+            color-scheme: dark; /* Explicitly tie color scheme to HTML class state */
         }
 
         body {
@@ -486,12 +487,12 @@
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                            <input type="text" x-model="authForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            <input type="text" x-model="authForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                         </div>
                     </template>
                     <div>
                         <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-1">
@@ -500,12 +501,12 @@
                                 Forgot password?
                             </button>
                         </div>
-                        <input type="password" x-model="authForm.password" required aria-label="Password" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="password" x-model="authForm.password" required aria-label="Password" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Referral Code (Optional)</label>
-                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" aria-label="Referral Code" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
+                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" aria-label="Referral Code" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
                         </div>
                     </template>
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
@@ -517,7 +518,7 @@
                     <p class="text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     <div>
                         <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
                     <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
