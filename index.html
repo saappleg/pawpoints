@@ -2206,29 +2206,43 @@
                             let referredByUid = null;
 
                             const urlParams = new URLSearchParams(window.location.search);
-                            const refParam = urlParams.get('ref');
+                            const refParam = urlParams.get('ref') || this.authForm.refCode; 
+                            
                             if (refParam) {
                                 const enteredRefCode = refParam.trim().toUpperCase();
-                                const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
-                                if (!refQuery.empty) {
-                                    const referrerDoc = refQuery.docs[0];
-                                    referredByUid = referrerDoc.id;
+                                try {
+                                    const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
+                                    if (!refQuery.empty) {
+                                        const referrerDoc = refQuery.docs[0];
+                                        referredByUid = referrerDoc.id;
 
+                                        initialCoupons.push({
+                                            code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                                            title: '$10 Off First Visit (Referral Bonus)',
+                                            used: false,
+                                            createdAt: new Date().toISOString()
+                                        });
+
+                                        const refData = referrerDoc.data();
+                                        const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
+                                        const refYearly = (refData.yearlyPoints || 0) + 1000;
+                                        
+                                        await db.collection('clients').doc(referredByUid).update({
+                                            points: (refData.points || 0) + 1000,
+                                            lifetimePoints: refLifetime,
+                                            yearlyPoints: refYearly,
+                                            referralsCount: (refData.referralsCount || 0) + 1
+                                        });
+                                    }
+                                } catch (refError) {
+                                    console.warn("Could not sync points to referrer (likely a permission rule restriction).", refError);
+                                    
+                                    // Give the newly created user their welcome bonus regardless!
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
                                         used: false,
                                         createdAt: new Date().toISOString()
-                                    });
-
-                                    const refData = referrerDoc.data();
-                                    const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
-                                    const refYearly = (refData.yearlyPoints || 0) + 1000;
-                                    await db.collection('clients').doc(referredByUid).update({
-                                        points: (refData.points || 0) + 1000,
-                                        lifetimePoints: refLifetime,
-                                        yearlyPoints: refYearly,
-                                        referralsCount: (refData.referralsCount || 0) + 1
                                     });
                                 }
                             }
@@ -2286,26 +2300,39 @@
 
                             const enteredRefCode = (this.authForm.refCode || '').trim().toUpperCase();
                             if (enteredRefCode) {
-                                const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
-                                if (!refQuery.empty) {
-                                    const referrerDoc = refQuery.docs[0];
-                                    referredByUid = referrerDoc.id;
+                                try {
+                                    const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
+                                    if (!refQuery.empty) {
+                                        const referrerDoc = refQuery.docs[0];
+                                        referredByUid = referrerDoc.id;
 
+                                        initialCoupons.push({
+                                            code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                                            title: '$10 Off First Visit (Referral Bonus)',
+                                            used: false,
+                                            createdAt: new Date().toISOString()
+                                        });
+
+                                        const refData = referrerDoc.data();
+                                        const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
+                                        const refYearly = (refData.yearlyPoints || 0) + 1000;
+                                        
+                                        await db.collection('clients').doc(referredByUid).update({
+                                            points: (refData.points || 0) + 1000,
+                                            lifetimePoints: refLifetime,
+                                            yearlyPoints: refYearly,
+                                            referralsCount: (refData.referralsCount || 0) + 1
+                                        });
+                                    }
+                                } catch (refError) {
+                                    console.warn("Could not sync points to referrer (likely a permission rule restriction).", refError);
+                                    
+                                    // Give the newly created user their welcome bonus regardless!
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
                                         used: false,
                                         createdAt: new Date().toISOString()
-                                    });
-
-                                    const refData = referrerDoc.data();
-                                    const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
-                                    const refYearly = (refData.yearlyPoints || 0) + 1000;
-                                    await db.collection('clients').doc(referredByUid).update({
-                                        points: (refData.points || 0) + 1000,
-                                        lifetimePoints: refLifetime,
-                                        yearlyPoints: refYearly,
-                                        referralsCount: (refData.referralsCount || 0) + 1
                                     });
                                 }
                             }
