@@ -1,9 +1,10 @@
 {
-  "$schema": "https://json.schemastore.org/web-manifest.json",
+  "id": "pet-care-by-steven-app",
   "name": "Pet Care by Steven",
   "short_name": "Pet Care",
   "description": "Loyalty rewards program tracking for pet care service clients.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "display_override": [
     "window-controls-overlay",
@@ -11,11 +12,22 @@
     "standalone"
   ],
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "dir": "ltr",
   "categories": [
     "business",
-    "productivity",
-    "utilities"
+    "lifestyle",
+    "pets"
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "com.petcarebysteven.app",
+      "url": "https://play.google.com/store/apps/details?id=com.petcarebysteven.app"
+    }
   ],
   "scope_extensions": [
     {
@@ -25,11 +37,15 @@
       "origin": "https://www.personalwalkies.com"
     }
   ],
+  "iarc_rating_id": "00000000-0000-0000-0000-000000000000",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon",
+      "src": "/favicon-16x16.webp",
+      "sizes": "16x16",
+      "type": "image/webp",
       "purpose": "any"
     },
     {
@@ -39,21 +55,15 @@
       "purpose": "any"
     },
     {
-      "src": "/favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/favicon-16x16.webp",
-      "sizes": "16x16",
-      "type": "image/webp",
-      "purpose": "any"
-    },
-    {
       "src": "/favicon-32x32.webp",
       "sizes": "32x32",
       "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
       "purpose": "any"
     },
     {
