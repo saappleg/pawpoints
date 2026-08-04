@@ -279,7 +279,7 @@
                         <h2 class="font-extrabold text-base text-gray-900 dark:text-white">Schedule a Free Meet & Greet</h2>
                     </div>
                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
-                        Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 30-minute consultation to learn about feedings, your typical walking paths, and house notes.
+                        Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 15-minute consultation to learn feedings, walk paths, and house notes.
                     </p>
                 </div>
                 <button @click="showMeetGreetModal = true" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
@@ -2202,7 +2202,37 @@
 
                         if (!doc.exists) {
                             const personalRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-                            
+                            let initialCoupons = [];
+                            let referredByUid = null;
+
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const refParam = urlParams.get('ref');
+                            if (refParam) {
+                                const enteredRefCode = refParam.trim().toUpperCase();
+                                const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
+                                if (!refQuery.empty) {
+                                    const referrerDoc = refQuery.docs[0];
+                                    referredByUid = referrerDoc.id;
+
+                                    initialCoupons.push({
+                                        code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                                        title: '$10 Off First Visit (Referral Bonus)',
+                                        used: false,
+                                        createdAt: new Date().toISOString()
+                                    });
+
+                                    const refData = referrerDoc.data();
+                                    const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
+                                    const refYearly = (refData.yearlyPoints || 0) + 1000;
+                                    await db.collection('clients').doc(referredByUid).update({
+                                        points: (refData.points || 0) + 1000,
+                                        lifetimePoints: refLifetime,
+                                        yearlyPoints: refYearly,
+                                        referralsCount: (refData.referralsCount || 0) + 1
+                                    });
+                                }
+                            }
+
                             fetch('https://hook.us1.make.com/llq7icsk5doklbgwemxl4t1fmqw2dulm', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -2211,6 +2241,7 @@
                                     name: res.user.displayName || 'Google Client',
                                     email: res.user.email,
                                     referralCode: personalRefCode,
+                                    referredBy: referredByUid || 'None',
                                     createdAt: new Date().toISOString()
                                 })
                             }).catch(err => console.log('Webhook error:', err));
@@ -2224,14 +2255,18 @@
                                 lifetimePoints: 0,
                                 yearlyPoints: 0,
                                 statusYear: new Date().getFullYear().toString(),
-                                coupons: [],
+                                coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
                                 isAdmin: res.user.email === 'saappleg@gmail.com' || res.user.email.includes('steven'),
                                 referralCode: personalRefCode,
+                                referredBy: referredByUid,
                                 referralsCount: 0,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
                         }
+
+                        await this.fetchUserData(res.user.uid);
+                        this.currentView = 'loyalty';
                     } catch (err) {
                         this.authError = err.message;
                     }
