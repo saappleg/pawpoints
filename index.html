@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Care by Steven</title>
 
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!">
+    <link rel="canonical" href="https://petcarebysteven.me">
+
     <!-- Open Graph Meta Tags for Social & Text Link Previews -->
     <meta property="og:title" content="Pet Care by Steven">
     <meta property="og:description" content="Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!">
     <meta property="og:image" content="https://petcarebysteven.me/android-chrome-512x512.png">
     <meta property="og:url" content="https://petcarebysteven.me">
     <meta property="og:type" content="website">
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval';">
 
     <!-- Prevent FOUC: Apply Dark Theme Class Before Paint -->
     <script>
@@ -50,7 +58,7 @@
     <!-- Reliable QR Code Generator CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase Web SDKs (Restored to synchronous loading to fix JS crash) -->
+    <!-- Firebase Web SDKs (Synchronous to prevent initialization crash) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -163,7 +171,7 @@
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-12 w-12 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Business Logo" width="48" height="48" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-sm" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="48" height="48" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-sm" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -259,7 +267,7 @@
                         </div>
                     </div>
                     <div class="w-44 h-44 shadow-2xl hidden md:inline-flex shrink-0 rainbow-ring">
-                        <img src="android-chrome-512x512.png" alt="Pet Care Patch Logo" width="176" height="176" fetchpriority="high" decoding="async" class="w-full h-full object-cover">
+                        <img src="android-chrome-512x512.png" alt="Pet Care by Steven circular logo patch" width="176" height="176" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover">
                     </div>
                 </div>
             </section>
@@ -269,7 +277,7 @@
                 <div class="space-y-1 text-center md:text-left">
                     <div class="flex items-center justify-center md:justify-start gap-2">
                         <span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Clients</span>
-                        <h3 class="font-extrabold text-base text-gray-900 dark:text-white">Schedule a Free Meet & Greet</h3>
+                        <h2 class="font-extrabold text-base text-gray-900 dark:text-white">Schedule a Free Meet & Greet</h2>
                     </div>
                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
                         Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 15-minute consultation to learn feedings, walk paths, and house notes.
@@ -283,28 +291,28 @@
             <!-- 3. Our Pet Care Services Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="text-center max-w-lg mx-auto space-y-1">
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h3>
+                    <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Professional care designed to keep your pets happy, safe, and exercised.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                     <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
-                        <div class="text-3xl">🐕‍🦺</div>
-                        <h4 class="font-bold text-base text-gray-900 dark:text-white">Dog Walking</h4>
+                        <div class="text-3xl" aria-hidden="true">🐕‍🦺</div>
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white">Dog Walking</h3>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
                         </p>
                     </div>
                     <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
-                        <div class="text-3xl">🏡</div>
-                        <h4 class="font-bold text-base text-gray-900 dark:text-white">In-Home Sitting Visits</h4>
+                        <div class="text-3xl" aria-hidden="true">🏡</div>
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white">In-Home Sitting Visits</h3>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
                         </p>
                     </div>
                     <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
-                        <div class="text-3xl">🎁</div>
-                        <h4 class="font-bold text-base text-gray-900 dark:text-white">Paw Points Loyalty</h4>
+                        <div class="text-3xl" aria-hidden="true">🎁</div>
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white">Paw Points Loyalty</h3>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
                         </p>
@@ -316,7 +324,7 @@
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                     <div class="text-center sm:text-left">
-                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h3>
+                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Daily Care Gallery</h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">A glimpse into our daily dog walks and drop-in sitting visits from Walkies.</p>
                     </div>
                     <button x-show="isAdmin && adminModeActive" @click="openAdminModal('photos')" aria-label="Manage Gallery Photos" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-3.5 rounded-2xl transition shadow-sm">
@@ -326,7 +334,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 min-h-[200px]">
                     <template x-for="(photo, idx) in photoGrid" :key="idx">
                         <div class="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-800 overflow-hidden shadow-sm relative group border dark:border-gray-800">
-                            <img :src="photo.url" alt="Pet Visit Photo" width="300" height="300" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                            <img :src="photo.url" :alt="photo.caption ? 'Pet care visit update: ' + photo.caption : 'Pet care visit update featuring a dog or cat'" width="300" height="300" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
                         </div>
                     </template>
@@ -337,7 +345,7 @@
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">🧮 How Much Can You Earn?</h3>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">🧮 How Much Can You Earn?</h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Slide your estimated monthly pet care budget to see your annual savings.</p>
                 </div>
                 <div class="max-w-md mx-auto space-y-4 bg-gray-50 dark:bg-[#0d1117] p-6 rounded-2xl border dark:border-gray-800">
@@ -363,11 +371,11 @@
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl">
                 <div class="flex flex-col md:flex-row items-center gap-8">
                     <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md border-2 border-brand-500">
-                        <img src="android-chrome-192x192.png" alt="Steven Sitter Profile" width="112" height="112" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="android-chrome-192x192.png" alt="Portrait of Steven, the pet care provider" width="112" height="112" style="aspect-ratio: 1 / 1;" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                     <div class="space-y-3 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Meet Steven</h3>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Meet Steven</h2>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             With years of hands-on experience caring for cats and dogs, I am dedicated to providing a comfortable, stress-free routine for your furry family members. Whether it's high-energy daily walks or quiet drop-in cuddles, every visit is managed with safety, clear communication, and personalized care.
                         </p>
@@ -383,7 +391,7 @@
             <!-- 7. Service area checker Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h3>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Start typing your city name or zip code for instant coverage verification.</p>
                 </div>
                 <div class="max-w-md mx-auto space-y-3">
@@ -408,7 +416,7 @@
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="text-center sm:text-left space-y-1">
                     <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
-                    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h3>
+                    <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
@@ -429,7 +437,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto">
                     <div class="text-center sm:text-left space-y-1">
                         <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">FAQ</span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h3>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Click any question below to reveal detailed policies and answers.</p>
                     </div>
                     <button x-show="isAdmin && adminModeActive" @click="openAdminModal('faq')" aria-label="Manage FAQ Items" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-3.5 rounded-2xl transition shrink-0 shadow-sm">
@@ -454,7 +462,7 @@
 
             <!-- 10. Ready to track your points Section -->
             <section class="text-center py-12 bg-indigo-50 dark:bg-[#111827] rounded-3xl border border-indigo-100 dark:border-gray-800 p-8 shadow-xl space-y-4">
-                <h4 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h4>
+                <h2 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h2>
                 <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium max-w-md mx-auto">Access your client account to view coupons, referral links, and pet notes.</p>
                 <button @click="currentView = 'loyalty'" aria-label="Open Paw Points Dashboard" class="mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-xs transition shadow-lg">
                     Open Paw Points Client Dashboard
@@ -577,7 +585,7 @@
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <span class="bg-brand-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Client Guide</span>
-                                <h3 class="font-bold text-sm text-indigo-950 dark:text-indigo-100">✨ How Getting Started Works</h3>
+                                <h2 class="font-bold text-sm text-indigo-950 dark:text-indigo-100">✨ How Getting Started Works</h2>
                             </div>
                             <button @click="showGuide = !showGuide" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
                                 <span x-text="showGuide ? 'Hide Guide' : 'Show Guide'"></span>
@@ -652,7 +660,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-3.5 py-1 rounded-full">Earn Free Care</span>
-                                <h3 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
+                                <h2 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h2>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 max-w-lg leading-relaxed">
                                     Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
                                 </p>
@@ -678,9 +686,9 @@
                     <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-800 pb-4">
                             <div>
-                                <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <h2 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                                     <span>🐶 Pet Profiles & Home Care Details</span>
-                                </h3>
+                                </h2>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, home entry codes, and emergency contacts.</p>
                             </div>
                             <div class="flex items-center space-x-2">
@@ -733,7 +741,7 @@
                                                 </template>
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h4>
+                                                <h3 class="font-bold text-base text-gray-900 dark:text-white" x-text="pet.name || 'Unnamed Pet'"></h3>
                                                 <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400" x-text="pet.breed || 'Registered Pet'"></span>
                                             </div>
                                         </div>
@@ -748,7 +756,7 @@
                             </div>
 
                             <div class="border-t dark:border-gray-800 pt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access & Key Instructions</h4>
+                                <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access & Key Instructions</h3>
                                 <div class="bg-gray-50/60 dark:bg-[#0d1117] p-4 rounded-2xl border dark:border-gray-800 space-y-3 text-xs">
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
@@ -768,7 +776,7 @@
                             </div>
 
                             <div class="border-t dark:border-gray-800 pt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">👥 Emergency Contacts & Authorized Pickup Roster</h4>
+                                <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">👥 Emergency Contacts & Authorized Pickup Roster</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                                     <template x-if="userData.emergencyContacts && userData.emergencyContacts.length > 0">
                                         <template x-for="(contact, cIdx) in userData.emergencyContacts" :key="cIdx">
@@ -788,7 +796,7 @@
                             </div>
 
                             <div class="border-t dark:border-gray-800 pt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50/60 dark:bg-[#0d1117] p-4 rounded-2xl border dark:border-gray-800">
                                     <div>
                                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-300">Clinic Name</span>
@@ -852,7 +860,7 @@
                             </div>
 
                             <div class="border-t dark:border-gray-800 pt-4 mt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access Details</h4>
+                                <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🔑 Secure Home Access Details</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Lockbox / Keypad Code</label>
@@ -871,7 +879,7 @@
 
                             <div class="border-t dark:border-gray-800 pt-4 mt-4 space-y-3">
                                 <div class="flex justify-between items-center">
-                                    <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider">👥 Emergency Contacts & Authorized Pickup Roster</h4>
+                                    <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider">👥 Emergency Contacts & Authorized Pickup Roster</h3>
                                     <button @click="addEmergencyContact()" class="text-xs bg-brand-600 text-white px-2.5 py-1 rounded-xl font-bold">+ Add Contact</button>
                                 </div>
                                 
@@ -886,7 +894,7 @@
                             </div>
 
                             <div class="border-t dark:border-gray-800 pt-4 mt-4">
-                                <h4 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h4>
+                                <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider mb-3">🏥 Emergency Vet Info</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Clinic Name</label>
@@ -902,9 +910,9 @@
                     </div>
 
                     <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-4">
-                        <h3 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
                             <span>⭐ Leave a Review for Steven</span>
-                        </h3>
+                        </h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Share your honest feedback! Reviews are published after quick admin review.</p>
 
                         <form @submit.prevent="submitClientReview()" class="space-y-3 text-xs">
@@ -929,7 +937,7 @@
                     </div>
 
                     <div x-show="userData.coupons && userData.coupons.length > 0" class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800">
-                        <h3 class="font-bold text-base mb-3 text-gray-900 dark:text-white">Your Redeemed Coupons</h3>
+                        <h2 class="font-bold text-base mb-3 text-gray-900 dark:text-white">Your Redeemed Coupons</h2>
                         <div class="space-y-3">
                             <template x-for="(coupon, index) in userData.coupons" :key="index">
                                 <div class="border dark:border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" :class="coupon.used ? 'bg-gray-50 dark:bg-gray-800/50 opacity-60' : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'">
@@ -954,14 +962,14 @@
                     <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
                         <div class="flex justify-between items-center border-b dark:border-gray-800 pb-4">
                             <div>
-                                <h3 class="font-bold text-base text-gray-900 dark:text-white">Available Rewards & Support Tipping</h3>
+                                <h2 class="font-bold text-base text-gray-900 dark:text-white">Available Rewards & Support Tipping</h2>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Redeem your points for discounts or send a tip. Tips earn <strong>10x bonus Paw Points</strong>!</p>
                             </div>
                         </div>
 
                         <div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 p-4 rounded-2xl space-y-3">
                             <div class="flex items-center justify-between">
-                                <h4 class="font-bold text-xs text-indigo-950 dark:text-indigo-200">☕ Leave a Tip / Buy Steven a Treat (Earns 10x Bonus Pts!)</h4>
+                                <h3 class="font-bold text-xs text-indigo-950 dark:text-indigo-200">☕ Leave a Tip / Buy Steven a Treat (Earns 10x Bonus Pts!)</h3>
                             </div>
                             <p class="text-[11px] text-gray-600 dark:text-gray-300">Choose your preferred payment platform to send a tip. Once sent, message Steven to have your 10x bonus points credited!</p>
                             <div class="flex flex-wrap gap-3 pt-1">
@@ -981,7 +989,7 @@
                             <div class="border dark:border-gray-800 p-5 rounded-2xl flex flex-col justify-between gap-4 bg-gray-50/40 dark:bg-[#0d1117]">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">$10 Off Next Visit</h4>
+                                        <h3 class="font-bold text-sm text-gray-900 dark:text-white">$10 Off Next Visit</h3>
                                         <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400 mt-0.5">5,000 Points Required</p>
                                     </div>
                                     <span x-show="(userData.points || 0) < 5000" class="text-[10px] font-black uppercase bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 px-2.5 py-0.5 rounded-full border border-red-200 dark:border-red-800">
@@ -1002,7 +1010,7 @@
                             <div class="border dark:border-gray-800 p-5 rounded-2xl flex flex-col justify-between gap-4 bg-gray-50/40 dark:bg-[#0d1117]">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">$20 Off Next Visit</h4>
+                                        <h3 class="font-bold text-sm text-gray-900 dark:text-white">$20 Off Next Visit</h3>
                                         <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400 mt-0.5">8,000 Points Required</p>
                                     </div>
                                     <span x-show="(userData.points || 0) < 8000" class="text-[10px] font-black uppercase bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 px-2.5 py-0.5 rounded-full border border-red-200 dark:border-red-800">
@@ -1031,9 +1039,9 @@
         <div @click.away="showChecklistModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
             <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
                 <div>
-                    <h3 id="modal-checklist-title" class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 id="modal-checklist-title" class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
                         📋 House & Medication Intake Checklist
-                    </h3>
+                    </h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Specify feeding, medication schedules, and house tasks for sitting visits.</p>
                 </div>
                 <button @click="showChecklistModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
@@ -1083,9 +1091,9 @@
         <div @click.away="showVetAuthModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
             <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
                 <div>
-                    <h3 id="modal-vetauth-title" class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 id="modal-vetauth-title" class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
                         🏥 Medical Release & Authorization
-                    </h3>
+                    </h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Please review and complete the emergency care permissions below.</p>
                 </div>
                 <button @click="showVetAuthModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
@@ -1149,7 +1157,7 @@
     <div x-show="showProfileModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
         <div @click.away="showProfileModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
             <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
-                <h3 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h3>
+                <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h2>
                 <button @click="showProfileModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
             </div>
 
@@ -1189,7 +1197,7 @@
     <!-- DIGITAL PASS QR MODAL -->
     <div x-show="showQRModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-qr-title">
         <div @click.away="showQRModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-4 border dark:border-gray-800">
-            <h3 id="modal-qr-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Paw Pass</h3>
+            <h2 id="modal-qr-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Paw Pass</h2>
             <p class="text-xs text-gray-500 dark:text-slate-300 font-medium">Scan this code at checkout or visits to quickly access your account.</p>
             
             <div class="flex justify-center p-4 bg-white rounded-2xl border border-gray-200 min-h-[192px] items-center">
@@ -1208,7 +1216,7 @@
     <div x-show="showAdminModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
         <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
             <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
-                <h3 id="modal-admin-title" class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Portal Panel</h3>
+                <h2 id="modal-admin-title" class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Portal Panel</h2>
                 <button @click="showAdminModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-xs font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
             </div>
 
@@ -1440,7 +1448,7 @@
             <div class="flex justify-center">
                 <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
             </div>
-            <h3 id="modal-ios-title" class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h3>
+            <h2 id="modal-ios-title" class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h2>
             <p class="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
                 Apple does not support automatic app installation. To add Pet Care by Steven to your iPhone or iPad home screen:
             </p>
@@ -1491,7 +1499,7 @@
             
             <div class="flex items-center justify-between border-b dark:border-gray-700 pb-2">
                 <div>
-                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">Chat with Steven 💬</h4>
+                    <h2 class="font-bold text-sm text-gray-900 dark:text-white">Chat with Steven 💬</h2>
                     <p class="text-[10px] text-gray-500 dark:text-gray-400">Choose your preferred channel</p>
                 </div>
                 <button @click="showChatWidget = false" aria-label="Close chat menu" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕</button>
