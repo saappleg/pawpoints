@@ -12,7 +12,7 @@
     <!-- Open Graph Meta Tags for Social & Text Link Previews -->
     <meta property="og:title" content="Pet Care by Steven">
     <meta property="og:description" content="Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!">
-    <meta property="og:image" content="https://petcarebysteven.me/android-chrome-512x512.png">
+    <meta property="og:image" content="https://petcarebysteven.me/android-chrome-512x512.webp">
     <meta property="og:url" content="https://petcarebysteven.me">
     <meta property="og:type" content="website">
 
@@ -36,17 +36,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Preload Critical Assets & Fonts -->
-    <link rel="preload" as="image" href="android-chrome-192x192.png">
+    <link rel="preload" as="image" href="android-chrome-192x192.webp">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Dedicated Favicons for Browser Tabs -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/webp" sizes="32x32" href="favicon-32x32.webp">
+    <link rel="icon" type="image/webp" sizes="16x16" href="favicon-16x16.webp">
     <link rel="shortcut icon" href="favicon.ico">
 
     <!-- Apple iOS Home Screen Icon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.webp">
 
     <!-- PWA Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
@@ -171,7 +171,7 @@
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                 <div class="h-12 w-12 shrink-0 transition-transform hover:scale-105">
-                    <img src="android-chrome-192x192.png" alt="Pet Care by Steven Logo" width="48" height="48" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-sm" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
+                    <img src="android-chrome-192x192.webp" alt="Pet Care by Steven Logo" width="48" height="48" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-sm" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
@@ -267,7 +267,7 @@
                         </div>
                     </div>
                     <div class="w-44 h-44 shadow-2xl hidden md:inline-flex shrink-0 rainbow-ring">
-                        <img src="android-chrome-512x512.png" alt="Pet Care by Steven circular logo patch" width="176" height="176" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover">
+                        <img src="android-chrome-512x512.webp" alt="Pet Care by Steven circular logo patch" width="176" height="176" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover">
                     </div>
                 </div>
             </section>
@@ -371,7 +371,7 @@
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl">
                 <div class="flex flex-col md:flex-row items-center gap-8">
                     <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md border-2 border-brand-500">
-                        <img src="android-chrome-192x192.png" alt="Portrait of Steven, the pet care provider" width="112" height="112" style="aspect-ratio: 1 / 1;" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="android-chrome-192x192.webp" alt="Portrait of Steven, the pet care provider" width="112" height="112" style="aspect-ratio: 1 / 1;" decoding="async" class="w-full h-full object-cover rounded-full" loading="lazy">
                     </div>
                     <div class="space-y-3 text-center md:text-left">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400">About Your Pet Care Provider</span>
@@ -1618,12 +1618,12 @@
                     navigator.serviceWorker.ready.then(registration => {
                         registration.showNotification(title, {
                             body: body,
-                            icon: 'android-chrome-192x192.png',
-                            badge: 'android-chrome-192x192.png'
+                            icon: 'android-chrome-192x192.webp',
+                            badge: 'android-chrome-192x192.webp'
                         });
                     });
                 } else {
-                    new Notification(title, { body: body, icon: 'android-chrome-192x192.png' });
+                    new Notification(title, { body: body, icon: 'android-chrome-192x192.webp' });
                 }
             }
         }
