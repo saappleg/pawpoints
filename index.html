@@ -1408,6 +1408,26 @@
         </div>
     </div>
 
+    <!-- iOS INSTALL INSTRUCTIONS MODAL -->
+    <div x-show="showIOSInstallModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
+            <div class="flex justify-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
+                Apple does not support automatic app installation. To add Pet Care by Steven to your iPhone or iPad home screen:
+            </p>
+            <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-700 p-4 rounded-2xl text-left space-y-3">
+                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 1:</span> Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</p>
+                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 2:</span> Scroll down and tap <strong>Add to Home Screen</strong>.</p>
+            </div>
+            <button @click="showIOSInstallModal = false" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
+                Got it!
+            </button>
+        </div>
+    </div>
+
     <!-- FLOATING RANDOMIZED SOCIAL PROOF TOAST -->
     <div 
         x-show="showToast" 
@@ -1601,6 +1621,7 @@
                 showToast: false,
                 toastMessage: '',
                 showInstallBanner: false,
+                showIOSInstallModal: false,
                 showVetAuthModal: false,
                 showChecklistModal: false,
                 showProfileModal: false,
@@ -1742,7 +1763,8 @@
                         }
                         deferredPrompt = null;
                     } else {
-                        alert("To install this app on your phone or computer:\n\n• iPhone/Safari: Tap the 'Share' button at the bottom and select 'Add to Home Screen'.\n• Android/Chrome: Tap the three dots menu in the top right and select 'Install app' or 'Add to Home screen'.");
+                        // Fallback for iOS / Safari
+                        this.showIOSInstallModal = true;
                     }
                 },
 
