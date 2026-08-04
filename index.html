@@ -1211,6 +1211,33 @@
         </div>
     </div>
 
+    <!-- MEET & GREET GOOGLE CALENDAR SCHEDULING MODAL -->
+    <div x-show="showMeetGreetModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-meetgreet-title">
+        <div @click.away="showMeetGreetModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
+            <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
+                <div>
+                    <h3 id="modal-meetgreet-title" class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                        ☕ Schedule Your Free Meet & Greet
+                    </h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Pick a 15-minute slot from our live Google Calendar availability.</p>
+                </div>
+                <button @click="showMeetGreetModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
+            </div>
+
+            <div class="space-y-4 text-xs text-gray-600 dark:text-gray-300">
+                <!-- Google Calendar Appointment Scheduling begin -->
+                <div class="w-full rounded-2xl overflow-hidden border dark:border-gray-800 bg-white">
+                    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0SfwdPv06GMrO0PxO837S0CF13A51owMFM1l9sZ4xFqAkF-FKXpCpDMfNNahRs1-aFW5ZEXsGN?gv=true" style="border: 0" width="100%" height="500" frameborder="0"></iframe>
+                </div>
+                <!-- end Google Calendar Appointment Scheduling -->
+            </div>
+
+            <button @click="showMeetGreetModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">
+                Close Window
+            </button>
+        </div>
+    </div>
+
     <!-- ADMIN PANEL MODAL -->
     <div x-show="showAdminModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
         <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
@@ -1553,6 +1580,7 @@
                 <div class="flex space-x-4">
                     <button @click="currentView = 'home'" class="hover:underline text-brand-600 dark:text-brand-400">Home</button>
                     <button @click="currentView = 'loyalty'" class="hover:underline text-brand-600 dark:text-brand-400">Paw Points</button>
+                    <a href="cincinnati-dog-walking.html" class="hover:underline">Local Dog Walking Guide</a>
                     <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
                     <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
                 </div>
