@@ -7,8 +7,8 @@
   "scope": "/",
   "display": "standalone",
   "display_override": [
-    "window-controls-overlay",
     "tabbed",
+    "window-controls-overlay",
     "standalone"
   ],
   "background_color": "#ffffff",
@@ -31,10 +31,10 @@
   ],
   "scope_extensions": [
     {
-      "origin": "https://petcarebysteven.me"
+      "origin": "*.petcarebysteven.me"
     },
     {
-      "origin": "https://www.personalwalkies.com"
+      "origin": "*.personalwalkies.com"
     }
   ],
   "iarc_rating_id": "00000000-0000-0000-0000-000000000000",
@@ -180,7 +180,21 @@
       "template_url": "/",
       "ms_ac_template": "/",
       "data": "/",
-      "type": "application/json"
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/screenshot-desktop.png",
+          "sizes": "1918x1080",
+          "label": "Paw Points Widget Preview"
+        }
+      ],
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "edge_side_panel": {
