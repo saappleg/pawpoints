@@ -7,7 +7,9 @@
   "scope": "/",
   "display": "standalone",
   "display_override": [
-    "tabbed"
+    "window-controls-overlay",
+    "tabbed",
+    "standalone"
   ],
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
@@ -28,12 +30,6 @@
     }
   ],
   "scope_extensions": [
-    {
-      "origin": "https://*.petcarebysteven.me"
-    },
-    {
-      "origin": "https://petcarebysteven.me"
-    },
     {
       "origin": "https://*.personalwalkies.com"
     },
