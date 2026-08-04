@@ -1,87 +1,62 @@
-const DYNAMIC_CACHE = 'paw-points-dynamic'; 
+const CACHE_NAME = 'paw-points-offline-v2';
+const ASSETS_TO_CACHE = [
+    '/',
+    '/index.html',
+    '/output.css',
+    '/android-chrome-192x192.webp',
+    '/android-chrome-512x512.webp',
+    '/favicon.ico',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
+];
 
-// Install Event 
-self.addEventListener('install', (event) => { 
-    self.skipWaiting(); 
-}); 
-
-// Activate Event 
-self.addEventListener('activate', (event) => { 
-    event.waitUntil(self.clients.claim()); 
-}); 
-
-// Notification Click Event 
-self.addEventListener('notificationclick', (event) => { 
-    event.notification.close(); 
-    event.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => { 
-        if (clientList.length > 0) { 
-            let client = clientList[0]; 
-            for (let i = 0; i < clientList.length; i++) { 
-                if (clientList[i].focused) { 
-                    client = clientList[i]; 
-                } 
-            } 
-            return client.focus(); 
-        } 
-        return clients.openWindow('/'); 
-    })); 
-}); 
-
-// Fetch Event - Safe Network-First Handler 
-self.addEventListener('fetch', (event) => { 
-    if (!event.request.url.startsWith('http')) return; 
-    if (event.request.method !== 'GET') return; 
-    
-    event.respondWith(fetch(event.request) 
-        .then((networkResponse) => { 
-            if (networkResponse && networkResponse.status === 200) { 
-                const responseToCache = networkResponse.clone(); 
-                caches.open(DYNAMIC_CACHE).then((cache) => { 
-                    cache.put(event.request, responseToCache); 
-                }); 
-            } 
-            return networkResponse; 
-        }) 
-        .catch(() => { 
-            return caches.match(event.request).then((cachedResponse) => { 
-                return cachedResponse || new Response('Network error occurred', {
-                    status: 408, 
-                    headers: { 'Content-Type': 'text/plain' } 
-                }); 
-            }); 
-        }) 
-    ); 
+// Install Event: Cache Core Assets
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(ASSETS_TO_CACHE);
+        })
+    );
+    self.skipWaiting();
 });
 
-// Background Sync Event
-self.addEventListener('sync', (event) => {
-    if (event.tag === 'sync-updates') {
-        console.log('Service Worker: Syncing updates in background');
-        // Add your background sync logic here (e.g., sending queued booking requests)
-    }
+// Activate Event: Clean up old caches
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim();
 });
 
-// Periodic Background Sync Event
-self.addEventListener('periodicsync', (event) => {
-    if (event.tag === 'update-paw-points') {
-        console.log('Service Worker: Fetching periodic updates for Paw Points');
-        // Add your periodic background sync logic here (e.g., fetching latest point balance)
-    }
-});
+// Fetch Event: Network-First for HTML/Data, Cache-First for static assets
+self.addEventListener('fetch', (event) => {
+    // Ignore non-GET requests and Firebase API calls to allow Firestore's built-in offline persistence to work
+    if (event.request.method !== 'GET' || event.request.url.includes('firestore.googleapis.com')) return;
 
-// Push Notification Event
-self.addEventListener('push', (event) => {
-    let data = { title: 'Pet Care by Steven', content: 'You have a new update!' };
-    
-    if (event.data) {
-        data = event.data.json();
-    }
-    
-    const options = {
-        body: data.content,
-        icon: '/android-chrome-192x192.png',
-        badge: '/favicon-32x32.png'
-    };
-    
-    event.waitUntil(self.registration.showNotification(data.title, options));
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+            // HTML Strategy: Try Network first to get updates, fallback to cache if offline
+            if (event.request.headers.get('accept').includes('text/html')) {
+                return fetch(event.request).then((response) => {
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+                    return response;
+                }).catch(() => cachedResponse);
+            }
+            
+            // Asset Strategy: Use Cache first for instant loading, fallback to network
+            return cachedResponse || fetch(event.request).then((response) => {
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+                return response;
+            });
+        })
+    );
 });
