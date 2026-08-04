@@ -1,18 +1,83 @@
 {
   "id": "pet-care-by-steven-app",
   "name": "Pet Care by Steven",
-  "short_name": "Pet Care by Steven",
+  "short_name": "Pet Care",
   "description": "Loyalty Program and Pet Care Portal for Pet Care by Steven",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": [
+    "window-controls-overlay",
+    "tabbed",
+    "standalone"
+  ],
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "orientation": "portrait-primary",
   "lang": "en",
   "dir": "ltr",
-  "categories": ["business", "lifestyle", "pets"],
+  "categories": [
+    "business",
+    "lifestyle",
+    "pets"
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": "00000000-0000-0000-0000-000000000000",
+  "scope_extensions": [
+    {
+      "origin": "https://*.petcarebysteven.me"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "image/jpeg": [
+          ".jpg",
+          ".jpeg"
+        ],
+        "image/png": [
+          ".png"
+        ]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+petcare",
+      "url": "/?protocol=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share-target",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "widgets": [
+    {
+      "name": "Paw Points Status",
+      "short_name": "Paw Points",
+      "description": "Quick view of your loyalty points",
+      "tag": "paw-points-widget",
+      "ms_ac_template": "/widgets/paw-points.json",
+      "data": "/widgets/paw-points-data.json",
+      "type": "application/json"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "note_taking": {
+    "new_note_url": "/new-note"
+  },
   "shortcuts": [
     {
       "name": "View Paw Points",
@@ -44,12 +109,13 @@
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
-      "sizes": "1344x2992",
-      "type": "image/png"
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "/screenshot-desktop.png",
-      "sizes": "1918x1080",
+      "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide"
     }
