@@ -115,7 +115,7 @@
     },
     {
       "src": "/screenshot-desktop.png",
-      "sizes": "1920x1080",
+      "sizes": "1918x1080",
       "type": "image/png",
       "form_factor": "wide"
     }
