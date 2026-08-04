@@ -50,10 +50,10 @@
     <!-- Reliable QR Code Generator CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase Web SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Web SDKs (Deferred for Performance) -->
+    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -63,6 +63,7 @@
 
         :root {
             --top-bar-height: 6px;
+            color-scheme: light dark; /* Ensures native UI elements match theme */
         }
 
         html {
@@ -391,6 +392,7 @@
                             x-model="zipInput" 
                             @input="checkServiceArea()"
                             placeholder="Start typing City or Zip (e.g., Felicity, 45120, 47250)" 
+                            aria-label="Search by city or zip code"
                             class="w-full px-4 py-3.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
                     </div>
                     <template x-if="serviceResult">
@@ -484,12 +486,12 @@
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                            <input type="text" x-model="authForm.name" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            <input type="text" x-model="authForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                         </div>
                     </template>
                     <div>
                         <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-1">
@@ -498,12 +500,12 @@
                                 Forgot password?
                             </button>
                         </div>
-                        <input type="password" x-model="authForm.password" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="password" x-model="authForm.password" required aria-label="Password" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Referral Code (Optional)</label>
-                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
+                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" aria-label="Referral Code" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
                         </div>
                     </template>
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
@@ -515,7 +517,7 @@
                     <p class="text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     <div>
                         <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
                     <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
@@ -803,7 +805,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <template x-for="(pet, index) in userData.pets" :key="index">
                                     <div class="border dark:border-gray-800 rounded-2xl p-4 bg-gray-50/50 dark:bg-[#0d1117] relative space-y-3">
-                                        <button x-show="userData.pets.length > 1" @click="removePet(index)" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
+                                        <button x-show="userData.pets.length > 1" @click="removePet(index)" aria-label="Remove Pet" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xs font-bold p-1">
                                             ✕ Remove
                                         </button>
 
@@ -819,30 +821,30 @@
                                                 </div>
                                                 <label class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-[10px] font-bold">
                                                     <span>Upload</span>
-                                                    <input type="file" accept="image/*" class="hidden" @change="uploadPetPhoto($event, index)">
+                                                    <input type="file" accept="image/*" class="hidden" aria-label="Upload Pet Photo" @change="uploadPetPhoto($event, index)">
                                                 </label>
                                             </div>
 
                                             <div class="flex-grow">
                                                 <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Pet Name</label>
-                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" aria-label="Pet Name" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                             </div>
                                         </div>
 
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Birthday / Gotcha Day</label>
-                                                <input type="date" x-model="pet.birthday" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
+                                                <input type="date" x-model="pet.birthday" aria-label="Pet Birthday or Gotcha Day" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Breed / Type</label>
-                                                <input type="text" x-model="pet.breed" placeholder="e.g. Domestic Shorthair" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
+                                                <input type="text" x-model="pet.breed" placeholder="e.g. Domestic Shorthair" aria-label="Pet Breed or Type" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
                                             </div>
                                         </div>
 
                                         <div>
                                             <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Special Care Notes & Routine</label>
-                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" aria-label="Special Care Notes and Routine" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                                         </div>
                                     </div>
                                 </template>
@@ -853,16 +855,16 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Lockbox / Keypad Code</label>
-                                        <input type="text" x-model="userData.lockboxCode" placeholder="e.g. 1234 or Key under mat" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm font-mono focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.lockboxCode" placeholder="e.g. 1234 or Key under mat" aria-label="Lockbox or Keypad Code" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm font-mono focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Alarm Code / Disarm Notes</label>
-                                        <input type="text" x-model="userData.alarmInstructions" placeholder="e.g. Code 5678 on front door panel" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.alarmInstructions" placeholder="e.g. Code 5678 on front door panel" aria-label="Alarm Code or Disarm Notes" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Home Access & Parking Instructions</label>
-                                    <textarea x-model="userData.homeEntryNotes" rows="2" placeholder="e.g. Park in driveway on right side. Side gate is unlocked." class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                    <textarea x-model="userData.homeEntryNotes" rows="2" placeholder="e.g. Park in driveway on right side. Side gate is unlocked." aria-label="Home Access and Parking Instructions" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                                 </div>
                             </div>
 
@@ -874,10 +876,10 @@
                                 
                                 <template x-for="(contact, cIdx) in userData.emergencyContacts" :key="cIdx">
                                     <div class="flex gap-2 items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-2xl border dark:border-gray-700">
-                                        <input type="text" x-model="contact.name" placeholder="Contact Name" class="flex-1 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
-                                        <input type="text" x-model="contact.relation" placeholder="Relation (e.g. Neighbor)" class="w-32 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
-                                        <input type="tel" x-model="contact.phone" placeholder="Phone Number" class="w-32 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none font-mono">
-                                        <button @click="removeEmergencyContact(cIdx)" class="text-red-500 font-bold px-2 text-xs">✕</button>
+                                        <input type="text" x-model="contact.name" placeholder="Contact Name" aria-label="Emergency Contact Name" class="flex-1 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
+                                        <input type="text" x-model="contact.relation" placeholder="Relation (e.g. Neighbor)" aria-label="Emergency Contact Relation" class="w-32 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
+                                        <input type="tel" x-model="contact.phone" placeholder="Phone Number" aria-label="Emergency Contact Phone Number" class="w-32 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none font-mono">
+                                        <button @click="removeEmergencyContact(cIdx)" aria-label="Remove Emergency Contact" class="text-red-500 font-bold px-2 text-xs">✕</button>
                                     </div>
                                 </template>
                             </div>
@@ -887,11 +889,11 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Clinic Name</label>
-                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" aria-label="Clinic Name" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Vet Phone Number</label>
-                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" aria-label="Vet Phone Number" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                 </div>
                             </div>
@@ -907,7 +909,7 @@
                         <form @submit.prevent="submitClientReview()" class="space-y-3 text-xs">
                             <div>
                                 <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Rating</label>
-                                <select x-model.number="clientReviewForm.stars" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                                <select x-model.number="clientReviewForm.stars" aria-label="Review Rating" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                                     <option value="5">★★★★★ (5 Stars - Amazing!)</option>
                                     <option value="4">★★★★☆ (4 Stars - Great)</option>
                                     <option value="3">★★★☆☆ (3 Stars - Good)</option>
@@ -917,7 +919,7 @@
                             </div>
                             <div>
                                 <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Your Review</label>
-                                <textarea x-model="clientReviewForm.comment" rows="2" placeholder="e.g. Steven was wonderful with our dog!" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                                <textarea x-model="clientReviewForm.comment" rows="2" placeholder="e.g. Steven was wonderful with our dog!" aria-label="Your Review Comment" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                             </div>
                             <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-2xl transition shadow-sm">
                                 Submit Review
@@ -1039,28 +1041,28 @@
             <form @submit.prevent="saveHouseChecklist()" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-gray-900 dark:text-white mb-1">🍖 Feeding Schedule & Portion Instructions</label>
-                    <textarea x-model="houseChecklist.feedingNotes" rows="2" placeholder="e.g. 1/2 cup kibble at 8 AM and 6 PM. Mix wet food topping for dinner." class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                    <textarea x-model="houseChecklist.feedingNotes" rows="2" placeholder="e.g. 1/2 cup kibble at 8 AM and 6 PM. Mix wet food topping for dinner." aria-label="Feeding Schedule and Portion Instructions" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                 </div>
 
                 <div>
                     <label class="block font-bold text-gray-900 dark:text-white mb-1">💊 Medication Dosages & Administration</label>
-                    <textarea x-model="houseChecklist.medicationNotes" rows="2" placeholder="e.g. Give 1 pill in peanut butter twice daily with meals." class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                    <textarea x-model="houseChecklist.medicationNotes" rows="2" placeholder="e.g. Give 1 pill in peanut butter twice daily with meals." aria-label="Medication Dosages and Administration" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-bold text-gray-900 dark:text-white mb-1">🗑️ Trash & Recycling Days</label>
-                        <input type="text" x-model="houseChecklist.trashDays" placeholder="e.g. Wednesday nights to curb" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="text" x-model="houseChecklist.trashDays" placeholder="e.g. Wednesday nights to curb" aria-label="Trash and Recycling Days" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500">
                     </div>
                     <div>
                         <label class="block font-bold text-gray-900 dark:text-white mb-1">📫 Mail & Package Instructions</label>
-                        <input type="text" x-model="houseChecklist.mailNotes" placeholder="e.g. Bring in mail & packages to kitchen table" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="text" x-model="houseChecklist.mailNotes" placeholder="e.g. Bring in mail & packages to kitchen table" aria-label="Mail and Package Instructions" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500">
                     </div>
                 </div>
 
                 <div>
                     <label class="block font-bold text-gray-900 dark:text-white mb-1">🪴 Plant Care / Additional House Notes</label>
-                    <textarea x-model="houseChecklist.otherNotes" rows="2" placeholder="e.g. Water porch ferns on Friday. Thermostat set to 72°." class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                    <textarea x-model="houseChecklist.otherNotes" rows="2" placeholder="e.g. Water porch ferns on Friday. Thermostat set to 72°." aria-label="Plant Care or Additional House Notes" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3 pt-3 border-t dark:border-gray-800">
@@ -1103,9 +1105,9 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-black text-brand-600 dark:text-brand-400">$</span>
-                            <input type="number" x-model.number="vetAuthForm.capAmount" min="50" step="50" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500">
+                            <input type="number" x-model.number="vetAuthForm.capAmount" min="50" step="50" required aria-label="Financial Authorization Cap Amount" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
-                        <input type="range" x-model.number="vetAuthForm.capAmount" min="100" max="2500" step="50" class="w-full accent-brand-600">
+                        <input type="range" x-model.number="vetAuthForm.capAmount" min="100" max="2500" step="50" aria-label="Financial Authorization Cap Slider" class="w-full accent-brand-600">
                     </div>
 
                     <div class="bg-white dark:bg-[#0d1117] border dark:border-gray-800 p-5 rounded-2xl shadow-sm space-y-3">
@@ -1113,7 +1115,7 @@
                             <label class="block text-xs font-bold text-gray-900 dark:text-white">Pet Insurance Info (Optional)</label>
                             <p class="text-[10px] text-gray-500 dark:text-gray-400">Provider name and policy number.</p>
                         </div>
-                        <textarea x-model="vetAuthForm.insuranceInfo" rows="3" placeholder="e.g. Trupanion, Policy #12345678" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        <textarea x-model="vetAuthForm.insuranceInfo" rows="3" placeholder="e.g. Trupanion, Policy #12345678" aria-label="Pet Insurance Information" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                     </div>
                 </div>
 
@@ -1122,7 +1124,7 @@
                     <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3">By typing your full legal name below, you agree to the terms stated above.</p>
                     
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <input type="text" x-model="vetAuthForm.signature" placeholder="Type your full name" required class="flex-1 px-4 py-3 rounded-2xl border dark:border-gray-700 dark:bg-[#0d1117] text-sm font-mono font-bold outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="text" x-model="vetAuthForm.signature" placeholder="Type your full name" required aria-label="Digital Signature" class="flex-1 px-4 py-3 rounded-2xl border dark:border-gray-700 dark:bg-[#0d1117] text-sm font-mono font-bold outline-none focus:ring-2 focus:ring-brand-500">
                         
                         <div class="w-full sm:w-auto px-4 py-3 rounded-2xl border dark:border-gray-700 bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                             <span class="text-xs text-gray-500 dark:text-gray-400 font-mono" x-text="vetAuthForm.dateSigned || new Date().toLocaleDateString()"></span>
@@ -1153,23 +1155,23 @@
             <form @submit.prevent="updateUserProfile()" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Full Name</label>
-                    <input type="text" x-model="profileForm.name" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
+                    <input type="text" x-model="profileForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
                 </div>
 
                 <div>
                     <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Account Email Address</label>
-                    <input type="email" x-model="profileForm.email" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
+                    <input type="email" x-model="profileForm.email" required aria-label="Account Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
                     <p class="text-[10px] text-gray-400 mt-1">Changing your email will update your login credentials.</p>
                 </div>
 
                 <div>
                     <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Phone Number</label>
-                    <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
+                    <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" aria-label="Phone Number" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
                 </div>
 
                 <div>
                     <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Home Address / Service Notes</label>
-                    <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
+                    <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" aria-label="Home Address or Service Notes" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
                 </div>
 
                 <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
@@ -1225,7 +1227,7 @@
             <div x-show="adminTab === 'points'" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Select Client</label>
-                    <select x-model="adminForm.targetUid" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
+                    <select x-model="adminForm.targetUid" aria-label="Select Client" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
                         <option value="">-- Choose a Client --</option>
                         <template x-for="c in clientList" :key="c.id">
                             <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Pts: ${c.points || 0} | Tier: ${c.yearlyPoints >= 15000 ? 'Gold' : c.yearlyPoints >= 5001 ? 'Silver' : 'Bronze'}`"></option>
@@ -1238,18 +1240,18 @@
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Tip Amount ($) (10x Bonus)</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 dark:text-gray-400 font-bold">$</span>
-                            <input type="number" x-model.number="adminForm.tipAmount" @input="adminForm.pointsDelta = (adminForm.tipAmount || 0) * 10" placeholder="e.g. 20" class="w-full pl-7 pr-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                            <input type="number" x-model.number="adminForm.tipAmount" @input="adminForm.pointsDelta = (adminForm.tipAmount || 0) * 10" placeholder="e.g. 20" aria-label="Tip Amount" class="w-full pl-7 pr-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Points to Add / Subtract</label>
-                        <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="number" x-model.number="adminForm.pointsDelta" placeholder="e.g. 100 or -50" aria-label="Points to Add or Subtract" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
                     </div>
                 </div>
 
                 <div class="border-t dark:border-gray-800 pt-3 space-y-2">
                     <label class="block font-bold text-amber-600 dark:text-amber-400">👑 Force Manual Tier Override</label>
-                    <select x-model.number="adminForm.overrideYearlyPoints" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none font-bold">
+                    <select x-model.number="adminForm.overrideYearlyPoints" aria-label="Force Manual Tier Override" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none font-bold">
                         <option value="">-- Don't Override Tier --</option>
                         <option value="0">🥉 Bronze Level (0+ Annual Pts)</option>
                         <option value="5001">🥈 Silver Level (5,001+ Annual Pts)</option>
@@ -1266,7 +1268,7 @@
                 <p class="text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names. Saved directly to Firestore.</p>
 
                 <div class="space-y-2">
-                    <textarea x-model="bulkAreaInput" rows="3" placeholder="Paste locations separated by commas..." class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                    <textarea x-model="bulkAreaInput" rows="3" placeholder="Paste locations separated by commas..." aria-label="Paste locations separated by commas" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                     <button @click="addBulkServiceAreas()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl transition">Save & Sync to Firestore</button>
                 </div>
 
@@ -1324,15 +1326,15 @@
 
                 <div class="border-t dark:border-gray-800 pt-4 space-y-3">
                     <p class="font-bold text-gray-700 dark:text-gray-300">Or Add Direct Testimonial:</p>
-                    <input type="text" x-model="newReview.author" placeholder="Author Name / Type" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <select x-model.number="newReview.stars" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                    <input type="text" x-model="newReview.author" placeholder="Author Name / Type" aria-label="Author Name or Type" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                    <select x-model.number="newReview.stars" aria-label="Review Rating" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                         <option value="5">★★★★★ (5 Stars)</option>
                         <option value="4">★★★★☆ (4 Stars)</option>
                         <option value="3">★★★☆☆ (3 Stars)</option>
                         <option value="2">★★☆☆☆ (2 Stars)</option>
                         <option value="1">★☆☆☆☆ (1 Star)</option>
                     </select>
-                    <textarea x-model="newReview.comment" rows="2" placeholder="Review Comment" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                    <textarea x-model="newReview.comment" rows="2" placeholder="Review Comment" aria-label="Review Comment" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                     <button @click="addNewReview()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish Review Instantly</button>
                 </div>
             </div>
@@ -1342,11 +1344,11 @@
                 <div class="space-y-3 border-b dark:border-gray-800 pb-4">
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Image URL / Walkies Photo Link</label>
-                        <input type="url" x-model="newPhoto.url" placeholder="https://personalwalkies.com/..." class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <input type="url" x-model="newPhoto.url" placeholder="https://personalwalkies.com/..." aria-label="Image URL or Walkies Photo Link" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                     </div>
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Hover Caption / Title</label>
-                        <input type="text" x-model="newPhoto.caption" placeholder="e.g. Afternoon stroll with Buddy" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <input type="text" x-model="newPhoto.caption" placeholder="e.g. Afternoon stroll with Buddy" aria-label="Hover Caption or Title" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                     </div>
                     <button @click="addGalleryPhoto()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Add Photo to Gallery</button>
                 </div>
@@ -1369,11 +1371,11 @@
                 <div class="space-y-3 border-b dark:border-gray-800 pb-4">
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Question Title</label>
-                        <input type="text" x-model="newFaq.question" placeholder="e.g. 🐱 Do you feed outdoor cats?" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <input type="text" x-model="newFaq.question" placeholder="e.g. 🐱 Do you feed outdoor cats?" aria-label="Question Title" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                     </div>
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Detailed Answer / Policy</label>
-                        <textarea x-model="newFaq.answer" rows="3" placeholder="Enter answer details here..." class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                        <textarea x-model="newFaq.answer" rows="3" placeholder="Enter answer details here..." aria-label="Detailed Answer or Policy" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                     </div>
                     <button @click="addNewFaq()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish FAQ Item</button>
                 </div>
@@ -1396,11 +1398,11 @@
                 <div class="space-y-3">
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Notification Title</label>
-                        <input type="text" x-model="broadcastForm.title" placeholder="e.g. Holiday Booking Reminder 🎄" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <input type="text" x-model="broadcastForm.title" placeholder="e.g. Holiday Booking Reminder 🎄" aria-label="Notification Title" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                     </div>
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Message Body</label>
-                        <textarea x-model="broadcastForm.body" rows="3" placeholder="Only 2 holiday slots remaining..." class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                        <textarea x-model="broadcastForm.body" rows="3" placeholder="Only 2 holiday slots remaining..." aria-label="Message Body" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                     </div>
                     <button @click="sendBroadcastNotification()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Send Broadcast Now</button>
                 </div>
@@ -1411,7 +1413,7 @@
                 <div class="space-y-3">
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Target URL for QR Code</label>
-                        <input type="url" x-model="qrBadgeUrl" @input="generateAdminBadge()" placeholder="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none font-mono">
+                        <input type="url" x-model="qrBadgeUrl" @input="generateAdminBadge()" placeholder="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" aria-label="Target URL for QR Code" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none font-mono">
                     </div>
                     <button @click="generateAdminBadge()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Generate QR Badge</button>
                 </div>
