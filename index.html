@@ -76,13 +76,13 @@
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 100px;
-            color-scheme: light; /* Explicitly tie color scheme to HTML class state */
+            color-scheme: light;
         }
 
         html.dark {
             background-color: #111827;
             color: #f3f4f6;
-            color-scheme: dark; /* Explicitly tie color scheme to HTML class state */
+            color-scheme: dark;
         }
 
         body {
@@ -105,7 +105,6 @@
             z-index: 30;
         }
 
-        /* Performance Optimization: Defer rendering for the footer */
         footer {
             content-visibility: auto;
             contain-intrinsic-size: 1px 100px;
@@ -2198,7 +2197,7 @@
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: [],
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
-                                isAdmin: res.user.email === 'madcathouse92@gmail.com' || res.user.email.includes('steven'),
+                                isAdmin: res.user.email === 'saappleg@gmail.com' || res.user.email.includes('steven'),
                                 referralCode: personalRefCode,
                                 referralsCount: 0,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2271,7 +2270,7 @@
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
-                                isAdmin: this.authForm.email === 'madcathouse92@gmail.com' || this.authForm.email.includes('steven'),
+                                isAdmin: this.authForm.email === 'saappleg@gmail.com' || this.authForm.email.includes('steven'),
                                 referralCode: personalRefCode,
                                 referredBy: referredByUid,
                                 referralsCount: 0,
@@ -2363,7 +2362,7 @@
                             await userRef.update({ yearlyPoints: this.userData.yearlyPoints, statusYear: currentYear });
                         }
 
-                        const isOwner = this.user && this.user.email && (this.user.email === 'madcathouse92@gmail.com' || this.user.email.includes('steven'));
+                        const isOwner = this.user && this.user.email && (this.user.email === 'saappleg@gmail.com' || this.user.email.includes('steven'));
                         if (isOwner && !this.userData.isAdmin) {
                             await userRef.update({ isAdmin: true });
                             this.userData.isAdmin = true;
