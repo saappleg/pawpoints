@@ -44,12 +44,12 @@
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
-      "sizes": "1080x1920",
+      "sizes": "1344x2992",
       "type": "image/png"
     },
     {
       "src": "/screenshot-desktop.png",
-      "sizes": "1920x1080",
+      "sizes": "1918x1080",
       "type": "image/png",
       "form_factor": "wide"
     }
