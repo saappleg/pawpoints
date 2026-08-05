@@ -62,7 +62,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <!-- NEW: App Check SDK added here -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-appcheck-compat.js"></script>
 
     <!-- Alpine.js Core -->
@@ -188,6 +187,9 @@
                     <span>🐾 Paw Points</span>
                     <span x-show="user && isVerified" class="bg-brand-600 text-white text-[10px] px-1.5 py-0.2 rounded-full" x-text="userData.points || 0"></span>
                 </button>
+                <button @click="currentView = 'guide'" aria-label="Local Trails Guide" :class="currentView === 'guide' ? 'bg-white dark:bg-gray-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-gray-600 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition">
+                    🌳 Trails Guide
+                </button>
             </nav>
 
             <div class="flex items-center space-x-2">
@@ -229,11 +231,14 @@
             </div>
         </div>
         <div class="flex md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/80 dark:bg-gray-800/80 px-4 py-2 justify-around text-xs font-bold">
-            <button @click="currentView = 'home'" aria-label="Home and Services" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
-                🏠 Home & Services
+            <button @click="currentView = 'home'" aria-label="Home" :class="currentView === 'home' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
+                🏠 Home
             </button>
             <button @click="currentView = 'loyalty'" aria-label="Paw Points Portal" :class="currentView === 'loyalty' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
-                🐾 Paw Points Portal
+                🐾 Paw Points
+            </button>
+            <button @click="currentView = 'guide'" aria-label="Local Trails Guide" :class="currentView === 'guide' ? 'text-brand-600 dark:text-brand-400 underline underline-offset-4' : 'text-gray-500 dark:text-slate-300'">
+                🌳 Trails
             </button>
         </div>
     </header>
@@ -246,8 +251,6 @@
 
         <!-- HOME VIEW -->
         <div x-show="!loading && currentView === 'home'" class="flex flex-col space-y-8">
-            
-            <!-- 1. Hero Call Out Section -->
             <section class="rainbow-frame shadow-xl">
                 <div class="rainbow-frame-inner bg-indigo-600 dark:bg-[#111827] text-white p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8 border dark:border-gray-800">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -257,11 +260,11 @@
                             Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                         </p>
                         <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                            <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule and Book Walkies" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                            <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule and Book Walkies" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2">
                                 <span>📅</span>
                                 <span>Schedule & Book Walkies</span>
                             </a>
-                            <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                            <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2">
                                 <span>🎁</span>
                                 <span>View Client Rewards</span>
                             </button>
@@ -273,7 +276,6 @@
                 </div>
             </section>
 
-            <!-- 2. Meet and Greet Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="space-y-1 text-center md:text-left">
                     <div class="flex items-center justify-center md:justify-start gap-2">
@@ -289,7 +291,6 @@
                 </button>
             </section>
 
-            <!-- 3. Our Pet Care Services Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h2>
@@ -321,7 +322,6 @@
                 </div>
             </section>
 
-            <!-- 4. Daily Care Gallery Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                     <div class="text-center sm:text-left">
@@ -342,7 +342,6 @@
                 </div>
             </section>
 
-            <!-- 5. Interactive Calculator Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
@@ -368,7 +367,6 @@
                 </div>
             </section>
 
-            <!-- 6. About your care provider Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl">
                 <div class="flex flex-col md:flex-row items-center gap-8">
                     <div class="w-28 h-28 shrink-0 rounded-full overflow-hidden shadow-md border-2 border-brand-500">
@@ -389,7 +387,6 @@
                 </div>
             </section>
 
-            <!-- 7. Service area checker Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-4">
                 <div class="text-center max-w-lg mx-auto space-y-1">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">📍 Service Area Checker</h2>
@@ -413,7 +410,6 @@
                 </div>
             </section>
 
-            <!-- 8. What clients say Section -->
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="text-center sm:text-left space-y-1">
                     <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
@@ -433,7 +429,6 @@
                 </div>
             </section>
 
-            <!-- 9. FAQ Section -->
             <section x-data="{ activeFaq: null }" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2 max-w-2xl mx-auto">
                     <div class="text-center sm:text-left space-y-1">
@@ -461,7 +456,6 @@
                 </div>
             </section>
 
-            <!-- 10. Ready to track your points Section -->
             <section class="text-center py-12 bg-indigo-50 dark:bg-[#111827] rounded-3xl border border-indigo-100 dark:border-gray-800 p-8 shadow-xl space-y-4">
                 <h2 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h2>
                 <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium max-w-md mx-auto">Access your client account to view coupons, referral links, and pet notes.</p>
@@ -640,8 +634,7 @@
                             <p class="text-[11px] text-gray-500 dark:text-slate-400 italic" x-text="tierProgress.description"></p>
                         </div>
 
-                        <!-- NEW: 4-Column Action Grid for Apple Wallet addition -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                             <button @click="triggerViewTransition(() => { showChecklistModal = true })" aria-label="House and Care Sheet" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-4 rounded-2xl font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
                                 <span>📋</span>
                                 <span>House & Care Sheet</span>
@@ -653,10 +646,6 @@
                             <button @click="openDigitalPass()" aria-label="Digital Pass" class="w-full bg-brand-600 hover:bg-brand-700 text-white px-4 py-4 rounded-2xl font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
                                 <span>📱</span>
                                 <span>Digital Pass</span>
-                            </button>
-                            <button @click="downloadWalletPass()" aria-label="Add to Apple Wallet" class="w-full bg-black hover:bg-gray-800 text-white px-4 py-4 rounded-2xl font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
-                                <span>💳</span>
-                                <span>Add to Wallet</span>
                             </button>
                         </div>
                     </div>
@@ -692,7 +681,7 @@
                     <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-800 pb-4">
                             <div>
-                                <h2 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <h2 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
                                     <span>🐶 Pet Profiles & Home Care Details</span>
                                 </h2>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, home entry codes, and emergency contacts.</p>
@@ -1038,7 +1027,74 @@
                 </div>
             </template>
         </div>
+
+        <!-- COMMUNITY DOG WALKING & TRAIL GUIDE VIEW -->
+        <div x-show="!loading && currentView === 'guide'" class="space-y-6" x-cloak>
+            <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b dark:border-gray-800 pb-4">
+                    <div>
+                        <span class="text-[10px] uppercase font-extrabold tracking-widest bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1 rounded-full">Community Crowdsourced</span>
+                        <h2 class="font-extrabold text-2xl text-gray-900 dark:text-white mt-2">Local Dog Walking & Trail Guide 🐾</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Discover favorite local walking spots shared by Steven and fellow local pet owners.</p>
+                    </div>
+                    <button @click="showAddTrailModal = true" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs transition shadow-md shrink-0">
+                        + Submit a Trail
+                    </button>
+                </div>
+
+                <!-- Trails Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <template x-for="trail in communityTrails" :key="trail.id">
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-5 rounded-2xl space-y-3 shadow-sm flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-bold text-base text-gray-900 dark:text-white" x-text="trail.title"></h3>
+                                    <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2.5 py-0.5 rounded-full font-bold uppercase" x-text="trail.location"></span>
+                                </div>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed" x-text="trail.description"></p>
+                            </div>
+                            <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400">
+                                <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
+                                <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <!-- SUBMIT TRAIL MODAL -->
+    <div x-show="showAddTrailModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div @click.away="showAddTrailModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
+            <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
+                <h2 class="font-bold text-lg text-gray-900 dark:text-white">Submit a Walking Trail</h2>
+                <button @click="showAddTrailModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
+            </div>
+
+            <form @submit.prevent="submitNewTrail()" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Trail or Park Name</label>
+                    <input type="text" x-model="newTrailForm.title" placeholder="e.g. Mount Airy Forest Trails" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">City / Neighborhood</label>
+                    <input type="text" x-model="newTrailForm.location" placeholder="e.g. Cincinnati, OH" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Description & Tips</label>
+                    <textarea x-model="newTrailForm.description" rows="3" placeholder="Shaded paths, great creeks, quiet on weekdays..." required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Key Amenities</label>
+                    <input type="text" x-model="newTrailForm.amenities" placeholder="e.g. Paved, Trash cans available" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl transition shadow-sm">
+                    Publish Trail
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- HOUSE CARE & MEDICATION CHECKLIST MODAL -->
     <div x-show="showChecklistModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-checklist-title">
@@ -1232,11 +1288,9 @@
             </div>
 
             <div class="space-y-4 text-xs text-gray-600 dark:text-gray-300">
-                <!-- Google Calendar Appointment Scheduling begin -->
                 <div class="w-full rounded-2xl overflow-hidden border dark:border-gray-800 bg-white">
                     <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0SfwdPv06GMrO0PxO837S0CF13A51owMFM1l9sZ4xFqAkF-FKXpCpDMfNNahRs1-aFW5ZEXsGN?gv=true" style="border: 0" width="100%" height="500" frameborder="0"></iframe>
                 </div>
-                <!-- end Google Calendar Appointment Scheduling -->
             </div>
 
             <button @click="showMeetGreetModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">
@@ -1253,7 +1307,6 @@
                 <button @click="showAdminModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-xs font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
             </div>
 
-            <!-- Tab Switcher -->
             <div class="flex gap-1.5 border-b dark:border-gray-800 pb-3 text-xs font-bold overflow-x-auto">
                 <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Points</button>
                 <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Areas</button>
@@ -1299,7 +1352,6 @@
                         <option value="5001">🥈 Silver Level (5,001+ Annual Pts)</option>
                         <option value="15000">🥇 Gold VIP Level (15,000+ Annual Pts)</option>
                     </select>
-                    <p class="text-[10px] text-gray-400">Promotes or demotes the client to the selected tier instantly, bypassing regular point requirements.</p>
                 </div>
 
                 <button @click="updateClientPoints()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition shadow-sm">Update Client Points & Tier</button>
@@ -1308,12 +1360,10 @@
             <!-- TAB 2: SERVICE AREA MANAGEMENT -->
             <div x-show="adminTab === 'areas'" class="space-y-4 text-xs" x-cloak>
                 <p class="text-gray-500 dark:text-gray-400">Paste comma-separated zips or city names. Saved directly to Firestore.</p>
-
                 <div class="space-y-2">
                     <textarea x-model="bulkAreaInput" rows="3" placeholder="Paste locations separated by commas..." aria-label="Paste locations separated by commas" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                     <button @click="addBulkServiceAreas()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl transition">Save & Sync to Firestore</button>
                 </div>
-
                 <div class="space-y-2 max-h-40 overflow-y-auto pt-2 border-t dark:border-gray-800">
                     <template x-for="(area, idx) in serviceAreas" :key="idx">
                         <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-2.5 rounded-xl text-xs">
@@ -1326,9 +1376,6 @@
 
             <!-- TAB 3: REVIEW MODERATION & APPROVAL -->
             <div x-show="adminTab === 'reviews'" class="space-y-4 text-xs" x-cloak>
-                <p class="text-gray-500 dark:text-gray-400">Approve pending client reviews to publish them live, or delete any published reviews.</p>
-
-                <!-- Pending Reviews (Unapproved) -->
                 <div class="space-y-3 max-h-44 overflow-y-auto">
                     <p class="font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Pending Approval:</p>
                     <template x-for="rev in pendingReviews" :key="rev.id">
@@ -1348,37 +1395,6 @@
                         <p class="text-gray-400 italic">No pending reviews awaiting approval.</p>
                     </template>
                 </div>
-
-                <!-- Published Reviews (Live on Site - Deletable) -->
-                <div class="space-y-3 max-h-44 overflow-y-auto pt-3 border-t dark:border-gray-800">
-                    <p class="font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Currently Published Reviews (Click Delete to Remove):</p>
-                    <template x-for="rev in reviewsList" :key="rev.id">
-                        <div class="bg-gray-50 dark:bg-gray-800 p-3.5 rounded-2xl border dark:border-gray-700 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-gray-900 dark:text-white" x-text="rev.author"></span>
-                                <span class="text-amber-400" x-text="'★'.repeat(rev.stars || 5)"></span>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-300 italic" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
-                            <div class="flex justify-end pt-1">
-                                <button @click="deleteReview(rev.id)" class="bg-red-500 hover:bg-red-600 text-white font-bold px-3.5 py-1.5 rounded-xl transition text-[11px]">Delete Review</button>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-
-                <div class="border-t dark:border-gray-800 pt-4 space-y-3">
-                    <p class="font-bold text-gray-700 dark:text-gray-300">Or Add Direct Testimonial:</p>
-                    <input type="text" x-model="newReview.author" placeholder="Author Name / Type" aria-label="Author Name or Type" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <select x-model.number="newReview.stars" aria-label="Review Rating" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <option value="5">★★★★★ (5 Stars)</option>
-                        <option value="4">★★★★☆ (4 Stars)</option>
-                        <option value="3">★★★☆☆ (3 Stars)</option>
-                        <option value="2">★★☆☆☆ (2 Stars)</option>
-                        <option value="1">★☆☆☆☆ (1 Star)</option>
-                    </select>
-                    <textarea x-model="newReview.comment" rows="2" placeholder="Review Comment" aria-label="Review Comment" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
-                    <button @click="addNewReview()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish Review Instantly</button>
-                </div>
             </div>
 
             <!-- TAB 4: PHOTO VISIT GALLERY -->
@@ -1394,18 +1410,6 @@
                     </div>
                     <button @click="addGalleryPhoto()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Add Photo to Gallery</button>
                 </div>
-
-                <div class="space-y-2 max-h-48 overflow-y-auto">
-                    <template x-for="(p, idx) in photoGrid" :key="p.id || idx">
-                        <div class="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-800 p-2.5 rounded-xl">
-                            <div class="flex items-center gap-2 overflow-hidden">
-                                <img :src="p.url" alt="Gallery thumbnail" width="32" height="32" class="w-8 h-8 object-cover rounded-xl shrink-0">
-                                <span class="truncate font-semibold text-gray-800 dark:text-gray-200" x-text="p.caption || 'Photo'"></span>
-                            </div>
-                            <button @click="removeGalleryPhoto(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
-                        </div>
-                    </template>
-                </div>
             </div>
 
             <!-- TAB 5: FAQ MANAGEMENT -->
@@ -1420,18 +1424,6 @@
                         <textarea x-model="newFaq.answer" rows="3" placeholder="Enter answer details here..." aria-label="Detailed Answer or Policy" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                     </div>
                     <button @click="addNewFaq()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish FAQ Item</button>
-                </div>
-
-                <div class="space-y-2 max-h-48 overflow-y-auto">
-                    <template x-for="(f, idx) in faqList" :key="idx">
-                        <div class="flex justify-between items-start gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
-                            <div class="space-y-0.5 overflow-hidden">
-                                <p class="font-bold text-gray-900 dark:text-white truncate" x-text="f.question"></p>
-                                <p class="text-gray-500 dark:text-gray-400 truncate text-[11px]" x-text="f.answer"></p>
-                            </div>
-                            <button @click="removeFaq(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
-                        </div>
-                    </template>
                 </div>
             </div>
 
@@ -1587,7 +1579,7 @@
                 <div class="flex space-x-4">
                     <button @click="currentView = 'home'" class="hover:underline text-brand-600 dark:text-brand-400">Home</button>
                     <button @click="currentView = 'loyalty'" class="hover:underline text-brand-600 dark:text-brand-400">Paw Points</button>
-                    <a href="cincinnati-dog-walking.html" class="hover:underline">Local Dog Walking Guide</a>
+                    <button @click="currentView = 'guide'" class="hover:underline text-brand-600 dark:text-brand-400">Trails Guide</button>
                     <a href="privacy.html" target="_blank" class="hover:underline">Privacy Policy</a>
                     <a href="terms.html" target="_blank" class="hover:underline">Terms of Service</a>
                 </div>
@@ -1610,12 +1602,11 @@
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             
-            // NEW: Initialize App Check with ReCaptcha Enterprise
             if (typeof firebase.appCheck === 'function') {
                 const appCheck = firebase.appCheck();
                 appCheck.activate(
                   '6LfkzXUtAAAAAGy2tNXRRI87aF-sjqMaSMEcblh0', 
-                  true // isTokenAutoRefreshEnabled
+                  true
                 );
             }
         }
@@ -1705,6 +1696,7 @@
                 showProfileModal: false,
                 showQRModal: false,
                 showAdminModal: false,
+                showAddTrailModal: false,
                 vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
                 houseChecklist: { feedingNotes: '', medicationNotes: '', trashDays: '', mailNotes: '', otherNotes: '' },
                 qrBadgeUrl: 'https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1',
@@ -1748,6 +1740,11 @@
                 bulkAreaInput: '',
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
+                communityTrails: [
+                    { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven' },
+                    { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client' }
+                ],
+                newTrailForm: { title: '', location: '', description: '', amenities: '' },
 
                 get clientTier() {
                     const yearlyPts = this.userData.yearlyPoints || 0;
@@ -1776,6 +1773,7 @@
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
+                    await this.loadCommunityTrails();
 
                     window.addEventListener('pwa-install-ready', () => {
                         this.showInstallBanner = true;
@@ -1832,6 +1830,38 @@
                     });
                 },
 
+                async loadCommunityTrails() {
+                    try {
+                        const snap = await db.collection('community_guides').orderBy('createdAt', 'desc').get({ source: 'cache' }).catch(() => db.collection('community_guides').orderBy('createdAt', 'desc').get({ source: 'server' }));
+                        if (!snap.empty) {
+                            this.communityTrails = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        }
+                    } catch (err) {
+                        console.log('Using default static trails offline.');
+                    }
+                },
+
+                async submitNewTrail() {
+                    if (!this.newTrailForm.title || !this.newTrailForm.description) return;
+                    try {
+                        const trailObj = {
+                            title: this.newTrailForm.title.trim(),
+                            location: this.newTrailForm.location.trim(),
+                            description: this.newTrailForm.description.trim(),
+                            amenities: this.newTrailForm.amenities.trim() || 'Dog Friendly',
+                            author: this.userData.name || 'Local Pet Owner',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        const docRef = await db.collection('community_guides').add(trailObj);
+                        this.communityTrails.unshift({ id: docRef.id, ...trailObj });
+                        this.newTrailForm = { title: '', location: '', description: '', amenities: '' };
+                        this.showAddTrailModal = false;
+                        alert('Thank you! Your trail recommendation has been published.');
+                    } catch (err) {
+                        alert('Error publishing trail: ' + err.message);
+                    }
+                },
+
                 async installPwa() {
                     if (deferredPrompt) {
                         deferredPrompt.prompt();
@@ -1841,7 +1871,6 @@
                         }
                         deferredPrompt = null;
                     } else {
-                        // Fallback for iOS / Safari
                         this.showIOSInstallModal = true;
                     }
                 },
@@ -1969,7 +1998,6 @@
 
                 scheduleNextToast() {
                     const randomDelay = Math.floor(Math.random() * (28000 - 12000 + 1)) + 12000;
-                    
                     setTimeout(() => {
                         const randomIndex = Math.floor(Math.random() * this.toastEvents.length);
                         this.toastMessage = this.toastEvents[randomIndex];
@@ -2251,9 +2279,7 @@
                                         });
                                     }
                                 } catch (refError) {
-                                    console.warn("Could not sync points to referrer (likely a permission rule restriction).", refError);
-                                    
-                                    // Give the newly created user their welcome bonus regardless!
+                                    console.warn("Could not sync points to referrer.", refError);
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
@@ -2341,9 +2367,7 @@
                                         });
                                     }
                                 } catch (refError) {
-                                    console.warn("Could not sync points to referrer (likely a permission rule restriction).", refError);
-                                    
-                                    // Give the newly created user their welcome bonus regardless!
+                                    console.warn("Could not sync points to referrer.", refError);
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
@@ -2808,23 +2832,6 @@
                             }
                         }
                     });
-                },
-                
-                // NEW: Download Apple Wallet Pass function
-                downloadWalletPass() {
-                    if (!this.user) {
-                        alert('You must be logged in to download your pass.');
-                        return;
-                    }
-                    
-                    const pts = this.userData.points || 0;
-                    const tier = this.clientTier.name;
-                    const uid = this.user.uid;
-                    
-                    // Route directly to the deployed Firebase Cloud Function you set up in Step 3
-                    const functionUrl = `https://us-central1-${firebaseConfig.projectId}.cloudfunctions.net/generateWalletPass?points=${pts}&tier=${encodeURIComponent(tier)}&clientId=${uid}`;
-                    
-                    window.open(functionUrl, '_blank');
                 },
 
                 async updateClientPoints() {
