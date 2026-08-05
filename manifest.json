@@ -11,6 +11,11 @@
     "window-controls-overlay",
     "standalone"
   ],
+  "tab_strip": {
+    "new_tab_button": {
+      "url": "/"
+    }
+  },
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "orientation": "portrait-primary",
