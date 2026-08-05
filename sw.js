@@ -1,7 +1,9 @@
-const CACHE_NAME = 'paw-points-offline-v2';
+const CACHE_NAME = 'paw-points-offline-v3';
+const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  OFFLINE_URL,
   '/output.css',
   '/android-chrome-192x192.webp',
   '/android-chrome-512x512.webp',
@@ -48,7 +50,12 @@ self.addEventListener('fetch', (event) => {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           return response;
-        }).catch(() => cachedResponse);
+        }).catch(async () => {
+          // NEW: Serve dedicated offline page if network completely fails
+          const cache = await caches.open(CACHE_NAME);
+          const offlineResponse = await cache.match(OFFLINE_URL);
+          return offlineResponse || cachedResponse;
+        });
       }
 
       // Asset Strategy: Use Cache first for instant loading, fallback to network
