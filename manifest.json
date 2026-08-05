@@ -36,12 +36,6 @@
   ],
   "scope_extensions": [
     {
-      "origin": "https://*.petcarebysteven.me"
-    },
-    {
-      "origin": "https://petcarebysteven.me"
-    },
-    {
       "origin": "https://*.personalwalkies.com"
     },
     {
