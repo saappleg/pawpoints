@@ -1,0 +1,28 @@
+name: Monthly site quality report
+
+on:
+  schedule:
+    - cron: '17 14 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the live website with Lighthouse
+        run: >-
+          npx --yes lighthouse@12 https://petcarebysteven.me/
+          --output html --output json
+          --output-path ./lighthouse-report
+          --only-categories=performance,accessibility,best-practices,seo
+          --chrome-flags="--headless --no-sandbox"
+      - name: Save report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: lighthouse-report.*
+          if-no-files-found: error
+          retention-days: 30

@@ -58,6 +58,19 @@ service cloud.firestore {
         && request.resource.data.status == 'pending';
     }
 
+    // Clients can request a reward, while an administrator verifies the balance
+    // and creates the coupon. Client browsers never deduct or issue points.
+    match /reward_requests/{requestId} {
+      allow get: if signedIn() && (resource.data.clientUid == request.auth.uid || isAdmin());
+      allow list, update, delete: if isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['clientUid', 'cost', 'title', 'status', 'createdAt'])
+        && request.resource.data.clientUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.cost in [5000, 8000]
+        && request.resource.data.title in ['$10 Off Next Visit', '$20 Off Next Visit'];
+    }
+
     match /community_guides/{guideId} {
       allow read: if true;
       allow create: if signedIn();

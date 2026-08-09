@@ -731,8 +731,8 @@
                                 <div class="flex items-center gap-4">
                                     <span class="text-3xl">🎉</span>
                                     <div>
-                                        <p class="font-black text-base" x-text="petBirthdayAlert ? 'Happy Birthday / Gotcha Day to your pet! (+250 Pts Awarded)' : 'First-Visit Welcome Badge Unlocked!'"></p>
-                                        <p class="text-indigo-100 text-xs mt-0.5" x-text="petBirthdayAlert ? 'Enjoy your surprise points bonus today!' : 'Thank you for booking your first visit with Pet Care by Steven.'"></p>
+                                        <p class="font-black text-base" x-text="petBirthdayAlert ? 'Happy Birthday / Gotcha Day to your pet!' : 'First-Visit Welcome Badge Unlocked!'"></p>
+                                        <p class="text-indigo-100 text-xs mt-0.5" x-text="petBirthdayAlert ? 'We hope your pet has an extra-special day.' : 'Thank you for booking your first visit with Pet Care by Steven.'"></p>
                                     </div>
                                 </div>
                                 <template x-if="petBirthdayAlert">
@@ -741,13 +741,13 @@
                             </div>
                         </template>
 
-                        <div x-data="{ showGuide: true }" class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-3xl p-6 shadow-sm space-y-3">
+                        <div x-data="{ showGuide: localStorage.getItem('paw-new-client-guide-dismissed') !== 'true', toggleGuide() { this.showGuide = !this.showGuide; localStorage.setItem('paw-new-client-guide-dismissed', this.showGuide ? 'false' : 'true'); } }" class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-3xl p-6 shadow-sm space-y-3">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-2">
                                     <span class="bg-brand-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Client Guide</span>
                                     <h2 class="font-bold text-sm text-indigo-950 dark:text-indigo-100">✨ How Getting Started Works</h2>
                                 </div>
-                                <button @click="showGuide = !showGuide" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
+                                <button @click="toggleGuide()" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
                                     <span x-text="showGuide ? 'Hide Guide' : 'Show Guide'"></span>
                                 </button>
                             </div>
@@ -1391,11 +1391,16 @@
         <div x-show="showProfileModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
             <div @click.away="showProfileModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
-                    <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Account & Contact Profile</h2>
+                    <div>
+                        <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Profile &amp; Preferences</h2>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Keep your contact details current so care updates reach you.</p>
+                    </div>
                     <button @click="showProfileModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
                 </div>
 
                 <form @submit.prevent="updateUserProfile()" class="space-y-4 text-xs">
+                    <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 space-y-4">
+                        <p class="font-bold text-gray-900 dark:text-white">Contact details</p>
                     <div>
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Full Name</label>
                         <input type="text" x-model="profileForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
@@ -1411,14 +1416,17 @@
                         <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Phone Number</label>
                         <input type="tel" x-model="profileForm.phone" placeholder="(555) 000-0000" aria-label="Phone Number" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
                     </div>
+                    </div>
 
-                    <div>
-                        <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Home Address / Service Notes</label>
+                    <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 space-y-2">
+                        <label class="block font-bold text-gray-900 dark:text-white">Home address or service notes</label>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Share the address, parking instructions, or anything that helps plan your first visit.</p>
                         <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" aria-label="Home Address or Service Notes" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
                     </div>
 
-                    <div class="pt-2 border-t dark:border-gray-800">
-                        <label class="block font-bold text-gray-500 dark:text-slate-300 mb-2 mt-4">Notifications</label>
+                    <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 rounded-2xl p-4">
+                        <label class="block font-bold text-indigo-950 dark:text-indigo-100 mb-1">Visit notifications</label>
+                        <p class="text-[11px] text-indigo-800 dark:text-indigo-200 mb-3">Enable alerts for service updates and Paw Points activity on this device.</p>
                         <button type="button" @click="enablePushNotifications()" class="w-full py-3.5 bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-bold rounded-xl border border-indigo-200 dark:border-indigo-800 transition flex items-center justify-center gap-2">
                             <span x-text="pushEnabled ? '🔔 Push Notifications Enabled' : '🔕 Enable Push Notifications'"></span>
                         </button>
@@ -1439,12 +1447,17 @@
         <div x-show="showAdminModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
             <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
-                    <h2 id="modal-admin-title" class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Portal Panel</h2>
+                    <div>
+                        <h2 id="modal-admin-title" class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Workspace</h2>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Manage clients, rewards, content, and daily follow-up from one place.</p>
+                    </div>
                     <button @click="showAdminModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-xs font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
                 </div>
 
-                <div class="flex gap-1.5 border-b dark:border-gray-800 pb-3 text-xs font-bold overflow-x-auto">
-                    <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Points</button>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-bold">
+                    <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Clients &amp; Points</button>
+                    <button @click="adminTab = 'referrals'; fetchPendingReferrals()" :class="adminTab === 'referrals' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Referrals <span x-show="pendingReferrals.length" x-text="`(${pendingReferrals.length})`"></span></button>
+                    <button @click="adminTab = 'rewards'; fetchPendingRewardRequests()" :class="adminTab === 'rewards' ? 'bg-amber-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Reward requests <span x-show="pendingRewardRequests.length" x-text="`(${pendingRewardRequests.length})`"></span></button>
                     <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Areas</button>
                     <button @click="adminTab = 'reviews'; fetchPendingReviews()" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Reviews</button>
                     <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Photos</button>
@@ -1452,6 +1465,11 @@
                     <button @click="adminTab = 'broadcast'" :class="adminTab === 'broadcast' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">📢 Broadcast</button>
                     <button @click="adminTab = 'badge'; $nextTick(() => generateAdminBadge())" :class="adminTab === 'badge' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">🖨️ QR Badge</button>
                     <button @click="adminTab = 'export'; fetchClientsList()" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">📤 Export</button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3 rounded-2xl text-xs">
+                    <div><span class="block text-gray-500 dark:text-gray-400">Client records</span><strong class="text-base text-gray-900 dark:text-white" x-text="clientList.length"></strong></div>
+                    <div><span class="block text-gray-500 dark:text-gray-400">Items to review</span><strong class="text-base text-emerald-600 dark:text-emerald-400" x-text="pendingReferrals.length + pendingRewardRequests.length"></strong></div>
                 </div>
 
                 <!-- TAB 1: POINTS & TIER MANAGEMENT -->
@@ -1490,7 +1508,41 @@
                         </select>
                     </div>
 
+                    <div>
+                        <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Coupon to issue <span class="font-normal">(optional)</span></label>
+                        <input type="text" x-model.trim="adminForm.couponTitle" placeholder="e.g. $10 Off Next Visit" aria-label="Coupon to issue" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <p class="text-[10px] text-gray-400 mt-1">A unique coupon code is added when you save the client update.</p>
+                    </div>
+
                     <button @click="updateClientPoints()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition shadow-sm">Update Client Points & Tier</button>
+                </div>
+
+                <div x-show="adminTab === 'referrals'" class="space-y-4 text-xs" x-cloak>
+                    <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 p-3.5 rounded-2xl text-emerald-900 dark:text-emerald-100">
+                        Review each completed sign-up before awarding points. This keeps referral rewards accurate and prevents self-awarded points.
+                    </div>
+                    <template x-for="claim in pendingReferrals" :key="claim.id">
+                        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border dark:border-gray-700 space-y-3">
+                            <div><p class="text-gray-500 dark:text-gray-400">Referrer</p><p class="font-bold text-gray-900 dark:text-white" x-text="claim.referrerName"></p></div>
+                            <div><p class="text-gray-500 dark:text-gray-400">New client</p><p class="font-bold text-gray-900 dark:text-white" x-text="claim.clientName"></p></div>
+                            <button @click="approveReferral(claim)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition">Award 1,000 points</button>
+                        </div>
+                    </template>
+                    <template x-if="pendingReferrals.length === 0"><p class="text-gray-500 dark:text-gray-400 italic text-center py-4">No referral rewards are waiting for review.</p></template>
+                </div>
+
+                <div x-show="adminTab === 'rewards'" class="space-y-4 text-xs" x-cloak>
+                    <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-3.5 rounded-2xl text-amber-950 dark:text-amber-100">
+                        Check the client’s points, use Clients &amp; Points to make the adjustment, add the coupon in their record, then mark this request complete.
+                    </div>
+                    <template x-for="request in pendingRewardRequests" :key="request.id">
+                        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border dark:border-gray-700 space-y-3">
+                            <div class="flex items-start justify-between gap-3"><div><p class="text-gray-500 dark:text-gray-400">Client</p><p class="font-bold text-gray-900 dark:text-white" x-text="request.clientName"></p></div><span class="font-bold text-amber-600 dark:text-amber-400" x-text="`${request.cost.toLocaleString()} pts`"></span></div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-200" x-text="request.title"></p>
+                            <button @click="completeRewardRequest(request)" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition">Mark completed</button>
+                        </div>
+                    </template>
+                    <template x-if="pendingRewardRequests.length === 0"><p class="text-gray-500 dark:text-gray-400 italic text-center py-4">No reward requests are waiting for review.</p></template>
                 </div>
 
                 <!-- TAB 2: SERVICE AREA MANAGEMENT -->
@@ -1989,8 +2041,10 @@
                 profileError: '',
                 profileSuccess: '',
                 clientList: [],
-                adminForm: { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '' },
+                adminForm: { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '', couponTitle: '' },
                 adminTab: 'points',
+                pendingReferrals: [],
+                pendingRewardRequests: [],
                 serviceAreas: [],
                 bulkAreaInput: '',
                 reviewsList: [],
@@ -2911,20 +2965,10 @@
                         this.userData.coupons = this.userData.coupons || [];
 
                         const currentYear = new Date().getFullYear().toString();
-                        if (this.userData.statusYear !== currentYear) {
-                            this.userData.yearlyPoints = 0;
-                            this.userData.statusYear = currentYear;
-                            await userRef.update({ yearlyPoints: 0, statusYear: currentYear });
-                        }
-
-                        if (this.userData.lifetimePoints === undefined) {
-                            this.userData.lifetimePoints = this.userData.points || 0;
-                            await userRef.update({ lifetimePoints: this.userData.lifetimePoints });
-                        }
-                        if (this.userData.yearlyPoints === undefined) {
-                            this.userData.yearlyPoints = this.userData.points || 0;
-                            await userRef.update({ yearlyPoints: this.userData.yearlyPoints, statusYear: currentYear });
-                        }
+                        // Point balances are maintained by an administrator, never by a browser.
+                        // This prevents a client from changing their own loyalty balance.
+                        this.userData.yearlyPoints = this.userData.yearlyPoints || 0;
+                        this.userData.lifetimePoints = this.userData.lifetimePoints || this.userData.points || 0;
 
                         if (oldPoints !== undefined && oldPoints !== this.userData.points) {
                             firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${this.userData.points} Pts.`);
@@ -2950,13 +2994,6 @@
                             if (hasBirthdayToday) {
                                 const lastBdayBonus = localStorage.getItem('bday_bonus_' + new Date().getFullYear());
                                 if (!lastBdayBonus) {
-                                    const newPts = (this.userData.points || 0) + 250;
-                                    const newLifetime = (this.userData.lifetimePoints || 0) + 250;
-                                    const newYearly = (this.userData.yearlyPoints || 0) + 250;
-                                    await userRef.update({ points: newPts, lifetimePoints: newLifetime, yearlyPoints: newYearly });
-                                    this.userData.points = newPts;
-                                    this.userData.lifetimePoints = newLifetime;
-                                    this.userData.yearlyPoints = newYearly;
                                     localStorage.setItem('bday_bonus_' + new Date().getFullYear(), 'true');
                                     this.petBirthdayAlert = true;
                                 }
@@ -3204,9 +3241,9 @@
                 async openAdminModal(tab = 'points') {
                     this.adminTab = tab;
                     this.showAdminModal = true;
-                    if (tab === 'points' || tab === 'export') {
-                        await this.fetchClientsList();
-                    }
+                    await this.fetchClientsList();
+                    await this.fetchPendingReferrals();
+                    await this.fetchPendingRewardRequests();
                     if (tab === 'reviews') {
                         await this.fetchPendingReviews();
                         await this.loadApprovedReviews();
@@ -3228,31 +3265,97 @@
                     }
                 },
 
+                async fetchPendingReferrals() {
+                    try {
+                        const snapshot = await db.collection('referral_claims').where('status', '==', 'pending').get();
+                        this.pendingReferrals = await Promise.all(snapshot.docs.map(async (doc) => {
+                            const claim = { id: doc.id, ...doc.data() };
+                            const [referrer, client] = await Promise.all([
+                                db.collection('clients').doc(claim.referrerUid).get(),
+                                db.collection('clients').doc(claim.clientUid).get()
+                            ]);
+                            return {
+                                ...claim,
+                                referrerName: referrer.exists ? (referrer.data().name || referrer.data().email || 'Unnamed client') : 'Unknown referrer',
+                                clientName: client.exists ? (client.data().name || client.data().email || 'New client') : 'New client'
+                            };
+                        }));
+                    } catch (err) {
+                        console.error('Failed to load referral claims:', err);
+                        this.pendingReferrals = [];
+                    }
+                },
+
+                async approveReferral(claim) {
+                    if (!confirm(`Award 1,000 Paw Points to ${claim.referrerName} for referring ${claim.clientName}?`)) return;
+                    try {
+                        const referrerRef = db.collection('clients').doc(claim.referrerUid);
+                        const claimRef = db.collection('referral_claims').doc(claim.id);
+                        const referrer = await referrerRef.get();
+                        if (!referrer.exists) throw new Error('The referring client could not be found.');
+                        const data = referrer.data();
+                        const currentPoints = data.points || 0;
+                        await referrerRef.update({
+                            points: currentPoints + 1000,
+                            lifetimePoints: (data.lifetimePoints || currentPoints) + 1000,
+                            yearlyPoints: (data.yearlyPoints || 0) + 1000,
+                            referralsCount: (data.referralsCount || 0) + 1
+                        });
+                        await claimRef.update({
+                            status: 'awarded',
+                            reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            reviewedBy: this.user.uid
+                        });
+                        await this.fetchPendingReferrals();
+                        await this.fetchClientsList();
+                        alert('Referral reward approved and points added.');
+                    } catch (err) {
+                        alert('Unable to award referral points: ' + err.message);
+                    }
+                },
+
+                async fetchPendingRewardRequests() {
+                    try {
+                        const snapshot = await db.collection('reward_requests').where('status', '==', 'pending').get();
+                        this.pendingRewardRequests = await Promise.all(snapshot.docs.map(async (doc) => {
+                            const request = { id: doc.id, ...doc.data() };
+                            const client = await db.collection('clients').doc(request.clientUid).get();
+                            return {
+                                ...request,
+                                clientName: client.exists ? (client.data().name || client.data().email || 'Unnamed client') : 'Unknown client'
+                            };
+                        }));
+                    } catch (err) {
+                        console.error('Failed to load reward requests:', err);
+                        this.pendingRewardRequests = [];
+                    }
+                },
+
+                async completeRewardRequest(request) {
+                    if (!confirm(`Mark ${request.title} for ${request.clientName} as completed? Confirm the client's point balance and add the coupon first.`)) return;
+                    try {
+                        await db.collection('reward_requests').doc(request.id).update({
+                            status: 'completed',
+                            reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            reviewedBy: this.user.uid
+                        });
+                        await this.fetchPendingRewardRequests();
+                    } catch (err) {
+                        alert('Unable to complete reward request: ' + err.message);
+                    }
+                },
+
                 async redeemReward(cost, title) {
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
-                        const newBalance = this.userData.points - cost;
-                        
-                        const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-                        const newCoupon = {
-                            code: couponCode,
+                        await db.collection('reward_requests').add({
+                            clientUid: this.user.uid,
+                            cost: cost,
                             title: title,
-                            used: false,
-                            createdAt: new Date().toISOString()
-                        };
-
-                        const updatedCoupons = [...(this.userData.coupons || []), newCoupon];
-
-                        await db.collection('clients').doc(this.user.uid).update({ 
-                            points: newBalance,
-                            coupons: updatedCoupons
+                            status: 'pending',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
-
-                        this.userData.points = newBalance;
-                        this.userData.coupons = updatedCoupons;
-                        firePwaNotification("🎁 Reward Redeemed!", `Your coupon code is ${couponCode}`);
-
-                        alert(`Reward Redeemed!\n\nYour Coupon Code is: ${couponCode}`);
+                        alert('Your reward request has been sent for review. We will add the coupon after confirming your points.');
                     }
                 },
 
@@ -3266,13 +3369,7 @@
                         return;
                     }
 
-                    if (confirm(`Are you sure you want to mark "${coupon.title}" (${coupon.code}) as USED?\n\nThis cannot be undone.`)) {
-                        this.userData.coupons[index].used = true;
-                        
-                        await db.collection('clients').doc(this.user.uid).update({
-                            coupons: this.userData.coupons
-                        });
-                    }
+                    alert(`Please show ${coupon.code} to Pet Care by Steven when redeeming it. We will mark it used after the visit.`);
                 },
 
                 async updateClientPoints() {
@@ -3295,11 +3392,20 @@
                         newYearly = parseInt(this.adminForm.overrideYearlyPoints);
                     }
                     
-                    await targetRef.update({ 
+                    const update = {
                         points: newPts, 
                         lifetimePoints: newLifetime,
                         yearlyPoints: newYearly 
-                    });
+                    };
+                    if (this.adminForm.couponTitle) {
+                        update.coupons = [...(doc.data().coupons || []), {
+                            code: 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+                            title: this.adminForm.couponTitle,
+                            used: false,
+                            createdAt: new Date().toISOString()
+                        }];
+                    }
+                    await targetRef.update(update);
                     
                     alert(`Updated client points and tier successfully!`);
                     
@@ -3311,7 +3417,7 @@
                     }
                     
                     this.showAdminModal = false;
-                    this.adminForm = { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '' };
+                    this.adminForm = { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '', couponTitle: '' };
                 },
 
                 async logout() {
