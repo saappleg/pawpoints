@@ -260,11 +260,11 @@
                             Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                         </p>
                         <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                            <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule and Book Walkies" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2">
+                            <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule and Book Walkies" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                 <span>📅</span>
                                 <span>Schedule & Book Walkies</span>
                             </a>
-                            <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2">
+                            <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                 <span>🎁</span>
                                 <span>View Client Rewards</span>
                             </button>
@@ -490,12 +490,12 @@
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                            <input type="text" x-model="authForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            <input type="text" x-model="authForm.name" required aria-label="Full Name" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                         </div>
                     </template>
                     <div>
                         <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-1">
@@ -504,12 +504,12 @@
                                 Forgot password?
                             </button>
                         </div>
-                        <input type="password" x-model="authForm.password" required aria-label="Password" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="password" x-model="authForm.password" required aria-label="Password" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <template x-if="authMode === 'signup'">
                         <div>
                             <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Referral Code (Optional)</label>
-                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" aria-label="Referral Code" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
+                            <input type="text" x-model="authForm.refCode" placeholder="e.g. PAW-12345" aria-label="Referral Code" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none uppercase font-mono">
                         </div>
                     </template>
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
@@ -521,7 +521,7 @@
                     <p class="text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a link to reset your password.</p>
                     <div>
                         <label class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="email" x-model="authForm.email" required aria-label="Email Address" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
                     <p x-show="authError" x-text="authError" class="text-xs text-red-500 font-medium"></p>
                     <p x-show="authSuccess" x-text="authSuccess" class="text-xs text-emerald-600 font-medium"></p>
@@ -655,7 +655,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-3.5 py-1 rounded-full">Earn Free Care</span>
-                                <h2 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h2>
+                                <h3 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 max-w-lg leading-relaxed">
                                     Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
                                 </p>
@@ -681,26 +681,26 @@
                     <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b dark:border-gray-800 pb-4">
                             <div>
-                                <h2 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                                <h2 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                                     <span>🐶 Pet Profiles & Home Care Details</span>
                                 </h2>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Your pet photos, care routines, home entry codes, and emergency contacts.</p>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <template x-if="!isEditingPets">
-                                    <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-xl shadow-sm transition">
+                                    <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
                                         ✏️ Edit Information
                                     </button>
                                 </template>
                                 <template x-if="isEditingPets">
                                     <div class="flex items-center space-x-2">
-                                        <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-slate-200 font-semibold px-3 py-2 rounded-xl transition border dark:border-gray-700">
+                                        <button @click="cancelPetEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-slate-200 font-semibold px-3 py-1.5 rounded-lg transition">
                                             Cancel
                                         </button>
-                                        <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-slate-200 font-semibold px-3 py-2 rounded-xl transition border dark:border-gray-700">
+                                        <button @click="addPet()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-slate-200 font-semibold px-3 py-1.5 rounded-lg transition">
                                             + Add Pet
                                         </button>
-                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl shadow-sm transition">
+                                        <button @click="savePetDetails()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
                                             💾 Save Profiles
                                         </button>
                                     </div>
@@ -708,7 +708,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                             <div class="space-y-0.5 text-center sm:text-left">
                                 <span class="font-bold text-amber-950 dark:text-amber-200 flex items-center gap-1.5 justify-center sm:justify-start">
                                     🏥 Emergency Veterinary Care Authorization
@@ -831,24 +831,24 @@
 
                                             <div class="flex-grow">
                                                 <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Pet Name</label>
-                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" aria-label="Pet Name" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                                <input type="text" x-model="pet.name" placeholder="e.g. Fizz, Buddy" aria-label="Pet Name" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                             </div>
                                         </div>
 
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Birthday / Gotcha Day</label>
-                                                <input type="date" x-model="pet.birthday" aria-label="Pet Birthday or Gotcha Day" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
+                                                <input type="date" x-model="pet.birthday" aria-label="Pet Birthday or Gotcha Day" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Breed / Type</label>
-                                                <input type="text" x-model="pet.breed" placeholder="e.g. Domestic Shorthair" aria-label="Pet Breed or Type" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
+                                                <input type="text" x-model="pet.breed" placeholder="e.g. Domestic Shorthair" aria-label="Pet Breed or Type" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-xs outline-none">
                                             </div>
                                         </div>
 
                                         <div>
                                             <label class="block text-xs font-bold text-gray-500 dark:text-slate-300 mb-1">Special Care Notes & Routine</label>
-                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" aria-label="Special Care Notes and Routine" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                            <textarea x-model="pet.notes" rows="2" placeholder="e.g. Loves treats, allergic to chicken, feed at 8 AM" aria-label="Special Care Notes and Routine" class="w-full px-3 py-1.5 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                                         </div>
                                     </div>
                                 </template>
@@ -859,30 +859,30 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Lockbox / Keypad Code</label>
-                                        <input type="text" x-model="userData.lockboxCode" placeholder="e.g. 1234 or Key under mat" aria-label="Lockbox or Keypad Code" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm font-mono focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.lockboxCode" placeholder="e.g. 1234 or Key under mat" aria-label="Lockbox or Keypad Code" class="w-full px-3 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm font-mono focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Alarm Code / Disarm Notes</label>
-                                        <input type="text" x-model="userData.alarmInstructions" placeholder="e.g. Code 5678 on front door panel" aria-label="Alarm Code or Disarm Notes" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.alarmInstructions" placeholder="e.g. Code 5678 on front door panel" aria-label="Alarm Code or Disarm Notes" class="w-full px-3 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Home Access & Parking Instructions</label>
-                                    <textarea x-model="userData.homeEntryNotes" rows="2" placeholder="e.g. Park in driveway on right side. Side gate is unlocked." aria-label="Home Access and Parking Instructions" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                                    <textarea x-model="userData.homeEntryNotes" rows="2" placeholder="e.g. Park in driveway on right side. Side gate is unlocked." aria-label="Home Access and Parking Instructions" class="w-full px-3 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                                 </div>
                             </div>
 
                             <div class="border-t dark:border-gray-800 pt-4 mt-4 space-y-3">
                                 <div class="flex justify-between items-center">
                                     <h3 class="text-xs font-bold text-gray-500 dark:text-brand-400 uppercase tracking-wider">👥 Emergency Contacts & Authorized Pickup Roster</h3>
-                                    <button @click="addEmergencyContact()" class="text-xs bg-brand-600 text-white px-2.5 py-1 rounded-xl font-bold">+ Add Contact</button>
+                                    <button @click="addEmergencyContact()" class="text-xs bg-brand-600 text-white px-2.5 py-1 rounded-md font-bold">+ Add Contact</button>
                                 </div>
                                 
                                 <template x-for="(contact, cIdx) in userData.emergencyContacts" :key="cIdx">
-                                    <div class="flex gap-2 items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-2xl border dark:border-gray-700">
-                                        <input type="text" x-model="contact.name" placeholder="Contact Name" aria-label="Emergency Contact Name" class="flex-1 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
-                                        <input type="text" x-model="contact.relation" placeholder="Relation (e.g. Neighbor)" aria-label="Emergency Contact Relation" class="w-32 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
-                                        <input type="tel" x-model="contact.phone" placeholder="Phone Number" aria-label="Emergency Contact Phone Number" class="w-32 px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none font-mono">
+                                    <div class="flex gap-2 items-center bg-gray-50 dark:bg-gray-800 p-2.5 rounded-xl border dark:border-gray-700">
+                                        <input type="text" x-model="contact.name" placeholder="Contact Name" aria-label="Emergency Contact Name" class="flex-1 px-2.5 py-1.5 rounded border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
+                                        <input type="text" x-model="contact.relation" placeholder="Relation (e.g. Neighbor)" aria-label="Emergency Contact Relation" class="w-32 px-2.5 py-1.5 rounded border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none">
+                                        <input type="tel" x-model="contact.phone" placeholder="Phone Number" aria-label="Emergency Contact Phone Number" class="w-32 px-2.5 py-1.5 rounded border dark:border-gray-700 dark:bg-gray-900 text-xs outline-none font-mono">
                                         <button @click="removeEmergencyContact(cIdx)" aria-label="Remove Emergency Contact" class="text-red-500 font-bold px-2 text-xs">✕</button>
                                     </div>
                                 </template>
@@ -893,11 +893,11 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Clinic Name</label>
-                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" aria-label="Clinic Name" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.vetClinic" placeholder="e.g. Local Vet Hospital" aria-label="Clinic Name" class="w-full px-3 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-500 dark:text-slate-300 mb-1">Vet Phone Number</label>
-                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" aria-label="Vet Phone Number" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <input type="text" x-model="userData.vetPhone" placeholder="e.g. (555) 123-4567" aria-label="Vet Phone Number" class="w-full px-3 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
                                     </div>
                                 </div>
                             </div>
@@ -1274,6 +1274,26 @@
         </div>
     </div>
 
+    <!-- iOS INSTALL INSTRUCTIONS MODAL -->
+    <div x-show="showIOSInstallModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
+        <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
+            <div class="flex justify-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
+            </div>
+            <h2 id="modal-ios-title" class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h2>
+            <p class="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
+                Apple does not support automatic app installation. To add Pet Care by Steven to your iPhone or iPad home screen:
+            </p>
+            <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-700 p-4 rounded-2xl text-left space-y-3">
+                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 1:</span> Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</p>
+                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 2:</span> Scroll down and tap <strong>Add to Home Screen</strong>.</p>
+            </div>
+            <button @click="showIOSInstallModal = false" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
+                Got it!
+            </button>
+        </div>
+    </div>
+
     <!-- MEET & GREET GOOGLE CALENDAR SCHEDULING MODAL -->
     <div x-show="showMeetGreetModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-meetgreet-title">
         <div @click.away="showMeetGreetModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
@@ -1395,6 +1415,20 @@
                         <p class="text-gray-400 italic">No pending reviews awaiting approval.</p>
                     </template>
                 </div>
+
+                <div class="border-t dark:border-gray-800 pt-4 space-y-3">
+                    <p class="font-bold text-gray-700 dark:text-gray-300">Or Add Direct Testimonial:</p>
+                    <input type="text" x-model="newReview.author" placeholder="Author Name / Type" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                    <select x-model.number="newReview.stars" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <option value="5">★★★★★ (5 Stars)</option>
+                        <option value="4">★★★★☆ (4 Stars)</option>
+                        <option value="3">★★★☆☆ (3 Stars)</option>
+                        <option value="2">★★☆☆☆ (2 Stars)</option>
+                        <option value="1">★☆☆☆☆ (1 Star)</option>
+                    </select>
+                    <textarea x-model="newReview.comment" rows="2" placeholder="Review Comment" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                    <button @click="addNewReview()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish Review Instantly</button>
+                </div>
             </div>
 
             <!-- TAB 4: PHOTO VISIT GALLERY -->
@@ -1410,6 +1444,18 @@
                     </div>
                     <button @click="addGalleryPhoto()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Add Photo to Gallery</button>
                 </div>
+
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                    <template x-for="(p, idx) in photoGrid" :key="p.id || idx">
+                        <div class="flex items-center justify-between gap-2 bg-gray-50 dark:bg-gray-800 p-2.5 rounded-xl">
+                            <div class="flex items-center gap-2 overflow-hidden">
+                                <img :src="p.url" alt="Gallery thumbnail" width="32" height="32" class="w-8 h-8 object-cover rounded-xl shrink-0">
+                                <span class="truncate font-semibold text-gray-800 dark:text-gray-200" x-text="p.caption || 'Photo'"></span>
+                            </div>
+                            <button @click="removeGalleryPhoto(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
+                        </div>
+                    </template>
+                </div>
             </div>
 
             <!-- TAB 5: FAQ MANAGEMENT -->
@@ -1424,6 +1470,18 @@
                         <textarea x-model="newFaq.answer" rows="3" placeholder="Enter answer details here..." aria-label="Detailed Answer or Policy" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                     </div>
                     <button @click="addNewFaq()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish FAQ Item</button>
+                </div>
+
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                    <template x-for="(f, idx) in faqList" :key="idx">
+                        <div class="flex justify-between items-start gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
+                            <div class="space-y-0.5 overflow-hidden">
+                                <p class="font-bold text-gray-900 dark:text-white truncate" x-text="f.question"></p>
+                                <p class="text-gray-500 dark:text-gray-400 truncate text-[11px]" x-text="f.answer"></p>
+                            </div>
+                            <button @click="removeFaq(idx)" class="text-red-500 font-bold hover:underline shrink-0">Delete</button>
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -1464,26 +1522,6 @@
             </div>
 
             <button @click="showAdminModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">Close Admin Panel</button>
-        </div>
-    </div>
-
-    <!-- iOS INSTALL INSTRUCTIONS MODAL -->
-    <div x-show="showIOSInstallModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
-        <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
-            <div class="flex justify-center">
-                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
-            </div>
-            <h2 id="modal-ios-title" class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h2>
-            <p class="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
-                Apple does not support automatic app installation. To add Pet Care by Steven to your iPhone or iPad home screen:
-            </p>
-            <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-700 p-4 rounded-2xl text-left space-y-3">
-                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 1:</span> Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</p>
-                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 2:</span> Scroll down and tap <strong>Add to Home Screen</strong>.</p>
-            </div>
-            <button @click="showIOSInstallModal = false" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
-                Got it!
-            </button>
         </div>
     </div>
 
@@ -1540,7 +1578,7 @@
                     </a>
                 </li>
                 <li role="none">
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20get%20more%20information%20about%20setting%20up%20a%20booking!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20send%20a%20tip!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
                         <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                         </svg>
