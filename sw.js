@@ -40,7 +40,8 @@ self.addEventListener('activate', (event) => {
 // Fetch Event: Network-First for HTML/Data, Cache-First for static assets
 self.addEventListener('fetch', (event) => {
   // Ignore non-GET requests and Firebase API calls to allow Firestore's built-in offline persistence to work
-  if (event.request.method !== 'GET' || event.request.url.includes('firestore.googleapis.com')) return;
+  const requestUrl = new URL(event.request.url);
+  if (event.request.method !== 'GET' || requestUrl.hostname === 'firestore.googleapis.com') return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
