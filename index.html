@@ -1457,7 +1457,6 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-bold">
                     <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Clients &amp; Points</button>
                     <button @click="adminTab = 'referrals'; fetchPendingReferrals()" :class="adminTab === 'referrals' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Referrals <span x-show="pendingReferrals.length" x-text="`(${pendingReferrals.length})`"></span></button>
-                    <button @click="adminTab = 'rewards'; fetchPendingRewardRequests()" :class="adminTab === 'rewards' ? 'bg-amber-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Reward requests <span x-show="pendingRewardRequests.length" x-text="`(${pendingRewardRequests.length})`"></span></button>
                     <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Areas</button>
                     <button @click="adminTab = 'reviews'; fetchPendingReviews()" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Reviews</button>
                     <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Photos</button>
@@ -1469,7 +1468,7 @@
 
                 <div class="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3 rounded-2xl text-xs">
                     <div><span class="block text-gray-500 dark:text-gray-400">Client records</span><strong class="text-base text-gray-900 dark:text-white" x-text="clientList.length"></strong></div>
-                    <div><span class="block text-gray-500 dark:text-gray-400">Items to review</span><strong class="text-base text-emerald-600 dark:text-emerald-400" x-text="pendingReferrals.length + pendingRewardRequests.length"></strong></div>
+                    <div><span class="block text-gray-500 dark:text-gray-400">Referral follow-ups</span><strong class="text-base text-emerald-600 dark:text-emerald-400" x-text="pendingReferrals.length"></strong></div>
                 </div>
 
                 <!-- TAB 1: POINTS & TIER MANAGEMENT -->
@@ -1529,20 +1528,6 @@
                         </div>
                     </template>
                     <template x-if="pendingReferrals.length === 0"><p class="text-gray-500 dark:text-gray-400 italic text-center py-4">No referral rewards are waiting for review.</p></template>
-                </div>
-
-                <div x-show="adminTab === 'rewards'" class="space-y-4 text-xs" x-cloak>
-                    <div class="bg-amber-950 border border-amber-600 p-3.5 rounded-2xl text-amber-50">
-                        Check the client’s points, use Clients &amp; Points to make the adjustment, add the coupon in their record, then mark this request complete.
-                    </div>
-                    <template x-for="request in pendingRewardRequests" :key="request.id">
-                        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border dark:border-gray-700 space-y-3">
-                            <div class="flex items-start justify-between gap-3"><div><p class="text-gray-500 dark:text-gray-400">Client</p><p class="font-bold text-gray-900 dark:text-white" x-text="request.clientName"></p></div><span class="font-bold text-amber-600 dark:text-amber-400" x-text="`${request.cost.toLocaleString()} pts`"></span></div>
-                            <p class="font-semibold text-gray-700 dark:text-gray-200" x-text="request.title"></p>
-                            <button @click="completeRewardRequest(request)" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition">Mark completed</button>
-                        </div>
-                    </template>
-                    <template x-if="pendingRewardRequests.length === 0"><p class="text-gray-500 dark:text-gray-400 italic text-center py-4">No reward requests are waiting for review.</p></template>
                 </div>
 
                 <!-- TAB 2: SERVICE AREA MANAGEMENT -->
@@ -2044,7 +2029,6 @@
                 adminForm: { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '', couponTitle: '' },
                 adminTab: 'points',
                 pendingReferrals: [],
-                pendingRewardRequests: [],
                 serviceAreas: [],
                 bulkAreaInput: '',
                 reviewsList: [],
@@ -3243,7 +3227,6 @@
                     this.showAdminModal = true;
                     await this.fetchClientsList();
                     await this.fetchPendingReferrals();
-                    await this.fetchPendingRewardRequests();
                     if (tab === 'reviews') {
                         await this.fetchPendingReviews();
                         await this.loadApprovedReviews();
@@ -3314,48 +3297,20 @@
                     }
                 },
 
-                async fetchPendingRewardRequests() {
-                    try {
-                        const snapshot = await db.collection('reward_requests').where('status', '==', 'pending').get();
-                        this.pendingRewardRequests = await Promise.all(snapshot.docs.map(async (doc) => {
-                            const request = { id: doc.id, ...doc.data() };
-                            const client = await db.collection('clients').doc(request.clientUid).get();
-                            return {
-                                ...request,
-                                clientName: client.exists ? (client.data().name || client.data().email || 'Unnamed client') : 'Unknown client'
-                            };
-                        }));
-                    } catch (err) {
-                        console.error('Failed to load reward requests:', err);
-                        this.pendingRewardRequests = [];
-                    }
-                },
-
-                async completeRewardRequest(request) {
-                    if (!confirm(`Mark ${request.title} for ${request.clientName} as completed? Confirm the client's point balance and add the coupon first.`)) return;
-                    try {
-                        await db.collection('reward_requests').doc(request.id).update({
-                            status: 'completed',
-                            reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            reviewedBy: this.user.uid
-                        });
-                        await this.fetchPendingRewardRequests();
-                    } catch (err) {
-                        alert('Unable to complete reward request: ' + err.message);
-                    }
-                },
-
                 async redeemReward(cost, title) {
                     if ((this.userData.points || 0) < cost) return;
                     if (confirm(`Redeem ${cost} points for ${title}?`)) {
-                        await db.collection('reward_requests').add({
-                            clientUid: this.user.uid,
-                            cost: cost,
-                            title: title,
-                            status: 'pending',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        const couponCode = 'PAW-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                        const coupon = { code: couponCode, title: title, used: false, createdAt: new Date().toISOString() };
+                        const updatedCoupons = [...(this.userData.coupons || []), coupon];
+                        await db.collection('clients').doc(this.user.uid).update({
+                            points: this.userData.points - cost,
+                            coupons: updatedCoupons
                         });
-                        alert('Your reward request has been sent for review. We will add the coupon after confirming your points.');
+                        this.userData.points -= cost;
+                        this.userData.coupons = updatedCoupons;
+                        firePwaNotification('🎁 Reward Redeemed!', `Your coupon code is ${couponCode}`);
+                        alert(`Reward redeemed!\n\nYour coupon code is: ${couponCode}`);
                     }
                 },
 

@@ -21,6 +21,28 @@ service cloud.firestore {
       ]);
     }
 
+    function validCoupon(title) {
+      let coupons = request.resource.data.coupons;
+      let coupon = coupons[coupons.size() - 1];
+      return coupons.size() == resource.data.coupons.size() + 1
+        && coupon.title == title
+        && coupon.used == false
+        && coupon.code.matches('PAW-[A-Z0-9]{8}');
+    }
+
+    function isValidClientRewardClaim() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'coupons'])
+        && (
+          (resource.data.points >= 5000
+            && request.resource.data.points == resource.data.points - 5000
+            && validCoupon('$10 Off Next Visit'))
+          ||
+          (resource.data.points >= 8000
+            && request.resource.data.points == resource.data.points - 8000
+            && validCoupon('$20 Off Next Visit'))
+        );
+    }
+
     // Create and manage these documents only from Firebase Console or a trusted server.
     // A signed-in user may only check their own role document.
     match /admins/{userId} {
@@ -32,7 +54,7 @@ service cloud.firestore {
       allow get: if ownsClient(userId) || isAdmin();
       allow list: if isAdmin();
       allow create: if ownsClient(userId) && !request.resource.data.keys().hasAny(['isAdmin']);
-      allow update: if isAdmin() || (ownsClient(userId) && updatesOnlyClientProfile());
+      allow update: if isAdmin() || (ownsClient(userId) && (updatesOnlyClientProfile() || isValidClientRewardClaim()));
       allow delete: if isAdmin();
     }
 
@@ -56,19 +78,6 @@ service cloud.firestore {
         && request.resource.data.clientUid == request.auth.uid
         && request.resource.data.referrerUid != request.auth.uid
         && request.resource.data.status == 'pending';
-    }
-
-    // Clients can request a reward, while an administrator verifies the balance
-    // and creates the coupon. Client browsers never deduct or issue points.
-    match /reward_requests/{requestId} {
-      allow get: if signedIn() && (resource.data.clientUid == request.auth.uid || isAdmin());
-      allow list, update, delete: if isAdmin();
-      allow create: if signedIn()
-        && request.resource.data.keys().hasOnly(['clientUid', 'cost', 'title', 'status', 'createdAt'])
-        && request.resource.data.clientUid == request.auth.uid
-        && request.resource.data.status == 'pending'
-        && request.resource.data.cost in [5000, 8000]
-        && request.resource.data.title in ['$10 Off Next Visit', '$20 Off Next Visit'];
     }
 
     match /community_guides/{guideId} {

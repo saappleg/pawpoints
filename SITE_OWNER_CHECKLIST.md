@@ -8,7 +8,7 @@ These are the remaining account-side steps after publishing the website and Fire
 2. Open **Firestore Database → Data → admins** and create a document whose ID is your Firebase Authentication user UID. Set `enabled` to the Boolean value `true`.
 3. Sign out and back in. The Admin Workspace will be visible only to users with that `admins/<uid>` document.
 4. Test a new account with a referral code. The new account gets its welcome coupon and a pending referral appears in **Admin Workspace → Referrals**. Award the 1,000 points there after you verify the referral.
-5. Reward redemptions now become reviewable requests in **Admin Workspace → Reward requests**. Confirm the client’s balance, adjust points/add the coupon, then mark the request complete.
+5. Test a reward redemption with a non-admin account. It should deduct the correct point amount and add a matching coupon immediately.
 
 ## Email notifications
 
