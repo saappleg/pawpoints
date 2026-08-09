@@ -1756,9 +1756,16 @@
         }
 
         function pawApp() {
+            // Check the URL for a specific view when the app loads
+            const params = new URLSearchParams(window.location.search);
+            let initialView = params.get('view') || 'home';
+            if (!['home', 'loyalty', 'guide'].includes(initialView)) {
+                initialView = 'home';
+            }
+
             return {
                 darkMode: localStorage.getItem('theme') === 'dark',
-                currentView: 'home',
+                currentView: initialView,
                 loading: true,
                 user: null,
                 userData: {},
@@ -1873,6 +1880,22 @@
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
                     await this.loadCommunityTrails();
+
+                    // Instantly sync the browser URL to match the active tab when a user clicks it
+                    this.$watch('currentView', (value) => {
+                        const url = new URL(window.location);
+                        url.searchParams.set('view', value);
+                        window.history.pushState({}, '', url);
+                    });
+
+                    // Update the tab if the user uses the browser back/forward buttons
+                    window.addEventListener('popstate', () => {
+                        const stateParams = new URLSearchParams(window.location.search);
+                        const view = stateParams.get('view') || 'home';
+                        if (['home', 'loyalty', 'guide'].includes(view)) {
+                            this.currentView = view;
+                        }
+                    });
 
                     window.addEventListener('pwa-install-ready', () => {
                         this.showInstallBanner = true;
@@ -2003,6 +2026,23 @@
                         return;
                     }
                     try {
+                        // Support logic for the hardcoded local demo trails so they don't throw Firestore errors
+                        if (trailId === '1' || trailId === '2') {
+                            const idx = this.communityTrails.findIndex(t => t.id === trailId);
+                            if (idx > -1) {
+                                let upvoters = this.communityTrails[idx].upvoters || [];
+                                if (upvoters.includes(this.user.uid)) {
+                                    upvoters = upvoters.filter(uid => uid !== this.user.uid);
+                                } else {
+                                    upvoters.push(this.user.uid);
+                                }
+                                this.communityTrails[idx].upvoters = upvoters;
+                                this.communityTrails[idx].votes = upvoters.length;
+                            }
+                            return;
+                        }
+
+                        // Standard logic for real user-submitted trails in Firestore
                         const trailRef = db.collection('community_guides').doc(trailId);
                         const doc = await trailRef.get();
                         if (doc.exists) {
