@@ -2475,17 +2475,37 @@
 
                     this.carePlanStatus = { submitting: true, success: false, message: '' };
                     try {
-                        await db.collection('care_plan_requests').add({
-                            ...request,
-                            userId: this.user ? this.user.uid : null,
-                            status: 'new',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        const response = await fetch('https://formsubmit.co/ajax/support@petcarebysteven.me', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: request.name,
+                                email: request.email,
+                                phone: request.phone,
+                                source: request.source,
+                                details: request.details,
+                                _subject: 'New personalized care plan request',
+                                _replyto: request.email,
+                                _template: 'table'
+                            })
                         });
+
+                        if (!response.ok) {
+                            throw new Error('Care-plan email request failed.');
+                        }
+
+                        const result = await response.json();
+                        if (!result.success) {
+                            throw new Error(result.message || 'Care-plan email request failed.');
+                        }
                         this.carePlanForm = { name: '', email: '', phone: '', source: '', details: '' };
                         this.carePlanStatus = { submitting: false, success: true, message: 'Thanks! Your care-plan request was sent. Steven will follow up soon.' };
                     } catch (err) {
                         console.error('Care-plan request error:', err);
-                        this.carePlanStatus = { submitting: false, success: false, message: 'We could not send your request right now. Please email saappleg@gmail.com.' };
+                        this.carePlanStatus = { submitting: false, success: false, message: 'We could not send your request right now. Please try again or email support@petcarebysteven.me.' };
                     }
                 },
 
