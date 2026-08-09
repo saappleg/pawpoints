@@ -20,19 +20,15 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "PetCare",
+      "@type": ["LocalBusiness", "PetCare"],
       "name": "Pet Care by Steven",
       "image": "https://petcarebysteven.me/android-chrome-512x512.webp",
       "url": "https://petcarebysteven.me",
       "telephone": "+15133025418",
+      "email": "support@petcarebysteven.me",
       "priceRange": "$$",
       "areaServed": ["Cincinnati", "Amelia", "Batavia", "Bethel", "New Richmond", "Williamsburg", "Felicity"],
-      "description": "Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5.0",
-        "reviewCount": "24"
-      }
+      "description": "Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!"
     }
     </script>
 
@@ -85,7 +81,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-appcheck-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
     <!-- Alpine.js Core -->
@@ -400,6 +395,7 @@
                             <option>Other</option>
                         </select>
                         <textarea x-model.trim="carePlanForm.details" required rows="4" placeholder="Tell us about your pets, needed services, and preferred timeline" aria-label="Pet care request details" class="md:col-span-2 w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        <input type="text" x-model="carePlanForm.honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
                         <p x-show="carePlanStatus.message" x-text="carePlanStatus.message" :class="carePlanStatus.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'" class="md:col-span-2 text-sm font-semibold" aria-live="polite"></p>
                         <button type="submit" :disabled="carePlanStatus.submitting" class="bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
                             <span x-text="carePlanStatus.submitting ? 'Sending…' : 'Send Care Plan Request'"></span>
@@ -1859,13 +1855,6 @@
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             
-            if (typeof firebase.appCheck === 'function') {
-                const appCheck = firebase.appCheck();
-                appCheck.activate(
-                  '6LfkzXUtAAAAAGy2tNXRRI87aF-sjqMaSMEcblh0', 
-                  true
-                );
-            }
         }
         
         const auth = firebase.auth();
@@ -1952,7 +1941,7 @@
                 calcSpend: 150,
                 pushEnabled: false,
                 quoteForm: { type: 'Walk', duration: 30, pets: 1, visits: 3 },
-                carePlanForm: { name: '', email: '', phone: '', source: '', details: '' },
+                carePlanForm: { name: '', email: '', phone: '', source: '', details: '', honey: '', startedAt: Date.now() },
                 carePlanStatus: { submitting: false, success: false, message: '' },
                 showToast: false,
                 toastMessage: '',
@@ -2465,11 +2454,18 @@
                         email: this.carePlanForm.email.trim(),
                         phone: this.carePlanForm.phone.trim(),
                         source: this.carePlanForm.source || 'Not provided',
-                        details: this.carePlanForm.details.trim()
+                        details: this.carePlanForm.details.trim(),
+                        honey: this.carePlanForm.honey,
+                        startedAt: this.carePlanForm.startedAt
                     };
 
                     if (!request.name || !request.email || !request.phone || !request.details) {
                         this.carePlanStatus = { submitting: false, success: false, message: 'Please complete your name, email, phone number, and care details.' };
+                        return;
+                    }
+
+                    if (request.honey || Date.now() - request.startedAt < 1500) {
+                        this.carePlanStatus = { submitting: false, success: true, message: 'Thanks! Your care-plan request was sent. Steven will follow up soon.' };
                         return;
                     }
 
@@ -2487,6 +2483,7 @@
                                 phone: request.phone,
                                 source: request.source,
                                 details: request.details,
+                                _honey: request.honey,
                                 _subject: 'New personalized care plan request',
                                 _replyto: request.email,
                                 _template: 'table'
@@ -2501,7 +2498,7 @@
                         if (!result.success) {
                             throw new Error(result.message || 'Care-plan email request failed.');
                         }
-                        this.carePlanForm = { name: '', email: '', phone: '', source: '', details: '' };
+                        this.carePlanForm = { name: '', email: '', phone: '', source: '', details: '', honey: '', startedAt: Date.now() };
                         this.carePlanStatus = { submitting: false, success: true, message: 'Thanks! Your care-plan request was sent. Steven will follow up soon.' };
                     } catch (err) {
                         console.error('Care-plan request error:', err);
@@ -2702,10 +2699,9 @@
                             if (refParam) {
                                 const enteredRefCode = refParam.trim().toUpperCase();
                                 try {
-                                    const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
-                                    if (!refQuery.empty) {
-                                        const referrerDoc = refQuery.docs[0];
-                                        referredByUid = referrerDoc.id;
+                                    const referralDoc = await db.collection('referral_codes').doc(enteredRefCode).get();
+                                    if (referralDoc.exists) {
+                                        referredByUid = referralDoc.data().ownerUid;
 
                                         initialCoupons.push({
                                             code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
@@ -2714,19 +2710,9 @@
                                             createdAt: new Date().toISOString()
                                         });
 
-                                        const refData = referrerDoc.data();
-                                        const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
-                                        const refYearly = (refData.yearlyPoints || 0) + 1000;
-                                        
-                                        await db.collection('clients').doc(referredByUid).update({
-                                            points: (refData.points || 0) + 1000,
-                                            lifetimePoints: refLifetime,
-                                            yearlyPoints: refYearly,
-                                            referralsCount: (refData.referralsCount || 0) + 1
-                                        });
                                     }
                                 } catch (refError) {
-                                    console.warn("Could not sync points to referrer.", refError);
+                                    console.warn("Could not validate referral code.", refError);
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
@@ -2761,12 +2747,13 @@
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
-                                isAdmin: res.user.email === 'saappleg@gmail.com' || res.user.email.includes('steven'),
                                 referralCode: personalRefCode,
                                 referredBy: referredByUid,
                                 referralsCount: 0,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
+                            await this.registerReferralCode(personalRefCode, res.user.uid);
+                            if (referredByUid) await this.createReferralClaim(referredByUid, res.user.uid);
                         }
 
                         await this.fetchUserData(res.user.uid);
@@ -2791,10 +2778,9 @@
                             const enteredRefCode = (this.authForm.refCode || '').trim().toUpperCase();
                             if (enteredRefCode) {
                                 try {
-                                    const refQuery = await db.collection('clients').where('referralCode', '==', enteredRefCode).limit(1).get();
-                                    if (!refQuery.empty) {
-                                        const referrerDoc = refQuery.docs[0];
-                                        referredByUid = referrerDoc.id;
+                                    const referralDoc = await db.collection('referral_codes').doc(enteredRefCode).get();
+                                    if (referralDoc.exists) {
+                                        referredByUid = referralDoc.data().ownerUid;
 
                                         initialCoupons.push({
                                             code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
@@ -2803,19 +2789,9 @@
                                             createdAt: new Date().toISOString()
                                         });
 
-                                        const refData = referrerDoc.data();
-                                        const refLifetime = (refData.lifetimePoints || refData.points || 0) + 1000;
-                                        const refYearly = (refData.yearlyPoints || 0) + 1000;
-                                        
-                                        await db.collection('clients').doc(referredByUid).update({
-                                            points: (refData.points || 0) + 1000,
-                                            lifetimePoints: refLifetime,
-                                            yearlyPoints: refYearly,
-                                            referralsCount: (refData.referralsCount || 0) + 1
-                                        });
                                     }
                                 } catch (refError) {
-                                    console.warn("Could not sync points to referrer.", refError);
+                                    console.warn("Could not validate referral code.", refError);
                                     initialCoupons.push({
                                         code: 'WELCOME-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
                                         title: '$10 Off First Visit (Referral Bonus)',
@@ -2850,12 +2826,13 @@
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
-                                isAdmin: this.authForm.email === 'saappleg@gmail.com' || this.authForm.email.includes('steven'),
                                 referralCode: personalRefCode,
                                 referredBy: referredByUid,
                                 referralsCount: 0,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
+                            await this.registerReferralCode(personalRefCode, res.user.uid);
+                            if (referredByUid) await this.createReferralClaim(referredByUid, res.user.uid);
 
                             this.authSuccess = 'Account created! Please check your email to verify your address.';
                             this.authMode = 'login';
@@ -2920,7 +2897,14 @@
 
                 async fetchUserData(uid) {
                     const userRef = db.collection('clients').doc(uid);
-                    const doc = await userRef.get();
+                    const [doc, adminDoc] = await Promise.all([
+                        userRef.get(),
+                        db.collection('admins').doc(uid).get().catch((err) => {
+                            console.warn('Admin role lookup failed:', err.code || err.message);
+                            return null;
+                        })
+                    ]);
+                    this.isAdmin = !!adminDoc && adminDoc.exists && adminDoc.data().enabled !== false;
                     if (doc.exists) {
                         const oldPoints = this.userData.points;
                         this.userData = doc.data();
@@ -2942,12 +2926,6 @@
                             await userRef.update({ yearlyPoints: this.userData.yearlyPoints, statusYear: currentYear });
                         }
 
-                        const isOwner = this.user && this.user.email && (this.user.email === 'saappleg@gmail.com' || this.user.email.includes('steven'));
-                        if (isOwner && !this.userData.isAdmin) {
-                            await userRef.update({ isAdmin: true });
-                            this.userData.isAdmin = true;
-                        }
-
                         if (oldPoints !== undefined && oldPoints !== this.userData.points) {
                             firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${this.userData.points} Pts.`);
                         }
@@ -2964,6 +2942,7 @@
                             await userRef.update({ referralCode: newRefCode });
                             this.userData.referralCode = newRefCode;
                         }
+                        await this.registerReferralCode(this.userData.referralCode, uid);
 
                         const todayStr = new Date().toISOString().slice(5, 10);
                         if (this.userData.pets && this.userData.pets.length > 0) {
@@ -3013,7 +2992,36 @@
                             this.houseChecklist = { ...this.userData.houseChecklist };
                         }
                         
-                        this.isAdmin = !!this.userData.isAdmin || isOwner;
+                    }
+                },
+
+                async registerReferralCode(code, ownerUid) {
+                    if (!code || !ownerUid) return;
+                    try {
+                        const codeRef = db.collection('referral_codes').doc(code);
+                        const existing = await codeRef.get();
+                        if (!existing.exists) {
+                            await codeRef.set({
+                                ownerUid: ownerUid,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }
+                    } catch (err) {
+                        console.warn('Referral code registration failed:', err.code || err.message);
+                    }
+                },
+
+                async createReferralClaim(referrerUid, clientUid) {
+                    if (!referrerUid || !clientUid || referrerUid === clientUid) return;
+                    try {
+                        await db.collection('referral_claims').doc(clientUid).set({
+                            referrerUid: referrerUid,
+                            clientUid: clientUid,
+                            status: 'pending',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } catch (err) {
+                        console.warn('Referral claim creation failed:', err.code || err.message);
                     }
                 },
 

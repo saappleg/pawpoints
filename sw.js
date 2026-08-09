@@ -47,15 +47,17 @@ self.addEventListener('activate', (event) => {
 // Fetch Event: Network-First for HTML/Data, Cache-First for static assets
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
-  if (event.request.method !== 'GET' || requestUrl.hostname === 'firestore.googleapis.com') return;
+  const isCacheableProtocol = requestUrl.protocol === 'http:' || requestUrl.protocol === 'https:';
+  if (event.request.method !== 'GET' || !isCacheableProtocol || requestUrl.hostname === 'firestore.googleapis.com') return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       // HTML Strategy: Try Network first to get updates, fallback to cache if offline
-      if (event.request.headers.get('accept').includes('text/html')) {
+      const acceptsHtml = (event.request.headers.get('accept') || '').includes('text/html');
+      if (acceptsHtml) {
         return fetch(event.request).then((response) => {
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           return response;
         }).catch(async () => {
           const cache = await caches.open(CACHE_NAME);
@@ -67,7 +69,7 @@ self.addEventListener('fetch', (event) => {
       // Asset Strategy: Use Cache first for instant loading, fallback to network
       return cachedResponse || fetch(event.request).then((response) => {
         const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
         return response;
       });
     })

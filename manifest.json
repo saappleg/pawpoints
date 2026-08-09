@@ -1,105 +1,21 @@
 {
-  "id": "pet-care-by-steven-app",
+  "id": "/",
   "name": "Pet Care by Steven",
   "short_name": "Pet Care",
-  "description": "Loyalty rewards program tracking for pet care service clients.",
-  "start_url": "/",
+  "description": "Professional pet sitting and dog walking services in the Cincinnati area.",
+  "start_url": "/?view=home",
   "scope": "/",
   "display": "standalone",
-  "display_override": [
-    "tabbed",
-    "window-controls-overlay",
-    "standalone"
-  ],
-  "tab_strip": {
-    "new_tab_button": {
-      "url": "/"
-    }
-  },
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "orientation": "portrait-primary",
   "lang": "en",
-  "dir": "ltr",
-  "categories": [
-    "business",
-    "lifestyle",
-    "pets"
-  ],
-  "prefer_related_applications": false,
-  "related_applications": [
-    {
-      "platform": "play",
-      "id": "com.petcarebysteven.app",
-      "url": "https://play.google.com/store/apps/details?id=com.petcarebysteven.app"
-    }
-  ],
-  "scope_extensions": [
-    {
-      "origin": "https://*.personalwalkies.com"
-    },
-    {
-      "origin": "https://www.personalwalkies.com"
-    }
-  ],
-  "iarc_rating_id": "00000000-0000-0000-0000-000000000000",
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
   "icons": [
-    {
-      "src": "/favicon-16x16.webp",
-      "sizes": "16x16",
-      "type": "image/webp",
-      "purpose": "any"
-    },
-    {
-      "src": "/favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/favicon-32x32.webp",
-      "sizes": "32x32",
-      "type": "image/webp",
-      "purpose": "any"
-    },
-    {
-      "src": "/favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/apple-touch-icon.webp",
-      "sizes": "180x180",
-      "type": "image/webp",
-      "purpose": "any"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/android-chrome-192x192.webp",
-      "sizes": "192x192",
-      "type": "image/webp",
-      "purpose": "any"
-    },
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "/android-chrome-512x512.webp",
-      "sizes": "512x512",
-      "type": "image/webp",
-      "purpose": "any maskable"
     },
     {
       "src": "/android-chrome-512x512.png",
@@ -124,22 +40,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Book Service",
-      "short_name": "Book",
-      "description": "Schedule a pet care service via Walkies",
-      "url": "https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1",
-      "icons": [
-        {
-          "src": "/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
       "name": "Home Dashboard",
       "short_name": "Home",
-      "description": "Return to the main home page",
       "url": "/?view=home",
       "icons": [
         {
@@ -152,7 +54,6 @@
     {
       "name": "Paw Points Dashboard",
       "short_name": "Rewards",
-      "description": "View your loyalty points and client profile",
       "url": "/?view=loyalty",
       "icons": [
         {
@@ -165,7 +66,6 @@
     {
       "name": "Local Trails Guide",
       "short_name": "Trails",
-      "description": "Discover local dog walking spots",
       "url": "/?view=guide",
       "icons": [
         {
@@ -175,70 +75,5 @@
         }
       ]
     }
-  ],
-  "file_handlers": [
-    {
-      "action": "/",
-      "accept": {
-        "image/jpeg": [
-          ".jpg",
-          ".jpeg"
-        ],
-        "image/png": [
-          ".png"
-        ],
-        "image/webp": [
-          ".webp"
-        ]
-      }
-    }
-  ],
-  "protocol_handlers": [
-    {
-      "protocol": "web+petcare",
-      "url": "/?action=%s"
-    }
-  ],
-  "share_target": {
-    "action": "/",
-    "method": "GET",
-    "enctype": "application/x-www-form-urlencoded",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
-  "widgets": [
-    {
-      "name": "Paw Points Tracker",
-      "short_name": "Points",
-      "description": "Track your pet care rewards directly from your home screen",
-      "tag": "paw-points-widget",
-      "template_url": "/",
-      "ms_ac_template": "/",
-      "data": "/",
-      "type": "application/json",
-      "screenshots": [
-        {
-          "src": "/screenshot-desktop.png",
-          "sizes": "1918x1080",
-          "label": "Paw Points Widget Preview"
-        }
-      ],
-      "icons": [
-        {
-          "src": "/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "note_taking": {
-    "new_note_url": "/?action=new_note"
-  }
+  ]
 }
