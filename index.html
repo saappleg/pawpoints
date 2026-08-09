@@ -16,6 +16,26 @@
     <meta property="og:url" content="https://petcarebysteven.me">
     <meta property="og:type" content="website">
 
+    <!-- JSON-LD Local Business Schema Markup for Google SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PetCare",
+      "name": "Pet Care by Steven",
+      "image": "https://petcarebysteven.me/android-chrome-512x512.webp",
+      "url": "https://petcarebysteven.me",
+      "telephone": "+15133025418",
+      "priceRange": "$$",
+      "areaServed": ["Cincinnati", "Amelia", "Batavia", "Bethel", "New Richmond", "Williamsburg", "Felicity"],
+      "description": "Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "24"
+      }
+    }
+    </script>
+
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval';">
@@ -63,6 +83,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-appcheck-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
     <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -252,7 +273,7 @@
         <!-- HOME VIEW -->
         <div x-show="!loading && currentView === 'home'" class="flex flex-col space-y-8">
             <section class="rainbow-frame shadow-xl">
-                <div class="rainbow-frame-inner bg-indigo-600 dark:bg-[#111827] text-white p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8 border dark:border-gray-800">
+                <div class="rainbow-frame-inner bg-indigo-600 dark:bg-[#111827] text-white p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8 border border-transparent dark:border-gray-800 transition-colors">
                     <div class="space-y-4 max-w-xl text-center md:text-left z-10">
                         <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
                         <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
@@ -342,27 +363,63 @@
                 </div>
             </section>
 
-            <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
-                <div class="text-center max-w-lg mx-auto space-y-1">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Interactive Calculator</span>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">🧮 How Much Can You Earn?</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Slide your estimated monthly pet care budget to see your annual savings.</p>
+            <!-- INTERACTIVE QUOTE ESTIMATOR -->
+            <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6 transition-colors">
+                <div class="text-center max-w-lg mx-auto space-y-2">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Instant Estimate</span>
+                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Custom Care Builder</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Build your ideal visit and see your exact cost and earned rewards instantly.</p>
                 </div>
-                <div class="max-w-md mx-auto space-y-4 bg-gray-50 dark:bg-[#0d1117] p-6 rounded-2xl border dark:border-gray-800">
-                    <div class="flex justify-between items-center text-xs font-bold text-gray-700 dark:text-gray-200">
-                        <span>Monthly Spend:</span>
-                        <span class="text-brand-600 dark:text-brand-400 text-sm font-black" x-text="`$${calcSpend}`"></span>
+                
+                <div class="max-w-2xl mx-auto bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 md:p-8 rounded-3xl transition-colors space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Service Type</label>
+                            <select x-model="quoteForm.type" aria-label="Select Service Type" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-colors">
+                                <option value="Walk">Dog Walking</option>
+                                <option value="Drop-in">Drop-In Sitting</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Duration</label>
+                            <select x-model.number="quoteForm.duration" aria-label="Select Visit Duration" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-colors">
+                                <option value="15">15 Minutes</option>
+                                <option value="30">30 Minutes</option>
+                                <option value="60">60 Minutes</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Number of Pets</label>
+                            <div class="flex items-center gap-4">
+                                <input type="range" min="1" max="5" step="1" x-model.number="quoteForm.pets" aria-label="Select Number of Pets" class="flex-1 accent-brand-600">
+                                <span class="font-bold text-lg text-brand-600 dark:text-brand-400 w-8 text-center" x-text="quoteForm.pets"></span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Visits per Week</label>
+                            <div class="flex items-center gap-4">
+                                <input type="range" min="1" max="14" step="1" x-model.number="quoteForm.visits" aria-label="Select Visits per Week" class="flex-1 accent-brand-600">
+                                <span class="font-bold text-lg text-brand-600 dark:text-brand-400 w-8 text-center" x-text="quoteForm.visits"></span>
+                            </div>
+                        </div>
                     </div>
-                    <input type="range" min="30" max="500" step="10" x-model.number="calcSpend" aria-label="Monthly Spend Calculator" class="w-full accent-brand-600 cursor-pointer">
-                    <div class="grid grid-cols-2 gap-3 text-center pt-2">
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border dark:border-gray-700">
-                            <span class="block text-[10px] font-bold text-gray-400 uppercase">Monthly Points</span>
-                            <span class="text-lg font-black text-gray-900 dark:text-white" x-text="`${(calcSpend * 10).toLocaleString()} Pts`"></span>
+
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
+                        <div>
+                            <p class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Estimated Weekly Total</p>
+                            <div class="flex items-end gap-3">
+                                <span class="text-4xl font-black text-gray-900 dark:text-white" x-text="`$${estimatedQuote}`"></span>
+                                <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-1" x-text="`+${estimatedQuote * 10} Pts`"></span>
+                            </div>
                         </div>
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border dark:border-gray-700">
-                            <span class="block text-[10px] font-bold text-gray-400 uppercase">Yearly Discounts</span>
-                            <span class="text-lg font-black text-emerald-600 dark:text-emerald-400" x-text="`$${Math.floor((calcSpend * 120) / 500) * 10}`"></span>
-                        </div>
+                        <a :href="quoteWhatsAppLink" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-sm transition shadow-md text-center flex items-center justify-center gap-2">
+                            <span>💬</span>
+                            <span>Book This Package</span>
+                        </a>
+                    </div>
+                    
+                    <div class="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 rounded-2xl text-[11px] text-amber-800 dark:text-amber-400/80 leading-relaxed text-center sm:text-left transition-colors">
+                        <strong class="font-bold">Please Note:</strong> This calculator provides an estimate. Final pricing is not binding until the booking is fully confirmed. A standard mileage reimbursement fee applies for long-distance sittings located more than 50 miles outside of the central service area.
                     </div>
                 </div>
             </section>
@@ -1053,9 +1110,15 @@
                                 </div>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed" x-text="trail.description"></p>
                             </div>
-                            <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400">
+                            <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400 mt-2">
                                 <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
-                                <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                    <button @click="upvoteTrail(trail.id)" aria-label="Upvote Trail" class="flex items-center gap-1 transition-colors" :class="(trail.upvoters && user && trail.upvoters.includes(user.uid)) ? 'text-brand-500' : 'text-gray-400 hover:text-brand-400'">
+                                        <span class="text-sm">▲</span>
+                                        <span class="font-bold text-xs" x-text="trail.votes || 0"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -1245,6 +1308,13 @@
                     <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" aria-label="Home Address or Service Notes" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
                 </div>
 
+                <div class="pt-2 border-t dark:border-gray-800">
+                    <label class="block font-bold text-gray-500 dark:text-slate-300 mb-2 mt-4">Notifications</label>
+                    <button type="button" @click="enablePushNotifications()" class="w-full py-3.5 bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-bold rounded-xl border border-indigo-200 dark:border-indigo-800 transition flex items-center justify-center gap-2">
+                        <span x-text="pushEnabled ? '🔔 Push Notifications Enabled' : '🔕 Enable Push Notifications'"></span>
+                    </button>
+                </div>
+
                 <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
                 <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
@@ -1270,51 +1340,6 @@
 
             <button @click="showQRModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">
                 Close
-            </button>
-        </div>
-    </div>
-
-    <!-- iOS INSTALL INSTRUCTIONS MODAL -->
-    <div x-show="showIOSInstallModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
-        <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
-            <div class="flex justify-center">
-                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
-            </div>
-            <h2 id="modal-ios-title" class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h2>
-            <p class="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
-                Apple does not support automatic app installation. To add Pet Care by Steven to your iPhone or iPad home screen:
-            </p>
-            <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-700 p-4 rounded-2xl text-left space-y-3">
-                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 1:</span> Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</p>
-                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 2:</span> Scroll down and tap <strong>Add to Home Screen</strong>.</p>
-            </div>
-            <button @click="showIOSInstallModal = false" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
-                Got it!
-            </button>
-        </div>
-    </div>
-
-    <!-- MEET & GREET GOOGLE CALENDAR SCHEDULING MODAL -->
-    <div x-show="showMeetGreetModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-meetgreet-title">
-        <div @click.away="showMeetGreetModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
-            <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
-                <div>
-                    <h3 id="modal-meetgreet-title" class="font-black text-xl text-gray-900 dark:text-white flex items-center gap-2">
-                        ☕ Schedule Your Free Meet & Greet
-                    </h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Pick a 15-minute slot from our live Google Calendar availability.</p>
-                </div>
-                <button @click="showMeetGreetModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕ Close</button>
-            </div>
-
-            <div class="space-y-4 text-xs text-gray-600 dark:text-gray-300">
-                <div class="w-full rounded-2xl overflow-hidden border dark:border-gray-800 bg-white">
-                    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0SfwdPv06GMrO0PxO837S0CF13A51owMFM1l9sZ4xFqAkF-FKXpCpDMfNNahRs1-aFW5ZEXsGN?gv=true" style="border: 0" width="100%" height="500" frameborder="0"></iframe>
-                </div>
-            </div>
-
-            <button @click="showMeetGreetModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">
-                Close Window
             </button>
         </div>
     </div>
@@ -1525,6 +1550,26 @@
         </div>
     </div>
 
+    <!-- iOS INSTALL INSTRUCTIONS MODAL -->
+    <div x-show="showIOSInstallModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
+        <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
+            <div class="flex justify-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
+            </div>
+            <h2 id="modal-ios-title" class="font-bold text-lg text-gray-900 dark:text-white">Install on iOS</h2>
+            <p class="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
+                Apple does not support automatic app installation. To add Pet Care by Steven to your iPhone or iPad home screen:
+            </p>
+            <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-700 p-4 rounded-2xl text-left space-y-3">
+                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 1:</span> Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</p>
+                <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 2:</span> Scroll down and tap <strong>Add to Home Screen</strong>.</p>
+            </div>
+            <button @click="showIOSInstallModal = false" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
+                Got it!
+            </button>
+        </div>
+    </div>
+
     <!-- FLOATING RANDOMIZED SOCIAL PROOF TOAST -->
     <div 
         x-show="showToast" 
@@ -1578,7 +1623,7 @@
                     </a>
                 </li>
                 <li role="none">
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20send%20a%20tip!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20get%20more%20information%20about%20setting%20up%20a%20booking!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
                         <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                         </svg>
@@ -1724,6 +1769,8 @@
                 copiedRef: false,
                 showChatWidget: false,
                 calcSpend: 150,
+                pushEnabled: false,
+                quoteForm: { type: 'Walk', duration: 30, pets: 1, visits: 3 },
                 showToast: false,
                 toastMessage: '',
                 showInstallBanner: false,
@@ -1779,10 +1826,24 @@
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
                 communityTrails: [
-                    { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven' },
-                    { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client' }
+                    { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
+                    { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
                 ],
                 newTrailForm: { title: '', location: '', description: '', amenities: '' },
+
+                get estimatedQuote() {
+                    let base = 25; 
+                    if (this.quoteForm.duration === 15) base = 18;
+                    if (this.quoteForm.duration === 60) base = 40;
+                    
+                    let petFee = (this.quoteForm.pets > 1) ? ((this.quoteForm.pets - 1) * 5) : 0; 
+                    return (base + petFee) * this.quoteForm.visits;
+                },
+
+                get quoteWhatsAppLink() {
+                    const msg = encodeURIComponent(`Hi Steven! I used the estimator and I'm interested in ${this.quoteForm.visits} visits a week (${this.quoteForm.duration}-min ${this.quoteForm.type}) for ${this.quoteForm.pets} pet(s).`);
+                    return `https://wa.me/15133025418?text=${msg}`;
+                },
 
                 get clientTier() {
                     const yearlyPts = this.userData.yearlyPoints || 0;
@@ -1852,11 +1913,16 @@
                                     this.adminForm.targetUid = targetClientUid;
                                     this.openAdminModal('points');
                                 }
+
+                                if (this.userData.fcmToken) {
+                                    this.pushEnabled = true;
+                                }
                             }
                         } else {
                             this.userData = {};
                             this.isVerified = false;
                             this.isAdmin = false;
+                            this.pushEnabled = false;
 
                             if (refParam) {
                                 this.currentView = 'loyalty';
@@ -1866,6 +1932,35 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                async enablePushNotifications() {
+                    if (!this.user) return;
+                    if (this.pushEnabled) {
+                        alert("Push notifications are already enabled for this device!");
+                        return;
+                    }
+                    
+                    try {
+                        const permission = await window.Notification.requestPermission();
+                        if (permission === 'granted') {
+                            const messaging = firebase.messaging();
+                            const registration = await navigator.serviceWorker.ready;
+                            const token = await messaging.getToken({ serviceWorkerRegistration: registration });
+                            
+                            if (token) {
+                                await db.collection('clients').doc(this.user.uid).set({ fcmToken: token }, { merge: true });
+                                this.userData.fcmToken = token;
+                                this.pushEnabled = true;
+                                alert("Notifications enabled! You will now receive alerts for holiday openings and point updates.");
+                            }
+                        } else {
+                            alert("Notification permission denied. You can change this in your browser settings.");
+                        }
+                    } catch (err) {
+                        console.error("FCM Token Error:", err);
+                        alert("Unable to enable notifications. Ensure your browser supports it and you are not in Incognito mode.");
+                    }
                 },
 
                 async loadCommunityTrails() {
@@ -1888,6 +1983,8 @@
                             description: this.newTrailForm.description.trim(),
                             amenities: this.newTrailForm.amenities.trim() || 'Dog Friendly',
                             author: this.userData.name || 'Local Pet Owner',
+                            votes: 0,
+                            upvoters: [],
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         };
                         const docRef = await db.collection('community_guides').add(trailObj);
@@ -1897,6 +1994,35 @@
                         alert('Thank you! Your trail recommendation has been published.');
                     } catch (err) {
                         alert('Error publishing trail: ' + err.message);
+                    }
+                },
+
+                async upvoteTrail(trailId) {
+                    if (!this.user) {
+                        alert('Please log in to upvote trails.');
+                        return;
+                    }
+                    try {
+                        const trailRef = db.collection('community_guides').doc(trailId);
+                        const doc = await trailRef.get();
+                        if (doc.exists) {
+                            const data = doc.data();
+                            let upvoters = data.upvoters || [];
+                            if (upvoters.includes(this.user.uid)) {
+                                upvoters = upvoters.filter(uid => uid !== this.user.uid);
+                            } else {
+                                upvoters.push(this.user.uid);
+                            }
+                            await trailRef.update({ upvoters: upvoters, votes: upvoters.length });
+                            
+                            const idx = this.communityTrails.findIndex(t => t.id === trailId);
+                            if (idx > -1) {
+                                this.communityTrails[idx].upvoters = upvoters;
+                                this.communityTrails[idx].votes = upvoters.length;
+                            }
+                        }
+                    } catch (err) {
+                        alert('Error updating vote: ' + err.message);
                     }
                 },
 
@@ -2916,6 +3042,7 @@
                     this.user = null;
                     this.userData = {};
                     this.isVerified = false;
+                    this.pushEnabled = false;
                 }
             }
         }
