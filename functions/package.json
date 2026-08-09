@@ -13,7 +13,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "firebase-admin": "^13.10.0",
+    "firebase-admin": "^14.2.0",
     "firebase-functions": "^7.3.2",
     "passkit-generator": "^3.1.2"
   },
@@ -26,5 +26,10 @@
     "protobufjs@7.6.5": true,
     "fsevents@2.3.3": true,
     "unrs-resolver@1.12.2": true
+  },
+  "overrides": {
+    "uuid": "^14.0.0",
+    "joi": "^17.13.4",
+    "ts-deepmerge": "^8.0.0"
   }
 }
