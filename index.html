@@ -32,31 +32,7 @@
         "@type": "AggregateRating",
         "ratingValue": "5.0",
         "reviewCount": "24"
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Pet Care Services",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": { "@type": "Service", "name": "Dog Walking" },
-            "priceSpecification": { "@type": "PriceSpecification", "minPrice": "18", "maxPrice": "40", "priceCurrency": "USD" }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": { "@type": "Service", "name": "In-Home Sitting Visit" },
-            "priceSpecification": { "@type": "PriceSpecification", "minPrice": "18", "maxPrice": "40", "priceCurrency": "USD" }
-          }
-        ]
-      },
-      "review": [
-        {
-          "@type": "Review",
-          "author": { "@type": "Person", "name": "Local Client" },
-          "reviewRating": { "@type": "Rating", "ratingValue": "5" },
-          "reviewBody": "Reliable updates and calm, consistent care every visit."
-        }
-      ]
+      }
     }
     </script>
 
@@ -260,10 +236,10 @@
                         <span class="hidden sm:inline">Install App</span>
                     </button>
 
-                    <button @click="trackConversionEvent('cta_click', { location: 'header-nav', action: 'book-meet-greet' }); showMeetGreetModal = true" aria-label="Book Meet and Greet" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" aria-label="Book Service" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                         <span>🐕</span>
-                        <span class="hidden sm:inline">Book Meet & Greet</span>
-                    </button>
+                        <span class="hidden sm:inline">Book Service</span>
+                    </a>
 
                     <button @click="toggleDarkMode()" class="theme-toggle-btn p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" aria-label="Toggle Dark Mode">
                         <span x-show="!darkMode">🌙</span>
@@ -312,13 +288,13 @@
                                 Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                             </p>
                             <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                                <button @click="trackConversionEvent('cta_click', { location: 'hero', action: 'book-meet-greet' }); showMeetGreetModal = true" aria-label="Book Meet and Greet" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule and Book Walkies" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                     <span>📅</span>
-                                    <span>Book Meet & Greet</span>
-                                </button>
-                                <button @click="trackConversionEvent('cta_click', { location: 'hero', action: 'view-pricing-estimator' }); document.getElementById('estimate-builder')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" aria-label="View care pricing and estimator" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                    <span>Schedule & Book Walkies</span>
+                                </a>
+                                <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                     <span>🎁</span>
-                                    <span>View Pricing & Rewards</span>
+                                    <span>View Client Rewards</span>
                                 </button>
                             </div>
                         </div>
@@ -338,76 +314,21 @@
                             Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 30-minute consultation to learn about feedings, your typical walking paths, and house notes.
                         </p>
                     </div>
-                    <button @click="trackConversionEvent('cta_click', { location: 'meet-greet-card', action: 'book-meet-greet' }); showMeetGreetModal = true" aria-label="Book Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
-                        <span>☕ Book Meet & Greet</span>
+                    <button @click="showMeetGreetModal = true" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                        <span>☕ Schedule Free Meet & Greet</span>
                     </button>
-                </section>
-
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
-                    <div class="text-center sm:text-left space-y-1">
-                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Why Pet Parents Choose Us</span>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Transparent trust, safety, and local expertise</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Built for consistency, communication, and real in-home care.</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-3">
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Verified Trust Signals</h3>
-                            <div class="flex flex-wrap gap-2 text-[11px] font-bold">
-                                <span class="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-xl">✓ Insured & Bonded</span>
-                                <span class="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-xl">✓ Background Checked</span>
-                                <span class="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-xl">✓ Pet CPR / First Aid</span>
-                                <span class="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-xl">✓ Local Service Specialist</span>
-                            </div>
-                            <p class="text-xs text-gray-600 dark:text-gray-300">Proof documents and policy details are reviewed during Meet & Greet onboarding.</p>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-3">
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">How We Compare</h3>
-                            <div class="space-y-2 text-[11px]">
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-1.5"><span class="font-semibold text-gray-600 dark:text-gray-300">In-home consistency</span><span class="font-bold text-emerald-600 dark:text-emerald-400">Pet Care by Steven ✓</span></div>
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-1.5"><span class="font-semibold text-gray-600 dark:text-gray-300">Same provider each visit</span><span class="font-bold text-emerald-600 dark:text-emerald-400">Always</span></div>
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-1.5"><span class="font-semibold text-gray-600 dark:text-gray-300">Real-time photo visit reports</span><span class="font-bold text-emerald-600 dark:text-emerald-400">Included</span></div>
-                                <div class="flex justify-between items-center"><span class="font-semibold text-gray-600 dark:text-gray-300">Emergency plan + vet release</span><span class="font-bold text-emerald-600 dark:text-emerald-400">Standard</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
-                    <div class="text-center max-w-lg mx-auto space-y-1">
-                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Not Ready to Book Yet?</span>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Request a quick personalized care plan</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
-                    </div>
-                    <form @submit.prevent="submitLeadForm()" class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                        <input type="text" x-model="leadForm.name" required placeholder="Your Name" aria-label="Lead Form Name" class="px-3 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <input type="email" x-model="leadForm.email" required placeholder="Email Address" aria-label="Lead Form Email" class="px-3 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <input type="tel" x-model="leadForm.phone" placeholder="Phone Number (Optional)" aria-label="Lead Form Phone" class="px-3 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <select x-model="leadForm.source" aria-label="How did you hear about us?" class="px-3 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                            <option value="Website">How did you hear about us?</option>
-                            <option value="Google Search">Google Search</option>
-                            <option value="Google Business Profile">Google Business Profile</option>
-                            <option value="Referral">Referral</option>
-                            <option value="Social">Social Media</option>
-                        </select>
-                        <textarea x-model="leadForm.notes" rows="3" placeholder="Pet type, schedule, neighborhood, and what support you need" aria-label="Lead Form Notes" class="md:col-span-2 px-3 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
-                        <div class="md:col-span-2 flex flex-col sm:flex-row gap-3">
-                            <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-2xl text-xs transition shadow-md">Send Care Plan Request</button>
-                            <button type="button" @click="showMeetGreetModal = true" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl text-xs transition shadow-md">Book Meet & Greet</button>
-                        </div>
-                    </form>
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                     <div class="text-center max-w-lg mx-auto space-y-1">
                         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Our Pet Care Services</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Clear pricing ranges and exactly what is included in every visit.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Professional care designed to keep your pets happy, safe, and exercised.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                         <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
                             <div class="text-3xl" aria-hidden="true">🐕‍🦺</div>
                             <h3 class="font-bold text-base text-gray-900 dark:text-white">Dog Walking</h3>
-                            <p class="text-[11px] font-bold text-brand-600 dark:text-brand-400">Typical Range: $18–$40 / visit</p>
                             <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
                             </p>
@@ -415,7 +336,6 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
                             <div class="text-3xl" aria-hidden="true">🏡</div>
                             <h3 class="font-bold text-base text-gray-900 dark:text-white">In-Home Sitting Visits</h3>
-                            <p class="text-[11px] font-bold text-brand-600 dark:text-brand-400">Typical Range: $18–$40 / visit</p>
                             <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
                             </p>
@@ -423,7 +343,6 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
                             <div class="text-3xl" aria-hidden="true">🎁</div>
                             <h3 class="font-bold text-base text-gray-900 dark:text-white">Paw Points Loyalty</h3>
-                            <p class="text-[11px] font-bold text-brand-600 dark:text-brand-400">10 pts per $1 + tier bonuses</p>
                             <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
                             </p>
@@ -452,7 +371,7 @@
                 </section>
 
                 <!-- INTERACTIVE QUOTE ESTIMATOR -->
-                <section id="estimate-builder" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6 transition-colors">
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6 transition-colors">
                     <div class="text-center max-w-lg mx-auto space-y-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Instant Estimate</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Custom Care Builder</h2>
@@ -500,9 +419,9 @@
                                     <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-1" x-text="`+${estimatedQuote * 10} Pts`"></span>
                                 </div>
                             </div>
-                            <a :href="quoteWhatsAppLink" @click="trackConversionEvent('cta_click', { location: 'estimator', action: 'book-meet-greet-after-estimate' })" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-sm transition shadow-md text-center flex items-center justify-center gap-2">
+                            <a :href="quoteWhatsAppLink" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-sm transition shadow-md text-center flex items-center justify-center gap-2">
                                 <span>💬</span>
-                                <span>Book Meet & Greet</span>
+                                <span>Book This Package</span>
                             </a>
                         </div>
                         
@@ -555,41 +474,6 @@
                     </div>
                 </section>
 
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-5">
-                    <div class="text-center sm:text-left space-y-1">
-                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Proof of Consistency</span>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Recent care outcomes clients can measure</h2>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
-                            <p class="text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold">Recent Bookings (30d)</p>
-                            <p class="text-3xl font-black text-gray-900 dark:text-white" x-text="weeklyMetrics.recentBookings"></p>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
-                            <p class="text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold">Repeat Client Rate</p>
-                            <p class="text-3xl font-black text-gray-900 dark:text-white"><span x-text="weeklyMetrics.repeatRate"></span>%</p>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
-                            <p class="text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold">Avg Visit Report Time</p>
-                            <p class="text-3xl font-black text-gray-900 dark:text-white"><span x-text="weeklyMetrics.avgReportMinutes"></span>m</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
-                        <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4">
-                            <p class="text-[11px] uppercase tracking-wider text-indigo-700 dark:text-indigo-300 font-bold">Inquiries (7d)</p>
-                            <p class="text-2xl font-black text-indigo-900 dark:text-indigo-100" x-text="weeklyMetrics.inquiries"></p>
-                        </div>
-                        <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4">
-                            <p class="text-[11px] uppercase tracking-wider text-emerald-700 dark:text-emerald-300 font-bold">Bookings (7d)</p>
-                            <p class="text-2xl font-black text-emerald-900 dark:text-emerald-100" x-text="weeklyMetrics.bookings"></p>
-                        </div>
-                        <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4">
-                            <p class="text-[11px] uppercase tracking-wider text-amber-700 dark:text-amber-300 font-bold">Inquiry → Booking</p>
-                            <p class="text-2xl font-black text-amber-900 dark:text-amber-100"><span x-text="weeklyMetrics.conversionRate"></span>%</p>
-                        </div>
-                    </div>
-                </section>
-
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                     <div class="text-center sm:text-left space-y-1">
                         <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
@@ -602,65 +486,10 @@
                                 <div class="space-y-2">
                                     <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
                                     <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
-                                    <template x-if="rev.mediaUrl">
-                                        <a :href="rev.mediaUrl" target="_blank" rel="noopener noreferrer" class="inline-flex text-[11px] font-bold text-brand-600 dark:text-brand-400 hover:underline">▶ View photo/video update</a>
-                                    </template>
                                 </div>
-                                <p class="text-[11px] font-bold text-gray-900 dark:text-white pt-3 border-t dark:border-gray-800" x-text="`— ${rev.author}${rev.petName ? `, ${rev.petName}'s family` : ''}${rev.neighborhood ? ` (${rev.neighborhood})` : ''}`"></p>
+                                <p class="text-[11px] font-bold text-gray-900 dark:text-white pt-3 border-t dark:border-gray-800" x-text="`— ${rev.author}`"></p>
                             </div>
                         </template>
-                    </div>
-                </section>
-
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-5">
-                    <div class="text-center sm:text-left space-y-1">
-                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Day-in-the-Life Care Stories</span>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Before/after routines that reduce stress for pets</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <template x-for="story in dayInLifeStories" :key="story.title">
-                            <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2">
-                                <h3 class="font-bold text-sm text-gray-900 dark:text-white" x-text="story.title"></h3>
-                                <p class="text-[11px] text-gray-500 dark:text-gray-400" x-text="story.neighborhood"></p>
-                                <p class="text-xs text-gray-600 dark:text-gray-300" x-text="story.summary"></p>
-                            </article>
-                        </template>
-                    </div>
-                </section>
-
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-5">
-                    <div class="text-center sm:text-left space-y-1">
-                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Safety & Reliability</span>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Emergency protocols, reporting cadence, and plain-language policies</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2">
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Emergency Response</h3>
-                            <p class="text-gray-600 dark:text-gray-300">Immediate owner/contact notification, vet transport authorization, and documented treatment decisions when urgent care is needed.</p>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2">
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Visit Reporting Cadence</h3>
-                            <p class="text-gray-600 dark:text-gray-300">Every visit includes photos, timestamped arrival/departure notes, care completion checklist, and GPS-aware route updates for walks.</p>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2">
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Policy Snapshot</h3>
-                            <p class="text-gray-600 dark:text-gray-300">3-day cancellation window, severe weather safety adjustments, and holiday premium messaging are published in advance in your portal and reminders.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-5">
-                    <div class="text-center sm:text-left space-y-1">
-                        <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Local SEO Service Pages</span>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Explore neighborhood-specific pet sitting pages</h2>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
-                        <template x-for="page in localPages" :key="page.href">
-                            <a :href="page.href" class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-3.5 font-bold text-gray-800 dark:text-gray-100 hover:border-brand-500 dark:hover:border-brand-400 transition" x-text="page.label"></a>
-                        </template>
-                    </div>
-                    <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 text-xs text-indigo-900 dark:text-indigo-200">
-                        Weekly Google Business Profile sync checklist: add newest visit photos, update seasonal offers, respond to reviews, and mirror service updates on these local pages.
                     </div>
                 </section>
 
@@ -692,12 +521,9 @@
                 </section>
 
                 <section class="text-center py-12 bg-indigo-50 dark:bg-[#111827] rounded-3xl border border-indigo-100 dark:border-gray-800 p-8 shadow-xl space-y-4">
-                    <h2 class="font-bold text-xl text-gray-900 dark:text-white">Ready to get started with a trusted local sitter?</h2>
-                    <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium max-w-md mx-auto">Book a quick intro visit, then we can lock in your care plan and portal setup.</p>
-                    <button @click="trackConversionEvent('cta_click', { location: 'home-bottom', action: 'book-meet-greet' }); showMeetGreetModal = true" aria-label="Book Meet and Greet" class="mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-xs transition shadow-lg">
-                        Book Meet & Greet
-                    </button>
-                    <button @click="currentView = 'loyalty'" aria-label="Open Paw Points Dashboard" class="mt-2 bg-white dark:bg-gray-800 border border-indigo-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 font-bold px-8 py-4 rounded-2xl text-xs transition shadow-sm">
+                    <h2 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h2>
+                    <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium max-w-md mx-auto">Access your client account to view coupons, referral links, and pet notes.</p>
+                    <button @click="currentView = 'loyalty'" aria-label="Open Paw Points Dashboard" class="mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-xs transition shadow-lg">
                         Open Paw Points Client Dashboard
                     </button>
                 </section>
@@ -916,30 +742,6 @@
                                     <span>📋</span>
                                     <span x-text="copiedRef ? '✓ Copied!' : 'Copy Link'"></span>
                                 </button>
-                            </div>
-                        </div>
-
-                        <div class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white p-6 md:p-8 rounded-3xl shadow-xl space-y-4">
-                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                                <div>
-                                    <span class="text-[10px] uppercase font-extrabold tracking-widest bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1 rounded-full">Retention Engine</span>
-                                    <h3 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Tier Boosts, Referral Bonuses & Seasonal Campaigns</h3>
-                                </div>
-                                <button @click="trackConversionEvent('cta_click', { location: 'loyalty-retention', action: 'enable-reminder' }); enablePushNotifications()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl">Enable Rebooking Alerts</button>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                                <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-4 rounded-2xl">
-                                    <p class="font-bold text-gray-900 dark:text-white">Bronze → Silver</p>
-                                    <p class="text-gray-600 dark:text-gray-300 mt-1">5,001+ annual points unlock multiplier bonuses.</p>
-                                </div>
-                                <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-4 rounded-2xl">
-                                    <p class="font-bold text-gray-900 dark:text-white">Silver → Gold VIP</p>
-                                    <p class="text-gray-600 dark:text-gray-300 mt-1">15,000 annual points unlock holiday scheduling priority.</p>
-                                </div>
-                                <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-4 rounded-2xl">
-                                    <p class="font-bold text-gray-900 dark:text-white">Seasonal Offers</p>
-                                    <p class="text-gray-600 dark:text-gray-300 mt-1">Summer heat-care checks, holiday sitting reminders, and referral boosts.</p>
-                                </div>
                             </div>
                         </div>
 
@@ -1372,39 +1174,6 @@
             </div>
         </div>
 
-        <!-- BOOK MEET & GREET MODAL -->
-        <div x-show="showMeetGreetModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-meet-title">
-            <div @click.away="showMeetGreetModal = false" class="bg-white dark:bg-[#111827] max-w-lg w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800 my-8">
-                <div class="flex justify-between items-start border-b dark:border-gray-800 pb-3">
-                    <div>
-                        <h2 id="modal-meet-title" class="font-black text-xl text-gray-900 dark:text-white">☕ Book Meet & Greet</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Share your details and preferred timeline. We’ll confirm your intro visit quickly.</p>
-                    </div>
-                    <button @click="showMeetGreetModal = false" aria-label="Close Meet and Greet Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">✕</button>
-                </div>
-
-                <form @submit.prevent="submitMeetGreetRequest()" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <input type="text" x-model="meetGreetForm.name" required placeholder="Full Name" aria-label="Meet and Greet Full Name" class="px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <input type="email" x-model="meetGreetForm.email" required placeholder="Email Address" aria-label="Meet and Greet Email Address" class="px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <input type="tel" x-model="meetGreetForm.phone" required placeholder="Phone Number" aria-label="Meet and Greet Phone Number" class="px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <input type="text" x-model="meetGreetForm.city" placeholder="City / Zip" aria-label="Meet and Greet City or Zip" class="px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <input type="date" x-model="meetGreetForm.preferredDate" aria-label="Preferred Meet and Greet Date" class="px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    <select x-model="meetGreetForm.source" aria-label="Meet and Greet Source" class="px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <option value="Website CTA">How did you hear about us?</option>
-                        <option value="Google Search">Google Search</option>
-                        <option value="Google Business Profile">Google Business Profile</option>
-                        <option value="Referral">Referral</option>
-                        <option value="Social">Social Media</option>
-                    </select>
-                    <textarea x-model="meetGreetForm.notes" rows="3" placeholder="Tell us about your pets and routine goals" aria-label="Meet and Greet Notes" class="sm:col-span-2 px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
-                    <div class="sm:col-span-2 flex flex-col sm:flex-row gap-3">
-                        <button type="submit" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-2xl transition shadow-md">Submit Meet & Greet Request</button>
-                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-2xl transition text-center shadow-md">Open Walkies Booking</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <!-- HOUSE CARE & MEDICATION CHECKLIST MODAL -->
         <div x-show="showChecklistModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-checklist-title">
             <div @click.away="showChecklistModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
@@ -1690,10 +1459,6 @@
                     <div class="border-t dark:border-gray-800 pt-4 space-y-3">
                         <p class="font-bold text-gray-700 dark:text-gray-300">Or Add Direct Testimonial:</p>
                         <input type="text" x-model="newReview.author" placeholder="Author Name / Type" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <input type="text" x-model="newReview.petName" placeholder="Pet Name (Optional)" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                            <input type="text" x-model="newReview.neighborhood" placeholder="Neighborhood / City (Optional)" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        </div>
                         <select x-model.number="newReview.stars" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                             <option value="5">★★★★★ (5 Stars)</option>
                             <option value="4">★★★★☆ (4 Stars)</option>
@@ -1701,7 +1466,6 @@
                             <option value="2">★★☆☆☆ (2 Stars)</option>
                             <option value="1">★☆☆☆☆ (1 Star)</option>
                         </select>
-                        <input type="url" x-model="newReview.mediaUrl" placeholder="Optional Photo or Video URL" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                         <textarea x-model="newReview.comment" rows="2" placeholder="Review Comment" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                         <button @click="addNewReview()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition">Publish Review Instantly</button>
                     </div>
@@ -2125,11 +1889,8 @@
                 petBirthdayAlert: false,
                 isFirstVisitCompleted: false,
                 clientReviewForm: { stars: 5, comment: '' },
-                leadForm: { name: '', email: '', phone: '', source: 'Website', notes: '' },
-                meetGreetForm: { name: '', email: '', phone: '', city: '', preferredDate: '', source: 'Website CTA', notes: '' },
                 broadcastForm: { title: '', body: '' },
                 pendingReviews: [],
-                weeklyMetrics: { recentBookings: 18, repeatRate: 82, avgReportMinutes: 12, inquiries: 0, bookings: 0, conversionRate: 0 },
                 toastEvents: [
                     "A client in New Richmond just booked a 3-day sitting!",
                     "A client in Amelia redeemed a $10 Paw Points coupon!",
@@ -2164,21 +1925,7 @@
                 serviceAreas: [],
                 bulkAreaInput: '',
                 reviewsList: [],
-                newReview: { stars: 5, comment: '', author: '', petName: '', neighborhood: '', mediaUrl: '' },
-                dayInLifeStories: [
-                    { title: 'Anxious Rescue → Calm Midday Routine', neighborhood: 'Batavia', summary: 'Started with short decompression visits, then built to confidence walks and consistent meal windows.' },
-                    { title: 'Senior Cat Medication Support', neighborhood: 'Amelia', summary: 'Twice-daily check-ins with photo proof, appetite notes, and medication logs for owner peace of mind.' },
-                    { title: 'High-Energy Pup Structure Plan', neighborhood: 'Cincinnati', summary: 'Moved from destructive afternoons to predictable walks + enrichment + evening wind-down visits.' }
-                ],
-                localPages: [
-                    { label: 'Cincinnati Dog Walking', href: 'cincinnati-dog-walking.html' },
-                    { label: 'Amelia Pet Sitting', href: 'amelia-pet-sitting.html' },
-                    { label: 'Batavia Pet Sitting', href: 'batavia-pet-sitting.html' },
-                    { label: 'Bethel Pet Sitting', href: 'bethel-pet-sitting.html' },
-                    { label: 'New Richmond Pet Sitting', href: 'new-richmond-pet-sitting.html' },
-                    { label: 'Williamsburg Pet Sitting', href: 'williamsburg-pet-sitting.html' },
-                    { label: 'Felicity Pet Sitting', href: 'felicity-pet-sitting.html' }
-                ],
+                newReview: { stars: 5, comment: '', author: '' },
                 communityTrails: [
                     { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
                     { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
@@ -2227,7 +1974,6 @@
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
                     await this.loadCommunityTrails();
-                    await this.loadWeeklyMetrics();
 
                     this.$watch('currentView', (value) => {
                         const url = new URL(window.location);
@@ -2323,91 +2069,6 @@
                             colors: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
                             zIndex: 9999
                         });
-                    }
-                },
-
-                async trackConversionEvent(eventName, details = {}) {
-                    try {
-                        await db.collection('conversion_events').add({
-                            eventName,
-                            details,
-                            page: this.currentView || 'home',
-                            userId: this.user ? this.user.uid : null,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    } catch (err) {
-                        console.log('Conversion event not logged:', err);
-                    }
-                },
-
-                async submitLeadForm() {
-                    if (!this.leadForm.name.trim() || !this.leadForm.email.trim()) {
-                        alert('Please add your name and email before submitting.');
-                        return;
-                    }
-                    try {
-                        const payload = {
-                            ...this.leadForm,
-                            page: this.currentView || 'home',
-                            userId: this.user ? this.user.uid : null,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        };
-                        await db.collection('lead_requests').add(payload);
-                        await this.trackConversionEvent('lead_submitted', { source: this.leadForm.source || 'Website' });
-                        this.leadForm = { name: '', email: '', phone: '', source: 'Website', notes: '' };
-                        alert('Thanks! Your care plan request was sent. We will follow up shortly.');
-                    } catch (err) {
-                        alert('Unable to submit request right now: ' + err.message);
-                    }
-                },
-
-                async submitMeetGreetRequest() {
-                    if (!this.meetGreetForm.name.trim() || !this.meetGreetForm.email.trim() || !this.meetGreetForm.phone.trim()) {
-                        alert('Please complete your name, email, and phone number.');
-                        return;
-                    }
-                    try {
-                        const payload = {
-                            ...this.meetGreetForm,
-                            userId: this.user ? this.user.uid : null,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        };
-                        await db.collection('meet_greet_requests').add(payload);
-                        await this.trackConversionEvent('meet_greet_requested', { source: this.meetGreetForm.source || 'Website CTA' });
-                        this.showMeetGreetModal = false;
-                        this.meetGreetForm = { name: '', email: '', phone: '', city: '', preferredDate: '', source: 'Website CTA', notes: '' };
-                        alert('Meet & Greet request submitted! Steven will confirm your time shortly.');
-                    } catch (err) {
-                        alert('Unable to submit Meet & Greet request: ' + err.message);
-                    }
-                },
-
-                async loadWeeklyMetrics() {
-                    const defaultMetrics = { recentBookings: 18, repeatRate: 82, avgReportMinutes: 12, inquiries: 0, bookings: 0, conversionRate: 0 };
-                    this.weeklyMetrics = defaultMetrics;
-                    try {
-                        const settingsDoc = await db.collection('settings').doc('businessMetrics').get();
-                        if (settingsDoc.exists) {
-                            this.weeklyMetrics = { ...defaultMetrics, ...settingsDoc.data() };
-                        }
-
-                        const oneWeekAgo = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
-                        const eventSnap = await db.collection('conversion_events')
-                            .where('timestamp', '>=', oneWeekAgo)
-                            .orderBy('timestamp', 'desc')
-                            .limit(200)
-                            .get()
-                            .catch(() => null);
-
-                        if (eventSnap && !eventSnap.empty) {
-                            const events = eventSnap.docs.map(d => d.data());
-                            const inquiries = events.filter(e => ['lead_submitted', 'meet_greet_requested'].includes(e.eventName)).length;
-                            const bookings = events.filter(e => e.eventName === 'booking_confirmed').length;
-                            const conversionRate = inquiries > 0 ? Math.round((bookings / inquiries) * 100) : 0;
-                            this.weeklyMetrics = { ...this.weeklyMetrics, inquiries, bookings, conversionRate };
-                        }
-                    } catch (err) {
-                        console.log('Using fallback metrics');
                     }
                 },
 
@@ -2557,19 +2218,14 @@
                 },
 
                 async loadApprovedReviews() {
-                    const fallbackReviews = [
-                        { author: 'Sarah M.', stars: 5, comment: 'Our dog settled in quickly and the photo updates were detailed and reassuring every single visit.', petName: 'Milo', neighborhood: 'Anderson Township' },
-                        { author: 'Jordan T.', stars: 5, comment: 'Great communication, on-time visits, and clear medication notes for our senior cat.', petName: 'Luna', neighborhood: 'Batavia' }
-                    ];
                     try {
                         const snap = await db.collection('reviews').where('approved', '==', true).get();
                         if (!snap.empty) {
                             this.reviewsList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         } else {
-                            this.reviewsList = fallbackReviews;
+                            this.reviewsList = [];
                         }
                     } catch (err) {
-                        this.reviewsList = fallbackReviews;
                         console.log('Error loading reviews');
                     }
                 },
@@ -2776,15 +2432,12 @@
                                 author: this.newReview.author.trim(),
                                 stars: this.newReview.stars,
                                 comment: this.newReview.comment.trim(),
-                                petName: this.newReview.petName ? this.newReview.petName.trim() : '',
-                                neighborhood: this.newReview.neighborhood ? this.newReview.neighborhood.trim() : '',
-                                mediaUrl: this.newReview.mediaUrl ? this.newReview.mediaUrl.trim() : '',
                                 approved: true,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             };
                             const docRef = await db.collection('reviews').add(revObj);
                             this.reviewsList.unshift({ id: docRef.id, ...revObj });
-                            this.newReview = { stars: 5, comment: '', author: '', petName: '', neighborhood: '', mediaUrl: '' };
+                            this.newReview = { stars: 5, comment: '', author: '' };
                             alert('New review published directly to site and saved to Firestore!');
                         } catch (err) {
                             alert('Error publishing review: ' + err.message);
