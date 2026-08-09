@@ -404,7 +404,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
                         <div>
                             <p class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Estimated Weekly Total</p>
                             <div class="flex items-end gap-3">
@@ -1110,9 +1110,15 @@
                                 </div>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed" x-text="trail.description"></p>
                             </div>
-                            <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400">
+                            <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400 mt-2">
                                 <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
-                                <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                    <button @click="upvoteTrail(trail.id)" aria-label="Upvote Trail" class="flex items-center gap-1 transition-colors" :class="(trail.upvoters && user && trail.upvoters.includes(user.uid)) ? 'text-brand-500' : 'text-gray-400 hover:text-brand-400'">
+                                        <span class="text-sm">▲</span>
+                                        <span class="font-bold text-xs" x-text="trail.votes || 0"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -1300,6 +1306,13 @@
                 <div>
                     <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Home Address / Service Notes</label>
                     <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" aria-label="Home Address or Service Notes" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
+                </div>
+
+                <div class="pt-2 border-t dark:border-gray-800">
+                    <label class="block font-bold text-gray-500 dark:text-slate-300 mb-2 mt-4">Notifications</label>
+                    <button type="button" @click="enablePushNotifications()" class="w-full py-3.5 bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-bold rounded-xl border border-indigo-200 dark:border-indigo-800 transition flex items-center justify-center gap-2">
+                        <span x-text="pushEnabled ? '🔔 Push Notifications Enabled' : '🔕 Enable Push Notifications'"></span>
+                    </button>
                 </div>
 
                 <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
@@ -1813,8 +1826,8 @@
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
                 communityTrails: [
-                    { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven' },
-                    { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client' }
+                    { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
+                    { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
                 ],
                 newTrailForm: { title: '', location: '', description: '', amenities: '' },
 
@@ -1932,7 +1945,9 @@
                         const permission = await window.Notification.requestPermission();
                         if (permission === 'granted') {
                             const messaging = firebase.messaging();
-                            const token = await messaging.getToken();
+                            const registration = await navigator.serviceWorker.ready;
+                            const token = await messaging.getToken({ serviceWorkerRegistration: registration });
+                            
                             if (token) {
                                 await db.collection('clients').doc(this.user.uid).set({ fcmToken: token }, { merge: true });
                                 this.userData.fcmToken = token;
@@ -1944,7 +1959,7 @@
                         }
                     } catch (err) {
                         console.error("FCM Token Error:", err);
-                        alert("Unable to enable notifications. Ensure you are not in Incognito mode.");
+                        alert("Unable to enable notifications. Ensure your browser supports it and you are not in Incognito mode.");
                     }
                 },
 
@@ -1968,6 +1983,8 @@
                             description: this.newTrailForm.description.trim(),
                             amenities: this.newTrailForm.amenities.trim() || 'Dog Friendly',
                             author: this.userData.name || 'Local Pet Owner',
+                            votes: 0,
+                            upvoters: [],
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         };
                         const docRef = await db.collection('community_guides').add(trailObj);
@@ -1977,6 +1994,35 @@
                         alert('Thank you! Your trail recommendation has been published.');
                     } catch (err) {
                         alert('Error publishing trail: ' + err.message);
+                    }
+                },
+
+                async upvoteTrail(trailId) {
+                    if (!this.user) {
+                        alert('Please log in to upvote trails.');
+                        return;
+                    }
+                    try {
+                        const trailRef = db.collection('community_guides').doc(trailId);
+                        const doc = await trailRef.get();
+                        if (doc.exists) {
+                            const data = doc.data();
+                            let upvoters = data.upvoters || [];
+                            if (upvoters.includes(this.user.uid)) {
+                                upvoters = upvoters.filter(uid => uid !== this.user.uid);
+                            } else {
+                                upvoters.push(this.user.uid);
+                            }
+                            await trailRef.update({ upvoters: upvoters, votes: upvoters.length });
+                            
+                            const idx = this.communityTrails.findIndex(t => t.id === trailId);
+                            if (idx > -1) {
+                                this.communityTrails[idx].upvoters = upvoters;
+                                this.communityTrails[idx].votes = upvoters.length;
+                            }
+                        }
+                    } catch (err) {
+                        alert('Error updating vote: ' + err.message);
                     }
                 },
 
