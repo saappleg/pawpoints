@@ -1,4 +1,4 @@
-const CACHE_NAME = 'paw-points-offline-v3';
+const CACHE_NAME = 'paw-points-offline-v5';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
@@ -11,11 +11,18 @@ const ASSETS_TO_CACHE = [
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
 ];
 
-// Install Event: Cache Core Assets
+// Install Event: Cache Core Assets Gracefully
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Loop through assets individually so a single 404 doesn't kill the entire Service Worker
+      for (let asset of ASSETS_TO_CACHE) {
+        try {
+          await cache.add(asset);
+        } catch (e) {
+          console.error('[SW] Failed to cache asset:', asset, e);
+        }
+      }
     })
   );
   self.skipWaiting();
@@ -39,7 +46,6 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event: Network-First for HTML/Data, Cache-First for static assets
 self.addEventListener('fetch', (event) => {
-  // Ignore non-GET requests and Firebase API calls to allow Firestore's built-in offline persistence to work
   const requestUrl = new URL(event.request.url);
   if (event.request.method !== 'GET' || requestUrl.hostname === 'firestore.googleapis.com') return;
 
@@ -52,7 +58,6 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           return response;
         }).catch(async () => {
-          // NEW: Serve dedicated offline page if network completely fails
           const cache = await caches.open(CACHE_NAME);
           const offlineResponse = await cache.match(OFFLINE_URL);
           return offlineResponse || cachedResponse;
@@ -69,23 +74,17 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// ---------------------------------------------------------
-// PWABUILDER REQUIRED CAPABILITIES
-// ---------------------------------------------------------
-
-// 1. Background Sync (Resilient to poor network connections)
+// 1. Background Sync 
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-updates') {
     console.log('[Service Worker] Background sync triggered.');
-    // Logic to sync data to Firebase when connection is restored goes here
   }
 });
 
-// 2. Periodic Background Sync (Show data instantly to users)
+// 2. Periodic Background Sync
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'content-sync') {
     console.log('[Service Worker] Periodic background sync triggered.');
-    // Logic to pre-fetch updated schedules or client points goes here
   }
 });
 
@@ -97,21 +96,20 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body || 'You have a new update from Pet Care by Steven!',
-      icon: '/android-chrome-192x192.png',
-      badge: '/android-chrome-192x192.png',
+      icon: '/android-chrome-192x192.webp',
+      badge: '/android-chrome-192x192.webp',
       data: { url: data.url || '/' }
     };
     event.waitUntil(self.registration.showNotification(data.title || 'Pet Care Update', options));
   } catch (e) {
     const options = {
       body: event.data.text(),
-      icon: '/android-chrome-192x192.png'
+      icon: '/android-chrome-192x192.webp'
     };
     event.waitUntil(self.registration.showNotification('Pet Care Update', options));
   }
 });
 
-// Handle Push Notification Clicks
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
@@ -119,13 +117,9 @@ self.addEventListener('notificationclick', (event) => {
       const targetUrl = event.notification.data && event.notification.data.url ? event.notification.data.url : '/';
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
-        if (client.url.includes(targetUrl) && 'focus' in client) {
-          return client.focus();
-        }
+        if (client.url.includes(targetUrl) && 'focus' in client) return client.focus();
       }
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
-      }
+      if (clients.openWindow) return clients.openWindow(targetUrl);
     })
   );
 });
