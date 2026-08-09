@@ -16,6 +16,26 @@
     <meta property="og:url" content="https://petcarebysteven.me">
     <meta property="og:type" content="website">
 
+    <!-- JSON-LD Local Business Schema Markup for Google SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PetCare",
+      "name": "Pet Care by Steven",
+      "image": "https://petcarebysteven.me/android-chrome-512x512.webp",
+      "url": "https://petcarebysteven.me",
+      "telephone": "+15133025418",
+      "priceRange": "$$",
+      "areaServed": ["Cincinnati", "Amelia", "Batavia", "Bethel", "New Richmond", "Williamsburg", "Felicity"],
+      "description": "Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "24"
+      }
+    }
+    </script>
+
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval';">
@@ -63,6 +83,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-appcheck-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
     <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -366,6 +387,63 @@
                     </div>
                 </div>
             </section>
+            
+            <!-- INTERACTIVE QUOTE ESTIMATOR -->
+            <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6 transition-colors">
+                <div class="text-center max-w-lg mx-auto space-y-2">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Instant Estimate</span>
+                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Custom Care Builder</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Build your ideal visit and see your exact cost and earned rewards instantly.</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 md:p-8 rounded-3xl transition-colors space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Service Type</label>
+                            <select x-model="quoteForm.type" aria-label="Select Service Type" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-colors">
+                                <option value="Walk">Dog Walking</option>
+                                <option value="Drop-in">Drop-In Sitting</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Duration</label>
+                            <select x-model.number="quoteForm.duration" aria-label="Select Visit Duration" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-colors">
+                                <option value="15">15 Minutes</option>
+                                <option value="30">30 Minutes</option>
+                                <option value="60">60 Minutes</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Number of Pets</label>
+                            <div class="flex items-center gap-4">
+                                <input type="range" min="1" max="5" step="1" x-model.number="quoteForm.pets" aria-label="Select Number of Pets" class="flex-1 accent-brand-600">
+                                <span class="font-bold text-lg text-brand-600 dark:text-brand-400 w-8 text-center" x-text="quoteForm.pets"></span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Visits per Week</label>
+                            <div class="flex items-center gap-4">
+                                <input type="range" min="1" max="14" step="1" x-model.number="quoteForm.visits" aria-label="Select Visits per Week" class="flex-1 accent-brand-600">
+                                <span class="font-bold text-lg text-brand-600 dark:text-brand-400 w-8 text-center" x-text="quoteForm.visits"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
+                        <div>
+                            <p class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Estimated Weekly Total</p>
+                            <div class="flex items-end gap-3">
+                                <span class="text-4xl font-black text-gray-900 dark:text-white" x-text="`$${estimatedQuote}`"></span>
+                                <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-1" x-text="`+${estimatedQuote * 10} Pts`"></span>
+                            </div>
+                        </div>
+                        <a :href="quoteWhatsAppLink" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-sm transition shadow-md text-center flex items-center justify-center gap-2">
+                            <span>💬</span>
+                            <span>Book This Package</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
 
             <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl">
                 <div class="flex flex-col md:flex-row items-center gap-8">
@@ -655,7 +733,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-3.5 py-1 rounded-full">Earn Free Care</span>
-                                <h3 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
+                                <h2 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h2>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 max-w-lg leading-relaxed">
                                     Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
                                 </p>
@@ -1245,6 +1323,13 @@
                     <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" aria-label="Home Address or Service Notes" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
                 </div>
 
+                <div class="pt-2 border-t border-gray-200 dark:border-gray-800">
+                    <label class="block font-bold text-gray-500 dark:text-slate-300 mb-2 mt-4">Notifications</label>
+                    <button type="button" @click="enablePushNotifications()" class="w-full py-3.5 bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-bold rounded-xl border border-indigo-200 dark:border-indigo-800 transition flex items-center justify-center gap-2">
+                        <span x-text="pushEnabled ? '🔔 Push Notifications Enabled' : '🔕 Enable Push Notifications'"></span>
+                    </button>
+                </div>
+
                 <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
                 <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
@@ -1578,7 +1663,7 @@
                     </a>
                 </li>
                 <li role="none">
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20send%20a%20tip!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20get%20more%20information%20about%20setting%20up%20a%20booking!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
                         <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                         </svg>
@@ -1724,6 +1809,8 @@
                 copiedRef: false,
                 showChatWidget: false,
                 calcSpend: 150,
+                pushEnabled: false,
+                quoteForm: { type: 'Walk', duration: 30, pets: 1, visits: 3 },
                 showToast: false,
                 toastMessage: '',
                 showInstallBanner: false,
@@ -1783,6 +1870,20 @@
                     { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client' }
                 ],
                 newTrailForm: { title: '', location: '', description: '', amenities: '' },
+
+                get estimatedQuote() {
+                    let base = 25; 
+                    if (this.quoteForm.duration === 15) base = 18;
+                    if (this.quoteForm.duration === 60) base = 40;
+                    
+                    let petFee = (this.quoteForm.pets > 1) ? ((this.quoteForm.pets - 1) * 5) : 0; 
+                    return (base + petFee) * this.quoteForm.visits;
+                },
+
+                get quoteWhatsAppLink() {
+                    const msg = encodeURIComponent(`Hi Steven! I used the estimator and I'm interested in ${this.quoteForm.visits} visits a week (${this.quoteForm.duration}-min ${this.quoteForm.type}) for ${this.quoteForm.pets} pet(s).`);
+                    return `https://wa.me/15133025418?text=${msg}`;
+                },
 
                 get clientTier() {
                     const yearlyPts = this.userData.yearlyPoints || 0;
@@ -1852,11 +1953,16 @@
                                     this.adminForm.targetUid = targetClientUid;
                                     this.openAdminModal('points');
                                 }
+
+                                if (this.userData.fcmToken) {
+                                    this.pushEnabled = true;
+                                }
                             }
                         } else {
                             this.userData = {};
                             this.isVerified = false;
                             this.isAdmin = false;
+                            this.pushEnabled = false;
 
                             if (refParam) {
                                 this.currentView = 'loyalty';
@@ -1866,6 +1972,33 @@
                         }
                         this.loading = false;
                     });
+                },
+
+                async enablePushNotifications() {
+                    if (!this.user) return;
+                    if (this.pushEnabled) {
+                        alert("Push notifications are already enabled for this device!");
+                        return;
+                    }
+                    
+                    try {
+                        const permission = await window.Notification.requestPermission();
+                        if (permission === 'granted') {
+                            const messaging = firebase.messaging();
+                            const token = await messaging.getToken();
+                            if (token) {
+                                await db.collection('clients').doc(this.user.uid).set({ fcmToken: token }, { merge: true });
+                                this.userData.fcmToken = token;
+                                this.pushEnabled = true;
+                                alert("Notifications enabled! You will now receive alerts for holiday openings and point updates.");
+                            }
+                        } else {
+                            alert("Notification permission denied. You can change this in your browser settings.");
+                        }
+                    } catch (err) {
+                        console.error("FCM Token Error:", err);
+                        alert("Unable to enable notifications. Ensure you are not in Incognito mode.");
+                    }
                 },
 
                 async loadCommunityTrails() {
@@ -2916,6 +3049,7 @@
                     this.user = null;
                     this.userData = {};
                     this.isVerified = false;
+                    this.pushEnabled = false;
                 }
             }
         }
