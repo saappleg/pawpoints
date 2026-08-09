@@ -314,9 +314,38 @@
                             Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 30-minute consultation to learn about feedings, your typical walking paths, and house notes.
                         </p>
                     </div>
-                    <button @click="showMeetGreetModal = true" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
                         <span>☕ Schedule Free Meet & Greet</span>
-                    </button>
+                    </a>
+                </section>
+
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-7">
+                    <div class="space-y-2">
+                        <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Why Pet Parents Choose Us</span>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Transparent trust, safety, and local expertise</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Built for consistency, communication, and real in-home care.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 space-y-4">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Verified Trust Signals</h3>
+                            <div class="flex flex-wrap gap-3 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                                <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Insured &amp; Bonded</span>
+                                <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Background Checked</span>
+                                <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Pet CPR / First Aid</span>
+                                <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Local Service Specialist</span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Proof documents and policy details are reviewed during Meet &amp; Greet onboarding.</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">How We Compare</h3>
+                            <dl class="divide-y divide-gray-200 dark:divide-gray-800 text-sm">
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">In-home consistency</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400 text-right">Pet Care by Steven ✓</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Same provider each visit</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400">Always</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Real-time photo visit reports</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400">Included</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Emergency plan + vet release</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400">Standard</dd></div>
+                            </dl>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
@@ -329,6 +358,7 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
                             <div class="text-3xl" aria-hidden="true">🐕‍🦺</div>
                             <h3 class="font-bold text-base text-gray-900 dark:text-white">Dog Walking</h3>
+                            <p class="text-xs font-bold text-brand-600 dark:text-brand-400">Typical Range: $18–$40 / visit</p>
                             <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Structured neighborhood walks, fresh water refills, treat distribution, and real-time updates for every stroll.
                             </p>
@@ -336,6 +366,7 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
                             <div class="text-3xl" aria-hidden="true">🏡</div>
                             <h3 class="font-bold text-base text-gray-900 dark:text-white">In-Home Sitting Visits</h3>
+                            <p class="text-xs font-bold text-brand-600 dark:text-brand-400">Typical Range: $18–$40 / visit</p>
                             <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Drop-in visits for dogs and cats. Feeding, litter box maintenance, playtime, medication administration, and cuddles.
                             </p>
@@ -343,9 +374,80 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-6 rounded-2xl space-y-3 shadow-sm">
                             <div class="text-3xl" aria-hidden="true">🎁</div>
                             <h3 class="font-bold text-base text-gray-900 dark:text-white">Paw Points Loyalty</h3>
+                            <p class="text-xs font-bold text-brand-600 dark:text-brand-400">10 pts per $1 + tier bonuses</p>
                             <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Every $1 spent earns 10 Paw Points! Redeem your points for discounts off future walks and sitting visits directly in your portal.
                             </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl">
+                    <div class="text-center max-w-3xl mx-auto space-y-2 mb-8">
+                        <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Not ready to book yet?</span>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Request a quick personalized care plan</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
+                    </div>
+                    <form @submit.prevent="submitCarePlanRequest()" class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" x-model.trim="carePlanForm.name" required autocomplete="name" placeholder="Your name" aria-label="Your name" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="email" x-model.trim="carePlanForm.email" required autocomplete="email" placeholder="Email address" aria-label="Email address" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="tel" x-model.trim="carePlanForm.phone" required autocomplete="tel" placeholder="Phone number" aria-label="Phone number" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <select x-model="carePlanForm.source" aria-label="How did you find us" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="">How did you find us?</option>
+                            <option>Google Search</option>
+                            <option>Referral</option>
+                            <option>Social Media</option>
+                            <option>Other</option>
+                        </select>
+                        <textarea x-model.trim="carePlanForm.details" required rows="4" placeholder="Tell us about your pets, needed services, and preferred timeline" aria-label="Pet care request details" class="md:col-span-2 w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        <p x-show="carePlanStatus.message" x-text="carePlanStatus.message" :class="carePlanStatus.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'" class="md:col-span-2 text-sm font-semibold" aria-live="polite"></p>
+                        <button type="submit" :disabled="carePlanStatus.submitting" class="bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
+                            <span x-text="carePlanStatus.submitting ? 'Sending…' : 'Send Care Plan Request'"></span>
+                        </button>
+                    </form>
+                </section>
+
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                    <div class="space-y-2">
+                        <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Day-in-the-life care stories</span>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Before/after routines that reduce stress for pets</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Anxious Rescue → Calm Midday Routine</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Batavia</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Started with short decompression visits, then built to confidence walks and consistent meal windows.</p>
+                        </article>
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Senior Cat Medication Support</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Amelia</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Twice-daily check-ins with photo proof, appetite notes, and medication logs for owner peace of mind.</p>
+                        </article>
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">High-Energy Pup Structure Plan</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Cincinnati</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Moved from destructive afternoons to predictable walks, enrichment, and evening wind-down visits.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                    <div class="space-y-2">
+                        <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Safety &amp; reliability</span>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Emergency protocols, reporting cadence, and plain-language policies</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Emergency Response</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Immediate owner/contact notification, vet transport authorization, and documented treatment decisions when urgent care is needed.</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Visit Reporting Cadence</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Every visit includes photos, timestamped arrival/departure notes, a care completion checklist, and GPS-aware route updates for walks.</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Policy Snapshot</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">A 3-day cancellation window, severe-weather safety adjustments, and holiday premium messaging are published in advance in your portal and reminders.</p>
                         </div>
                     </div>
                 </section>
@@ -701,7 +803,7 @@
                                 <p class="text-[11px] text-gray-500 dark:text-slate-400 italic" x-text="tierProgress.description"></p>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 <button @click="triggerViewTransition(() => { showChecklistModal = true })" aria-label="House and Care Sheet" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-4 rounded-2xl font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
                                     <span>📋</span>
                                     <span>House & Care Sheet</span>
@@ -709,10 +811,6 @@
                                 <button @click="triggerViewTransition(() => { showProfileModal = true })" aria-label="Account Profile" class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-4 rounded-2xl font-bold text-xs transition border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2">
                                     <span>⚙️</span>
                                     <span>Account Profile</span>
-                                </button>
-                                <button @click="openDigitalPass()" aria-label="Digital Pass" class="w-full bg-brand-600 hover:bg-brand-700 text-white px-4 py-4 rounded-2xl font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
-                                    <span>📱</span>
-                                    <span>Digital Pass</span>
                                 </button>
                             </div>
                         </div>
@@ -1341,24 +1439,6 @@
             </div>
         </div>
 
-        <!-- DIGITAL PASS QR MODAL -->
-        <div x-show="showQRModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-qr-title">
-            <div @click.away="showQRModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-4 border dark:border-gray-800">
-                <h2 id="modal-qr-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Paw Pass</h2>
-                <p class="text-xs text-gray-500 dark:text-slate-300 font-medium">Scan this code at checkout or visits to quickly access your account.</p>
-                
-                <div class="flex justify-center p-4 bg-white rounded-2xl border border-gray-200 min-h-[192px] items-center">
-                    <div id="qrcode"></div>
-                </div>
-
-                <p class="text-xs font-mono text-gray-400" x-text="user?.uid"></p>
-
-                <button @click="showQRModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">
-                    Close
-                </button>
-            </div>
-        </div>
-
         <!-- ADMIN PANEL MODAL -->
         <div x-show="showAdminModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
             <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
@@ -1669,7 +1749,7 @@
                 <div class="border-b dark:border-gray-700 pb-4 text-left max-w-2xl">
                     <p class="font-semibold text-gray-700 dark:text-gray-300 mb-1">About Pet Care by Steven</p>
                     <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
-                        Pet Care by Steven is an official client management portal designed to help clients schedule dog walking and pet sitting services, manage care routines, view digital client passes, and track Paw Points loyalty rewards.
+                        Pet Care by Steven is an official client management portal designed to help clients schedule dog walking and pet sitting services, manage care routines, and track Paw Points loyalty rewards.
                     </p>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2 font-medium">
@@ -1872,15 +1952,15 @@
                 calcSpend: 150,
                 pushEnabled: false,
                 quoteForm: { type: 'Walk', duration: 30, pets: 1, visits: 3 },
+                carePlanForm: { name: '', email: '', phone: '', source: '', details: '' },
+                carePlanStatus: { submitting: false, success: false, message: '' },
                 showToast: false,
                 toastMessage: '',
                 showInstallBanner: false,
                 showIOSInstallModal: false,
-                showMeetGreetModal: false,
                 showVetAuthModal: false,
                 showChecklistModal: false,
                 showProfileModal: false,
-                showQRModal: false,
                 showAdminModal: false,
                 showAddTrailModal: false,
                 vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
@@ -2376,6 +2456,36 @@
                         });
                     } catch (err) {
                         console.error('Failed to log search:', err);
+                    }
+                },
+
+                async submitCarePlanRequest() {
+                    const request = {
+                        name: this.carePlanForm.name.trim(),
+                        email: this.carePlanForm.email.trim(),
+                        phone: this.carePlanForm.phone.trim(),
+                        source: this.carePlanForm.source || 'Not provided',
+                        details: this.carePlanForm.details.trim()
+                    };
+
+                    if (!request.name || !request.email || !request.phone || !request.details) {
+                        this.carePlanStatus = { submitting: false, success: false, message: 'Please complete your name, email, phone number, and care details.' };
+                        return;
+                    }
+
+                    this.carePlanStatus = { submitting: true, success: false, message: '' };
+                    try {
+                        await db.collection('care_plan_requests').add({
+                            ...request,
+                            userId: this.user ? this.user.uid : null,
+                            status: 'new',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        this.carePlanForm = { name: '', email: '', phone: '', source: '', details: '' };
+                        this.carePlanStatus = { submitting: false, success: true, message: 'Thanks! Your care-plan request was sent. Steven will follow up soon.' };
+                    } catch (err) {
+                        console.error('Care-plan request error:', err);
+                        this.carePlanStatus = { submitting: false, success: false, message: 'We could not send your request right now. Please email saappleg@gmail.com.' };
                     }
                 },
 
@@ -3135,27 +3245,6 @@
                             coupons: this.userData.coupons
                         });
                     }
-                },
-
-                openDigitalPass() {
-                    this.showQRModal = true;
-                    this.$nextTick(() => {
-                        const qrDiv = document.getElementById("qrcode");
-                        if (qrDiv) {
-                            qrDiv.innerHTML = "";
-                            const clientUrl = `${window.location.origin}${window.location.pathname}?client=${this.user.uid}`;
-                            
-                            if (typeof QRCode !== 'undefined') {
-                                new QRCode(qrDiv, {
-                                    text: clientUrl,
-                                    width: 160,
-                                    height: 160
-                                });
-                            } else {
-                                qrDiv.innerHTML = "<p class='text-xs text-red-500'>Failed to load QR generator.</p>";
-                            }
-                        }
-                    });
                 },
 
                 async updateClientPoints() {
