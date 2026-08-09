@@ -137,10 +137,36 @@
       ]
     },
     {
+      "name": "Home Dashboard",
+      "short_name": "Home",
+      "description": "Return to the main home page",
+      "url": "/?view=home",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "Paw Points Dashboard",
       "short_name": "Rewards",
       "description": "View your loyalty points and client profile",
-      "url": "/",
+      "url": "/?view=loyalty",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Local Trails Guide",
+      "short_name": "Trails",
+      "description": "Discover local dog walking spots",
+      "url": "/?view=guide",
       "icons": [
         {
           "src": "/android-chrome-192x192.png",
