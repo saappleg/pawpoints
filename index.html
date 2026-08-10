@@ -96,6 +96,8 @@
         #trail-picker-map { height: 240px; }
         .trail-submission-modal { z-index: 2000; }
         .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
+        .profile-modal { z-index: 2000; overflow-y: auto; align-items: flex-start; }
+        .profile-modal-dialog { max-height: none; margin: 1rem auto; }
 
         :root {
             --top-bar-height: 6px;
@@ -1518,8 +1520,8 @@
         </div>
 
         <!-- ACCOUNT PROFILE MODAL -->
-        <div x-show="showProfileModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
-            <div @click.away="showProfileModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800 max-h-[calc(100vh-2rem)] overflow-y-auto my-4">
+        <div x-show="showProfileModal" x-transition x-cloak class="profile-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
+            <div @click.away="showProfileModal = false" class="profile-modal-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
                         <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Profile &amp; Preferences</h2>
