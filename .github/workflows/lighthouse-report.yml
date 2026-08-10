@@ -20,7 +20,7 @@ jobs:
           --only-categories=performance,accessibility,best-practices,seo
           --chrome-flags="--headless --no-sandbox"
       - name: Save report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lighthouse-report
           path: lighthouse-report.*
