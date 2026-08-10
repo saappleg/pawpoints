@@ -586,6 +586,15 @@
                             </div>
                         </template>
                     </div>
+                    <div class="max-w-2xl mx-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-center mb-3">Current primary coverage</p>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <template x-for="area in serviceAreas" :key="area.city">
+                                <span class="bg-indigo-50 dark:bg-gray-800 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-100 dark:border-gray-700 text-[11px] font-bold" x-text="area.city"></span>
+                            </template>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center mt-3">Not listed? Send a care-plan request—longer-distance care may still be available.</p>
+                    </div>
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
@@ -1244,18 +1253,22 @@
                                         <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2.5 py-0.5 rounded-full font-bold uppercase" x-text="trail.location"></span>
                                     </div>
                                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed" x-text="trail.description"></p>
+                                    <p x-show="trail.petFriendly" class="text-[11px] font-bold text-brand-600 dark:text-brand-400" x-text="`🐾 ${trail.petFriendly}`"></p>
+                                    <p x-show="trail.bestTime || (trail.safety && trail.safety.length)" class="text-[10px] text-amber-700 dark:text-amber-300" x-text="trailSafetyLabel(trail)"></p>
                                 </div>
                                     <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400 mt-2">
                                         <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
                                         <div class="flex items-center gap-3">
                                             <span class="text-brand-600 dark:text-brand-400 font-bold">💬 Discuss</span>
-                                            <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                            <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trailAmenitiesLabel(trail)"></span>
                                             <button @click.stop="focusTrailMap(trail)" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">Map</button>
+                                            <button x-show="user" @click.stop="toggleSavedTrail(trail.id)" class="font-bold" :class="isTrailSaved(trail.id) ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 hover:text-amber-500'" x-text="isTrailSaved(trail.id) ? '★ Saved' : '☆ Save'"></button>
                                             <button @click.stop="upvoteTrail(trail.id)" aria-label="Upvote Trail" class="flex items-center gap-1 transition-colors" :class="(trail.upvoters && user && trail.upvoters.includes(user.uid)) ? 'text-brand-500' : 'text-gray-400 hover:text-brand-400'">
                                                 <span class="text-sm">▲</span>
                                                 <span class="font-bold text-xs" x-text="trail.votes || 0"></span>
                                             </button>
                                             <button x-show="isAdmin && adminModeActive && !trail.isStatic" @click.stop="deleteTrail(trail)" aria-label="Delete Trail" class="text-red-500 hover:text-red-600 font-bold">Delete</button>
+                                            <button x-show="user" @click.stop="openTrailReport(trail)" class="text-gray-400 hover:text-red-500 font-bold">Flag</button>
                                         </div>
                                     </div>
                             </div>
@@ -1299,9 +1312,42 @@
                         <textarea x-model="newTrailForm.description" rows="3" placeholder="Shaded paths, great creeks, quiet on weekdays..." required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                     </div>
                     <div>
-                        <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Key Amenities</label>
-                        <input type="text" x-model="newTrailForm.amenities" placeholder="e.g. Paved, Trash cans available" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Pet access</label>
+                        <select x-model="newTrailForm.petFriendly" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                            <option value="Dog friendly">Dog friendly</option>
+                            <option value="Dogs welcome on leash">Dogs welcome on leash</option>
+                            <option value="Off-leash area available">Off-leash area available</option>
+                            <option value="Pet friendly with restrictions">Pet friendly with restrictions</option>
+                            <option value="All pets welcome">All pets welcome</option>
+                        </select>
                     </div>
+                    <fieldset>
+                        <legend class="block font-bold text-gray-700 dark:text-gray-300 mb-2">Amenities</legend>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-gray-700 dark:text-gray-300">
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Parking" x-model="newTrailForm.amenities"> Parking</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Waste bags / bins" x-model="newTrailForm.amenities"> Waste bags / bins</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Water access" x-model="newTrailForm.amenities"> Water access</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Shade" x-model="newTrailForm.amenities"> Shade</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Paved paths" x-model="newTrailForm.amenities"> Paved paths</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Restrooms" x-model="newTrailForm.amenities"> Restrooms</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Benches" x-model="newTrailForm.amenities"> Benches</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Fenced area" x-model="newTrailForm.amenities"> Fenced area</label>
+                        </div>
+                        <input type="text" x-model="newTrailForm.otherAmenities" placeholder="Other amenity (optional)" class="w-full mt-3 px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                    </div>
+                    <fieldset>
+                        <legend class="block font-bold text-gray-700 dark:text-gray-300 mb-2">Safety notes</legend>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-gray-700 dark:text-gray-300">
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Well lit" x-model="newTrailForm.safety"> Well lit</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Busy-road nearby" x-model="newTrailForm.safety"> Busy road nearby</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Water hazard" x-model="newTrailForm.safety"> Water hazard</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Seasonal mud" x-model="newTrailForm.safety"> Seasonal mud</label>
+                        </div>
+                        <select x-model="newTrailForm.bestTime" class="w-full mt-3 px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                            <option value="">Best time to visit (optional)</option>
+                            <option>Early morning</option><option>Midday</option><option>Evening</option><option>Weekdays</option><option>Weekends</option>
+                        </select>
+                    </fieldset>
                     <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl transition shadow-sm">
                         Publish Trail
                     </button>
@@ -1336,6 +1382,19 @@
                     </form>
                 </template>
                 <p x-show="!user" class="text-xs text-gray-500 dark:text-gray-400 text-center border-t dark:border-gray-800 pt-4">Log in to add a comment.</p>
+            </div>
+        </div>
+
+        <!-- TRAIL REPORT MODAL -->
+        <div x-show="showTrailReportModal" x-transition x-cloak class="trail-submission-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div @click.away="showTrailReportModal = false" class="trail-submission-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
+                <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3"><div><p class="text-[10px] uppercase font-black tracking-widest text-red-500">Trail update</p><h2 class="font-bold text-lg text-gray-900 dark:text-white" x-text="selectedTrail?.title || 'Flag a trail' "></h2></div><button @click="showTrailReportModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Help keep the guide useful. Steven will review your note.</p>
+                <form @submit.prevent="submitTrailReport()" class="space-y-3">
+                    <select x-model="trailReportForm.reason" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"><option value="">Choose a reason</option><option>Trail information is outdated</option><option>Access or pet policy changed</option><option>Safety concern</option><option>Trail is closed</option><option>Other</option></select>
+                    <textarea x-model.trim="trailReportForm.details" maxlength="500" rows="4" placeholder="Optional details that will help us verify the update…" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
+                    <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm">Send update</button>
+                </form>
             </div>
         </div>
 
@@ -1460,7 +1519,7 @@
 
         <!-- ACCOUNT PROFILE MODAL -->
         <div x-show="showProfileModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
-            <div @click.away="showProfileModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
+            <div @click.away="showProfileModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800 max-h-[calc(100vh-2rem)] overflow-y-auto my-4">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
                         <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Profile &amp; Preferences</h2>
@@ -1495,6 +1554,15 @@
                         <textarea x-model="profileForm.address" rows="2" placeholder="Street address, gate codes, or parking instructions" aria-label="Home Address or Service Notes" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none"></textarea>
                     </div>
 
+                    <fieldset class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 space-y-3">
+                        <legend class="font-bold text-gray-900 dark:text-white px-1">First-visit checklist</legend>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Complete these before your first booking so the visit can start smoothly.</p>
+                        <label class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><input type="checkbox" x-model="firstVisitChecklist.contactReady"> Best phone number is current</label>
+                        <label class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><input type="checkbox" x-model="firstVisitChecklist.accessReady"> Access, parking, or lockbox details are included</label>
+                        <label class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><input type="checkbox" x-model="firstVisitChecklist.petCareReady"> Pet feeding, medication, and routine details are ready</label>
+                        <label class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><input type="checkbox" x-model="firstVisitChecklist.vetReady"> Vet and emergency contact information is ready</label>
+                    </fieldset>
+
                     <div class="bg-slate-800 border border-slate-600 rounded-2xl p-4">
                         <label class="block font-bold text-white mb-1">Visit notifications</label>
                         <p class="text-[11px] text-slate-200 mb-3">Enable alerts for service updates and Paw Points activity on this device.</p>
@@ -1528,6 +1596,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-bold">
                     <button @click="adminTab = 'points'; fetchClientsList()" :class="adminTab === 'points' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Clients &amp; Points</button>
                     <button @click="adminTab = 'referrals'; fetchPendingReferrals()" :class="adminTab === 'referrals' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Referrals <span x-show="pendingReferrals.length" x-text="`(${pendingReferrals.length})`"></span></button>
+                    <button @click="adminTab = 'trailReports'; fetchTrailReports()" :class="adminTab === 'trailReports' ? 'bg-red-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition">Trail updates <span x-show="trailReports.length" x-text="`(${trailReports.length})`"></span></button>
                     <button @click="adminTab = 'areas'" :class="adminTab === 'areas' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Areas</button>
                     <button @click="adminTab = 'reviews'; fetchPendingReviews()" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Reviews</button>
                     <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Photos</button>
@@ -1599,6 +1668,18 @@
                         </div>
                     </template>
                     <template x-if="pendingReferrals.length === 0"><p class="text-gray-500 dark:text-gray-400 italic text-center py-4">No referral rewards are waiting for review.</p></template>
+                </div>
+
+                <div x-show="adminTab === 'trailReports'" class="space-y-3 text-xs" x-cloak>
+                    <p class="text-gray-500 dark:text-gray-400">Client-reported closures, safety concerns, and policy changes.</p>
+                    <template x-for="report in trailReports" :key="report.id">
+                        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border dark:border-gray-700 space-y-2">
+                            <div class="flex justify-between gap-3"><p class="font-bold text-gray-900 dark:text-white" x-text="report.trailTitle"></p><button @click="deleteTrailReport(report.id)" class="text-red-500 font-bold">Dismiss</button></div>
+                            <p class="font-bold text-amber-600 dark:text-amber-400" x-text="report.reason"></p>
+                            <p x-show="report.details" class="text-gray-600 dark:text-gray-300" x-text="report.details"></p>
+                        </div>
+                    </template>
+                    <p x-show="trailReports.length === 0" class="text-gray-500 dark:text-gray-400 italic text-center py-4">No trail updates are waiting for review.</p>
                 </div>
 
                 <!-- TAB 2: SERVICE AREA MANAGEMENT -->
@@ -2089,21 +2170,23 @@
                 authSuccess: '',
                 authForm: { name: '', email: '', password: '', refCode: '' },
                 profileForm: { name: '', email: '', phone: '', address: '' },
+                firstVisitChecklist: { contactReady: false, accessReady: false, petCareReady: false, vetReady: false },
                 profileError: '',
                 profileSuccess: '',
                 clientList: [],
                 adminForm: { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '', couponTitle: '' },
                 adminTab: 'points',
                 pendingReferrals: [],
+                trailReports: [],
                 serviceAreas: [],
                 bulkAreaInput: '',
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
                 communityTrails: [
-                    { id: '1', isStatic: true, title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
-                    { id: '2', isStatic: true, title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
+                    { id: '1', isStatic: true, title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', petFriendly: 'Dogs welcome on leash', author: 'Steven', votes: 12, upvoters: [] },
+                    { id: '2', isStatic: true, title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', petFriendly: 'Dog friendly', author: 'Local Client', votes: 5, upvoters: [] }
                 ],
-                newTrailForm: { title: '', location: '', description: '', amenities: '', lat: null, lng: null },
+                newTrailForm: { title: '', location: '', description: '', petFriendly: 'Dog friendly', amenities: [], otherAmenities: '', safety: [], bestTime: '', lat: null, lng: null },
                 showTrailMapPicker: false,
                 trailMap: null,
                 trailMapMarkers: null,
@@ -2116,6 +2199,8 @@
                 trailComments: [],
                 trailCommentsLoading: false,
                 trailCommentText: '',
+                showTrailReportModal: false,
+                trailReportForm: { reason: '', details: '' },
 
                 get estimatedQuote() {
                     let base = 25; 
@@ -2418,11 +2503,16 @@
                     if (!this.newTrailForm.title || !this.newTrailForm.description) return;
                     try {
                         if (this.newTrailForm.lat === null) await this.findTrailLocation(true);
+                        const amenities = [...this.newTrailForm.amenities];
+                        if (this.newTrailForm.otherAmenities.trim()) amenities.push(this.newTrailForm.otherAmenities.trim());
                         const trailObj = {
                             title: this.newTrailForm.title.trim(),
                             location: this.newTrailForm.location.trim(),
                             description: this.newTrailForm.description.trim(),
-                            amenities: this.newTrailForm.amenities.trim() || 'Dog Friendly',
+                            petFriendly: this.newTrailForm.petFriendly,
+                            amenities: amenities.length ? amenities : 'No amenities listed',
+                            safety: this.newTrailForm.safety,
+                            bestTime: this.newTrailForm.bestTime,
                             lat: this.newTrailForm.lat,
                             lng: this.newTrailForm.lng,
                             author: this.userData.name || 'Local Pet Owner',
@@ -2432,7 +2522,7 @@
                         };
                         const docRef = await db.collection('community_guides').add(trailObj);
                         this.communityTrails.unshift({ id: docRef.id, ...trailObj });
-                        this.newTrailForm = { title: '', location: '', description: '', amenities: '', lat: null, lng: null };
+                        this.newTrailForm = { title: '', location: '', description: '', petFriendly: 'Dog friendly', amenities: [], otherAmenities: '', safety: [], bestTime: '', lat: null, lng: null };
                         this.trailLocationStatus = '';
                         this.lastTrailGeocodeQuery = '';
                         this.showTrailMapPicker = false;
@@ -2445,6 +2535,77 @@
                         alert('Thank you! Your trail recommendation has been published.');
                     } catch (err) {
                         alert('Error publishing trail: ' + err.message);
+                    }
+                },
+
+                trailAmenitiesLabel(trail) {
+                    if (Array.isArray(trail.amenities)) return trail.amenities.join(', ') || 'No amenities listed';
+                    return trail.amenities || 'No amenities listed';
+                },
+
+                trailSafetyLabel(trail) {
+                    const safety = Array.isArray(trail.safety) ? trail.safety.join(' · ') : '';
+                    return [trail.bestTime ? `Best: ${trail.bestTime}` : '', safety].filter(Boolean).join(' · ');
+                },
+
+                isTrailSaved(trailId) {
+                    return (this.userData.savedTrailIds || []).includes(trailId);
+                },
+
+                async toggleSavedTrail(trailId) {
+                    if (!this.user) return alert('Please log in to save trails.');
+                    const savedTrailIds = [...(this.userData.savedTrailIds || [])];
+                    const position = savedTrailIds.indexOf(trailId);
+                    if (position >= 0) savedTrailIds.splice(position, 1); else savedTrailIds.push(trailId);
+                    try {
+                        await db.collection('clients').doc(this.user.uid).update({ savedTrailIds });
+                        this.userData.savedTrailIds = savedTrailIds;
+                    } catch (err) {
+                        alert('Unable to update saved trails: ' + err.message);
+                    }
+                },
+
+                openTrailReport(trail) {
+                    this.selectedTrail = trail;
+                    this.trailReportForm = { reason: '', details: '' };
+                    this.showTrailReportModal = true;
+                },
+
+                async submitTrailReport() {
+                    if (!this.user || !this.selectedTrail || !this.trailReportForm.reason) return;
+                    try {
+                        await db.collection('trail_reports').add({
+                            trailId: this.selectedTrail.id,
+                            trailTitle: this.selectedTrail.title,
+                            reason: this.trailReportForm.reason,
+                            details: this.trailReportForm.details || '',
+                            reporterUid: this.user.uid,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        this.showTrailReportModal = false;
+                        alert('Thank you — Steven will review this trail update.');
+                    } catch (err) {
+                        alert('Unable to send this update: ' + err.message);
+                    }
+                },
+
+                async fetchTrailReports() {
+                    if (!this.isAdmin) return;
+                    try {
+                        const snapshot = await db.collection('trail_reports').orderBy('createdAt', 'desc').get();
+                        this.trailReports = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    } catch (err) {
+                        console.warn('Unable to load trail reports:', err);
+                    }
+                },
+
+                async deleteTrailReport(reportId) {
+                    if (!this.isAdmin || !this.adminModeActive) return;
+                    try {
+                        await db.collection('trail_reports').doc(reportId).delete();
+                        this.trailReports = this.trailReports.filter(report => report.id !== reportId);
+                    } catch (err) {
+                        alert('Unable to dismiss this trail update: ' + err.message);
                     }
                 },
 
@@ -3238,6 +3399,10 @@
                             phone: this.userData.phone || '',
                             address: this.userData.address || ''
                         };
+                        this.firstVisitChecklist = {
+                            contactReady: false, accessReady: false, petCareReady: false, vetReady: false,
+                            ...(this.userData.firstVisitChecklist || {})
+                        };
 
                         if (!this.userData.referralCode) {
                             const newRefCode = 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -3334,13 +3499,15 @@
                             name: this.profileForm.name,
                             email: this.profileForm.email,
                             phone: this.profileForm.phone,
-                            address: this.profileForm.address
+                            address: this.profileForm.address,
+                            firstVisitChecklist: this.firstVisitChecklist
                         });
 
                         this.userData.name = this.profileForm.name;
                         this.userData.email = this.profileForm.email;
                         this.userData.phone = this.profileForm.phone;
                         this.userData.address = this.profileForm.address;
+                        this.userData.firstVisitChecklist = this.firstVisitChecklist;
 
                         this.profileSuccess = 'Profile details updated successfully!';
                         setTimeout(() => { this.showProfileModal = false; this.profileSuccess = ''; }, 1500);

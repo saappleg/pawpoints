@@ -8,7 +8,8 @@ service cloud.firestore {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
         'name', 'email', 'phone', 'address', 'pets', 'homeEntryNotes',
         'lockboxCode', 'alarmInstructions', 'emergencyContacts', 'vetClinic',
-        'vetPhone', 'vetAuth', 'houseChecklist', 'fcmToken', 'referralCode'
+        'vetPhone', 'vetAuth', 'houseChecklist', 'fcmToken', 'referralCode',
+        'savedTrailIds', 'firstVisitChecklist'
       ]);
     }
     function validCoupon(title) {
@@ -66,6 +67,15 @@ service cloud.firestore {
         && request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 500;
       allow update: if false;
       allow delete: if isAdmin();
+    }
+    match /trail_reports/{reportId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['trailId', 'trailTitle', 'reason', 'details', 'reporterUid', 'createdAt'])
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0 && request.resource.data.reason.size() <= 100
+        && request.resource.data.details is string && request.resource.data.details.size() <= 500;
+      allow read, update, delete: if isAdmin();
     }
     match /reviews/{reviewId} {
       allow read: if true;
