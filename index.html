@@ -314,6 +314,11 @@
             }
             .header-actions > *, .header-actions .profile-actions > * { margin-left: 0 !important; }
             .header-actions .profile-actions { gap: 0.5rem; }
+            .header-actions > a,
+            .header-actions button {
+                min-height: 2.75rem;
+                justify-content: center;
+            }
             .social-proof-toast {
                 right: 1rem;
                 bottom: 5.25rem;
@@ -428,7 +433,7 @@
 
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
-                            <button x-ref="profileTrigger" x-show="isVerified" @click="toggleProfilePanel()" :aria-expanded="showProfileModal" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <button x-ref="profileTrigger" @click="toggleProfilePanel()" :aria-expanded="showProfileModal" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                                 <span class="h-5 w-5 shrink-0 overflow-hidden rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px]" aria-hidden="true">
                                     <img x-show="(userData.photoUrl || user?.photoURL) && !profilePhotoFailed" :src="userData.photoUrl || user?.photoURL" alt="" class="h-full w-full object-cover" @error="profilePhotoFailed = true" @load="profilePhotoFailed = false">
                                     <span x-show="!(userData.photoUrl || user?.photoURL) || profilePhotoFailed">👤</span>
@@ -652,7 +657,7 @@
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Day-in-the-life care stories</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Before/after routines that reduce stress for pets</h2>
                     </div>
-                    <button @click="expanded = !expanded" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline" x-text="expanded ? 'Hide care stories' : 'Read care stories'">Read care stories</button>
+                    <button @click="expanded = !expanded" class="inline-flex w-fit items-center rounded-xl border border-brand-300 dark:border-brand-700 bg-brand-50 dark:bg-brand-950/20 px-4 py-2.5 text-xs font-bold text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-950/40 transition" x-text="expanded ? 'Hide care stories' : 'Read care stories'">Read care stories</button>
                     <div x-show="expanded" x-transition class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Anxious Rescue → Calm Midday Routine</h3>
@@ -677,7 +682,7 @@
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Safety &amp; reliability</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Emergency protocols, reporting cadence, and plain-language policies</h2>
                     </div>
-                    <button @click="expanded = !expanded" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline" x-text="expanded ? 'Hide safety details' : 'View safety details'">View safety details</button>
+                    <button @click="expanded = !expanded" class="inline-flex w-fit items-center rounded-xl border border-brand-300 dark:border-brand-700 bg-brand-50 dark:bg-brand-950/20 px-4 py-2.5 text-xs font-bold text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-950/40 transition" x-text="expanded ? 'Hide safety details' : 'View safety details'">View safety details</button>
                     <div x-show="expanded" x-transition class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Emergency Response</h3>
