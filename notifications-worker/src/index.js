@@ -7,6 +7,8 @@
  */
 
 const ALLOWED_ORIGIN = 'https://petcarebysteven.me';
+const FIREBASE_PROJECT_ID = 'paw-points-app';
+const FIREBASE_PUBLIC_KEYS_URL = 'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com';
 const MAX_TITLE_LENGTH = 80;
 const MAX_BODY_LENGTH = 240;
 const MAX_URL_LENGTH = 500;
@@ -44,20 +46,49 @@ async function readJson(request) {
   }
 }
 
-async function firebaseUser(request, env) {
+function base64UrlBytes(value) {
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const binary = atob(normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '='));
+  return Uint8Array.from(binary, char => char.charCodeAt(0));
+}
+
+function jwtPart(value) {
+  return JSON.parse(new TextDecoder().decode(base64UrlBytes(value)));
+}
+
+async function firebaseUser(request) {
   const authorization = request.headers.get('Authorization') || '';
   const idToken = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
   if (!idToken) throw new Error('Sign in is required.');
 
-  const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(env.FIREBASE_WEB_API_KEY)}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ idToken })
-  });
-  const data = await response.json();
-  const user = data.users?.[0];
-  if (!response.ok || !user?.localId || !user?.email) throw new Error('Your sign-in has expired. Please sign in again.');
-  return { uid: user.localId, email: user.email.toLowerCase() };
+  const parts = idToken.split('.');
+  if (parts.length !== 3) throw new Error('Your sign-in has expired. Please sign in again.');
+  const [headerPart, payloadPart, signaturePart] = parts;
+  const header = jwtPart(headerPart);
+  const payload = jwtPart(payloadPart);
+  if (header.alg !== 'RS256' || !header.kid) throw new Error('Your sign-in token is invalid. Please sign in again.');
+
+  const now = Math.floor(Date.now() / 1000);
+  const expectedIssuer = `https://securetoken.google.com/${FIREBASE_PROJECT_ID}`;
+  if (payload.aud !== FIREBASE_PROJECT_ID || payload.iss !== expectedIssuer ||
+      typeof payload.sub !== 'string' || !payload.sub || payload.sub.length > 128 ||
+      !Number.isFinite(payload.exp) || payload.exp <= now || !Number.isFinite(payload.iat) || payload.iat > now ||
+      !Number.isFinite(payload.auth_time) || payload.auth_time > now) {
+    throw new Error('Your sign-in has expired. Please sign in again.');
+  }
+
+  const response = await fetch(FIREBASE_PUBLIC_KEYS_URL);
+  const keySet = await response.json();
+  const key = keySet.keys?.find(candidate => candidate.kid === header.kid && candidate.kty === 'RSA');
+  if (!response.ok || !key) throw new Error('Unable to verify your sign-in. Please try again.');
+  const publicKey = await crypto.subtle.importKey(
+    'jwk', key, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']
+  );
+  const valid = await crypto.subtle.verify(
+    'RSASSA-PKCS1-v1_5', publicKey, base64UrlBytes(signaturePart), new TextEncoder().encode(`${headerPart}.${payloadPart}`)
+  );
+  if (!valid) throw new Error('Your sign-in token is invalid. Please sign in again.');
+  return { uid: payload.sub, email: typeof payload.email === 'string' ? payload.email.toLowerCase() : '' };
 }
 
 function isAdmin(user, env) {
@@ -66,7 +97,7 @@ function isAdmin(user, env) {
 }
 
 async function requireAdmin(request, env) {
-  const user = await firebaseUser(request, env);
+  const user = await firebaseUser(request);
   if (!isAdmin(user, env)) throw new Error('Admin access is required.');
   return user;
 }
@@ -173,7 +204,7 @@ async function cancelReminder(request, env) {
 }
 
 async function sendSelfReward(request, env) {
-  const user = await firebaseUser(request, env);
+  const user = await firebaseUser(request);
   const body = await readJson(request);
   const couponCode = cleanText(body.couponCode, 32);
   const rewardTitle = cleanText(body.rewardTitle, 80) || 'Your Paw Points reward';

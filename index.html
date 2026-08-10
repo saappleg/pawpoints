@@ -3401,7 +3401,9 @@
                         throw new Error('The Cloudflare notification service is not connected yet.');
                     }
                     if (!this.user) throw new Error('Please sign in again.');
-                    const idToken = await this.user.getIdToken();
+                    // Notification actions go to a separate trusted service, so always
+                    // refresh the short-lived Firebase ID token before sending one.
+                    const idToken = await this.user.getIdToken(true);
                     const response = await fetch(`${this.notificationServiceUrl}${path}`, {
                         method: 'POST',
                         headers: {

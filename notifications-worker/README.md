@@ -12,7 +12,6 @@ This free Cloudflare Worker sends OneSignal pushes without exposing the OneSigna
    - `wrangler d1 execute petcare-notifications --remote --file=./schema.sql`
 5. Add secrets (never commit these):
    - `wrangler secret put ONESIGNAL_APP_API_KEY`
-   - `wrangler secret put FIREBASE_WEB_API_KEY`
    - `wrangler secret put ADMIN_EMAILS`
      - Use a comma-separated list, such as `saappleg@gmail.com,support@petcarebysteven.me`.
 6. Add the OneSignal app ID as a plain Worker variable in the Cloudflare dashboard, or use `wrangler secret put ONESIGNAL_APP_ID`.
@@ -22,7 +21,7 @@ This free Cloudflare Worker sends OneSignal pushes without exposing the OneSigna
 ## Security model
 
 - The portal sends the current Firebase ID token with every request.
-- The Worker uses Firebase's `accounts:lookup` endpoint to validate that token, then allows administrative sends only from addresses in `ADMIN_EMAILS`.
+- The Worker verifies the Firebase ID token signature against Firebase's rotating public keys, then allows administrative sends only from addresses in `ADMIN_EMAILS`. No Firebase API key is needed by the Worker.
 - A client can request a push only to their own OneSignal external ID after redeeming a reward; they cannot target another client.
 - The OneSignal App API key exists only as a Cloudflare secret.
 
