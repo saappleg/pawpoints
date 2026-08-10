@@ -87,11 +87,7 @@
     <!-- Compiled Local Tailwind CSS Output -->
     <link rel="stylesheet" href="output.css?v=2">
 
-    <!-- Reliable QR Code Generator CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-    <!-- Confetti Engine CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <!-- Leaflet is only used after the map view is opened. -->
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- Firebase Web SDKs (Synchronous to prevent initialization crash) -->
@@ -100,7 +96,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 
     <!-- OneSignal uses a separate, narrow-scope worker so it does not conflict with this PWA's offline worker. -->
     <script>
@@ -483,7 +478,7 @@
                 <section class="rainbow-frame shadow-xl">
                     <div class="rainbow-frame-inner bg-indigo-600 dark:bg-[#111827] text-white p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8 border border-transparent dark:border-gray-800 transition-colors">
                         <div class="space-y-4 max-w-xl text-center md:text-left z-10">
-                            <span class="bg-indigo-500/40 text-indigo-100 border border-indigo-400/30 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
+                            <span class="bg-indigo-800 text-white border border-indigo-300/60 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Trusted Local Pet Sitting</span>
                             <h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Pet Care by Steven: Dedicated In-Home Sitting & Dog Walking</h2>
                             <p class="text-indigo-100 dark:text-gray-300 text-sm md:text-base leading-relaxed">
                                 Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
@@ -508,14 +503,14 @@
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="space-y-1 text-center md:text-left">
                         <div class="flex items-center justify-center md:justify-start gap-2">
-                            <span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Clients</span>
+                            <span class="bg-emerald-700 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Clients</span>
                             <h2 class="font-extrabold text-base text-gray-900 dark:text-white">First-time clients: free Meet &amp; Greet available</h2>
                         </div>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
                             Prefer to meet before booking? Schedule a free 30-minute in-home introduction to review your pet’s routine, care needs, and home notes.
                         </p>
                     </div>
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="w-full md:w-auto shrink-0 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
                         <span>☕ Book on WhatsApp</span>
                     </a>
                 </section>
@@ -539,10 +534,10 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 space-y-3">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">How We Compare</h3>
                             <dl class="divide-y divide-gray-200 dark:divide-gray-800 text-sm">
-                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">In-home consistency</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400 text-right">Pet Care by Steven ✓</dd></div>
-                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Same provider each visit</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400">Always</dd></div>
-                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Real-time photo visit reports</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400">Included</dd></div>
-                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Emergency plan + vet release</dt><dd class="font-bold text-emerald-600 dark:text-emerald-400">Standard</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">In-home consistency</dt><dd class="font-bold text-emerald-700 dark:text-emerald-300 text-right">Pet Care by Steven ✓</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Same provider each visit</dt><dd class="font-bold text-emerald-700 dark:text-emerald-300">Always</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Real-time photo visit reports</dt><dd class="font-bold text-emerald-700 dark:text-emerald-300">Included</dd></div>
+                                <div class="flex justify-between gap-4 py-2.5"><dt class="font-semibold text-gray-600 dark:text-gray-300">Emergency plan + vet release</dt><dd class="font-bold text-emerald-700 dark:text-emerald-300">Standard</dd></div>
                             </dl>
                         </div>
                     </div>
@@ -2373,6 +2368,31 @@
 
     <!-- Application JavaScript Logic -->
     <script>
+        const externalScriptLoads = new Map();
+        let analyticsReady = false;
+
+        function loadExternalScript(src, id) {
+            if (externalScriptLoads.has(src)) return externalScriptLoads.get(src);
+            const existing = id ? document.getElementById(id) : null;
+            const load = new Promise((resolve, reject) => {
+                if (existing) {
+                    if (existing.dataset.loaded === 'true') return resolve();
+                    existing.addEventListener('load', resolve, { once: true });
+                    existing.addEventListener('error', () => reject(new Error(`Could not load ${src}`)), { once: true });
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                if (id) script.id = id;
+                script.addEventListener('load', () => { script.dataset.loaded = 'true'; resolve(); }, { once: true });
+                script.addEventListener('error', () => reject(new Error(`Could not load ${src}`)), { once: true });
+                document.head.appendChild(script);
+            });
+            externalScriptLoads.set(src, load);
+            return load;
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyAByvA8nPtXzfrQpkoh5XrBu9k3UdPzO7E",
             authDomain: "paw-points-app.firebaseapp.com",
@@ -2398,11 +2418,19 @@
             console.warn('App Check is not active yet:', err.message);
         }
 
-        try {
-            firebase.analytics();
-        } catch (err) {
-            console.warn('Analytics is unavailable in this browser:', err.message);
-        }
+        // Analytics is useful, but it is not needed to render or operate the portal.
+        // Load it after the page is interactive instead of blocking the first view.
+        window.addEventListener('load', () => {
+            window.setTimeout(async () => {
+                try {
+                    await loadExternalScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js', 'firebase-analytics-sdk');
+                    firebase.analytics();
+                    analyticsReady = true;
+                } catch (err) {
+                    console.debug('Analytics is unavailable in this browser:', err.message);
+                }
+            }, 1200);
+        }, { once: true });
         
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -2737,6 +2765,7 @@
                 },
 
                 trackEvent(name, params = {}) {
+                    if (!analyticsReady) return;
                     try {
                         firebase.analytics().logEvent(name, params);
                     } catch (err) {
@@ -2745,7 +2774,13 @@
                     }
                 },
 
-                fireConfetti() {
+                async fireConfetti() {
+                    try {
+                        await loadExternalScript('https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js', 'canvas-confetti-sdk');
+                    } catch (err) {
+                        console.debug('Celebration effect unavailable:', err.message);
+                        return;
+                    }
                     if (typeof confetti === 'function') {
                         confetti({
                             particleCount: 150,
@@ -3841,10 +3876,16 @@
                     }
                 },
 
-                generateAdminBadge() {
+                async generateAdminBadge() {
                     const badgeDiv = document.getElementById("admin-qrcode");
                     if (badgeDiv) {
                         badgeDiv.innerHTML = "";
+                        try {
+                            await loadExternalScript('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js', 'qrcode-sdk');
+                        } catch (err) {
+                            badgeDiv.textContent = 'QR code could not load. Please try again.';
+                            return;
+                        }
                         if (typeof QRCode !== 'undefined' && this.qrBadgeUrl.trim()) {
                             new QRCode(badgeDiv, { text: this.qrBadgeUrl.trim(), width: 140, height: 140 });
                         }
