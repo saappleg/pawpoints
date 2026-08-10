@@ -1,18 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() {
-      return request.auth != null;
-    }
-
-    function isAdmin() {
-      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
-    }
-
-    function ownsClient(userId) {
-      return signedIn() && request.auth.uid == userId;
-    }
-
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function ownsClient(userId) { return signedIn() && request.auth.uid == userId; }
     function updatesOnlyClientProfile() {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
         'name', 'email', 'phone', 'address', 'pets', 'homeEntryNotes',
@@ -20,36 +11,24 @@ service cloud.firestore {
         'vetPhone', 'vetAuth', 'houseChecklist', 'fcmToken', 'referralCode'
       ]);
     }
-
     function validCoupon(title) {
       let coupons = request.resource.data.coupons;
       let coupon = coupons[coupons.size() - 1];
       return coupons.size() == resource.data.coupons.size() + 1
-        && coupon.title == title
-        && coupon.used == false
+        && coupon.title == title && coupon.used == false
         && coupon.code.matches('PAW-[A-Z0-9]{8}');
     }
-
     function isValidClientRewardClaim() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'coupons'])
-        && (
-          (resource.data.points >= 5000
-            && request.resource.data.points == resource.data.points - 5000
-            && validCoupon('$10 Off Next Visit'))
-          ||
-          (resource.data.points >= 8000
-            && request.resource.data.points == resource.data.points - 8000
-            && validCoupon('$20 Off Next Visit'))
-        );
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'coupons']) && (
+        (resource.data.points >= 5000 && request.resource.data.points == resource.data.points - 5000 && validCoupon('$10 Off Next Visit')) ||
+        (resource.data.points >= 8000 && request.resource.data.points == resource.data.points - 8000 && validCoupon('$20 Off Next Visit'))
+      );
     }
 
-    // Create and manage these documents only from Firebase Console or a trusted server.
-    // A signed-in user may only check their own role document.
     match /admins/{userId} {
       allow get: if ownsClient(userId);
       allow list, create, update, delete: if false;
     }
-
     match /clients/{userId} {
       allow get: if ownsClient(userId) || isAdmin();
       allow list: if isAdmin();
@@ -57,83 +36,50 @@ service cloud.firestore {
       allow update: if isAdmin() || (ownsClient(userId) && (updatesOnlyClientProfile() || isValidClientRewardClaim()));
       allow delete: if isAdmin();
     }
-
-    // Referral codes expose only a code-to-owner mapping, never client profiles.
     match /referral_codes/{code} {
       allow get: if signedIn();
       allow list: if false;
-      allow create: if signedIn()
-        && request.resource.data.keys().hasOnly(['ownerUid', 'createdAt'])
-        && request.resource.data.ownerUid == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.keys().hasOnly(['ownerUid', 'createdAt']) && request.resource.data.ownerUid == request.auth.uid;
       allow update, delete: if isAdmin();
     }
-
-    // A new client records a pending referral. An administrator awards points after review.
     match /referral_claims/{clientUid} {
       allow get: if signedIn() && (request.auth.uid == clientUid || isAdmin());
       allow list, update, delete: if isAdmin();
-      allow create: if signedIn()
-        && request.auth.uid == clientUid
+      allow create: if signedIn() && request.auth.uid == clientUid
         && request.resource.data.keys().hasOnly(['referrerUid', 'clientUid', 'status', 'createdAt'])
         && request.resource.data.clientUid == request.auth.uid
         && request.resource.data.referrerUid != request.auth.uid
         && request.resource.data.status == 'pending';
     }
-
     match /community_guides/{guideId} {
       allow read: if true;
       allow create: if signedIn();
-      allow update: if isAdmin() || (
-        signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvoters', 'votes'])
-      );
+      allow update: if isAdmin() || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvoters', 'votes']));
       allow delete: if isAdmin();
-
-      match /comments/{commentId} {
-        allow read: if true;
-        allow create: if signedIn()
-          && request.resource.data.keys().hasOnly(['authorUid', 'authorName', 'message', 'createdAt'])
-          && request.resource.data.authorUid == request.auth.uid
-          && request.resource.data.message is string
-          && request.resource.data.message.size() > 0
-          && request.resource.data.message.size() <= 500;
-        allow update: if false;
-        allow delete: if isAdmin();
-      }
     }
-
+    match /community_guides/{guideId}/comments/{commentId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['authorUid', 'authorName', 'message', 'createdAt'])
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 500;
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if signedIn() && request.resource.data.approved == false;
       allow update, delete: if isAdmin();
     }
-
-    match /gallery_photos/{photoId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    match /faqs/{faqId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    match /broadcasts/{broadcastId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    match /settings/{settingId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
+    match /gallery_photos/{photoId} { allow read: if true; allow write: if isAdmin(); }
+    match /faqs/{faqId} { allow read: if true; allow write: if isAdmin(); }
+    match /broadcasts/{broadcastId} { allow read: if true; allow write: if isAdmin(); }
+    match /settings/{settingId} { allow read: if true; allow write: if isAdmin(); }
     match /search_logs/{logId} {
       allow create: if request.resource.data.keys().hasOnly(['query', 'covered', 'timestamp']);
       allow read, update, delete: if isAdmin();
     }
-
-    match /{document=**} {
-      allow read, write: if false;
-    }
+    match /{document=**} { allow read, write: if false; }
   }
 }
