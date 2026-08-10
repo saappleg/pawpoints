@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-data="pawApp()" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="pawApp()" @resize.window="showProfileModal && positionProfilePanel()" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,7 +114,8 @@
         .trail-submission-modal { z-index: 2000; }
         .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
         .app-modal { z-index: 2000; }
-        .profile-modal { z-index: 2000; pointer-events: none; }
+        /* Keep the account dropdown below the sticky header so its trigger always remains tappable. */
+        .profile-modal { z-index: 1150; pointer-events: auto; }
         .profile-modal-dialog {
             pointer-events: auto;
             position: fixed;
@@ -122,8 +123,10 @@
             right: 1rem;
             width: min(23rem, calc(100vw - 2rem));
             max-width: none;
-            max-height: calc(100dvh - 6rem);
+            max-height: var(--profile-panel-max-height, calc(100dvh - 6rem));
             overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
             margin: 0;
             padding: 0.9rem;
             border-radius: 1.25rem;
@@ -235,7 +238,6 @@
                 right: 0.75rem;
                 left: 0.75rem;
                 width: auto;
-                max-height: calc(100dvh - 1rem);
                 padding: 0.75rem;
             }
             .profile-modal-dialog::before { display: none; }
@@ -339,7 +341,7 @@
 
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
-                            <button x-ref="profileTrigger" x-show="isVerified" @click="triggerViewTransition(() => toggleProfilePanel())" :aria-expanded="showProfileModal" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <button x-ref="profileTrigger" x-show="isVerified" @click="toggleProfilePanel()" :aria-expanded="showProfileModal" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                                 <span class="h-5 w-5 shrink-0 overflow-hidden rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px]" aria-hidden="true">
                                     <img x-show="(userData.photoUrl || user?.photoURL) && !profilePhotoFailed" :src="userData.photoUrl || user?.photoURL" alt="" class="h-full w-full object-cover" @error="profilePhotoFailed = true" @load="profilePhotoFailed = false">
                                     <span x-show="!(userData.photoUrl || user?.photoURL) || profilePhotoFailed">👤</span>
@@ -1636,14 +1638,14 @@
         </div>
 
         <!-- ACCOUNT PROFILE MODAL -->
-        <div x-show="showProfileModal" x-transition x-cloak class="profile-modal fixed inset-0" role="dialog" aria-modal="false" aria-labelledby="modal-profile-title">
-            <div @click.away="showProfileModal = false" :style="{ top: profilePanelTop }" class="profile-modal-dialog bg-white dark:bg-[#111827] space-y-4 border dark:border-gray-800">
+        <div x-show="showProfileModal" x-cloak @click.self="closeProfilePanel()" @keydown.escape.window="closeProfilePanel()" class="profile-modal fixed inset-0" role="dialog" aria-modal="false" aria-labelledby="modal-profile-title">
+            <div @click.stop :style="{ top: profilePanelTop, '--profile-panel-max-height': profilePanelMaxHeight }" class="profile-modal-dialog bg-white dark:bg-[#111827] space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 px-1 pb-3">
                     <div>
                         <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white" x-text="profilePanelView === 'menu' ? 'Account' : 'Your Profile & Preferences'"></h2>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5" x-text="profilePanelView === 'menu' ? 'Manage your account and preferences.' : 'Keep your contact details current so care updates reach you.'"></p>
                     </div>
-                    <button @click="showProfileModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
+                    <button @click="closeProfilePanel()" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
                 </div>
 
                 <div x-show="profilePanelView === 'menu'" x-cloak class="space-y-2 text-xs">
@@ -1667,8 +1669,8 @@
                     </div>
                     <div x-show="isAdmin" x-cloak class="rounded-2xl bg-slate-800 border border-slate-600 p-3.5 space-y-2">
                         <p class="font-bold text-white">👑 Admin tools</p>
-                        <button type="button" @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" :class="{ 'is-active': adminModeActive }" class="admin-mode-toggle w-full py-2.5 text-xs font-bold rounded-xl transition" x-text="adminModeActive ? 'Admin Mode: On' : 'Turn Admin Mode On'"></button>
-                        <button x-show="adminModeActive" type="button" @click="showProfileModal = false; openAdminModal('points')" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl transition">Open Admin Workspace</button>
+                        <button type="button" @click="adminModeActive = !adminModeActive" :class="{ 'is-active': adminModeActive }" class="admin-mode-toggle w-full py-2.5 text-xs font-bold rounded-xl transition" x-text="adminModeActive ? 'Admin Mode: On' : 'Turn Admin Mode On'"></button>
+                        <button x-show="adminModeActive" type="button" @click="closeProfilePanel(); openAdminModal('points')" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl transition">Open Admin Workspace</button>
                     </div>
                     <button type="button" @click="logout()" class="account-menu-action w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left text-red-600 dark:text-red-400 transition"><span class="text-lg">↪</span><span class="font-bold">Log out</span></button>
                 </div>
@@ -1726,7 +1728,7 @@
                     <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
                     <div class="flex space-x-2 pt-2">
-                        <button type="button" @click="showProfileModal = false" class="flex-1 py-3 bg-gray-200 dark:bg-gray-800 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">Cancel</button>
+                        <button type="button" @click="closeProfilePanel()" class="flex-1 py-3 bg-gray-200 dark:bg-gray-800 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">Cancel</button>
                         <button type="submit" class="flex-1 py-3 bg-brand-600 text-white text-sm font-bold rounded-2xl hover:bg-brand-700 transition">Save Profile</button>
                     </div>
                 </form>
@@ -2327,6 +2329,7 @@
                 showProfileModal: false,
                 profilePanelView: 'menu',
                 profilePanelTop: '5rem',
+                profilePanelMaxHeight: 'calc(100dvh - 6rem)',
                 showAdminModal: false,
                 showAddTrailModal: false,
                 vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
@@ -2999,18 +3002,28 @@
                 openProfilePanel(view = 'menu') {
                     this.profilePanelView = view;
                     this.showProfileModal = true;
-                    this.$nextTick(() => {
-                        const header = this.$refs.siteHeader;
-                        if (header) this.profilePanelTop = `${Math.round(header.getBoundingClientRect().bottom + 8)}px`;
-                    });
+                    this.$nextTick(() => this.positionProfilePanel());
                 },
 
                 toggleProfilePanel() {
                     if (this.showProfileModal) {
-                        this.showProfileModal = false;
+                        this.closeProfilePanel();
                         return;
                     }
                     this.openProfilePanel('menu');
+                },
+
+                closeProfilePanel() {
+                    this.showProfileModal = false;
+                    this.profilePanelView = 'menu';
+                },
+
+                positionProfilePanel() {
+                    const header = this.$refs.siteHeader;
+                    if (!header) return;
+                    const top = Math.round(header.getBoundingClientRect().bottom + 8);
+                    this.profilePanelTop = `${top}px`;
+                    this.profilePanelMaxHeight = `${Math.max(220, Math.floor(window.innerHeight - top - 12))}px`;
                 },
 
                 async loadServiceAreasFromFirestore() {
