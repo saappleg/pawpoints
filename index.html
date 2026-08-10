@@ -309,18 +309,19 @@
                 <div class="header-actions flex items-center gap-2">
                     <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" aria-label="Book Service" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                         <span>🐕</span>
-                        <span class="hidden sm:inline">Book Service</span>
+                        <span>Book Service</span>
                     </a>
 
                     <button @click="toggleDarkMode()" class="theme-toggle-btn p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" aria-label="Toggle Dark Mode">
                         <span x-show="!darkMode">🌙</span>
                         <span x-show="darkMode" x-cloak>☀️</span>
+                        <span class="text-[11px] font-bold">Theme</span>
                     </button>
 
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
-                            <button x-show="isVerified" @click="triggerViewTransition(() => { showProfileModal = true })" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
-                                <span>👤</span><span class="hidden md:inline">Profile</span>
+                            <button x-show="isVerified" @click="triggerViewTransition(() => { profilePanelView = 'menu'; showProfileModal = true })" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                                <span>👤</span><span>Profile</span>
                             </button>
                         </div>
                     </template>
@@ -925,7 +926,7 @@
                                     <span>📋</span>
                                     <span>House & Care Sheet</span>
                                 </button>
-                                <button @click="triggerViewTransition(() => { showProfileModal = true })" aria-label="Account Profile" class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-4 rounded-2xl font-bold text-xs transition border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2">
+                                <button @click="triggerViewTransition(() => { profilePanelView = 'details'; showProfileModal = true })" aria-label="Account Profile" class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-4 rounded-2xl font-bold text-xs transition border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2">
                                     <span>⚙️</span>
                                     <span>Account Profile</span>
                                 </button>
@@ -1617,13 +1618,30 @@
             <div @click.away="showProfileModal = false" class="profile-modal-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
-                        <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white">Your Profile &amp; Preferences</h2>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Keep your contact details current so care updates reach you.</p>
+                        <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white" x-text="profilePanelView === 'menu' ? 'Account' : 'Your Profile & Preferences'"></h2>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5" x-text="profilePanelView === 'menu' ? 'Manage your account and preferences.' : 'Keep your contact details current so care updates reach you.'"></p>
                     </div>
                     <button @click="showProfileModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
                 </div>
 
-                <form @submit.prevent="updateUserProfile()" class="space-y-4 text-xs">
+                <div x-show="profilePanelView === 'menu'" x-cloak class="space-y-3 text-xs">
+                    <div class="flex items-center gap-3 rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3.5">
+                        <div class="h-10 w-10 shrink-0 rounded-full bg-brand-600 text-white flex items-center justify-center text-lg font-black" x-text="(userData.name || user?.email || 'P').charAt(0).toUpperCase()"></div>
+                        <div class="min-w-0"><p class="truncate font-bold text-gray-900 dark:text-white" x-text="userData.name || 'Pet Parent'"></p><p class="truncate text-[11px] text-gray-500 dark:text-gray-400" x-text="user?.email"></p></div>
+                    </div>
+                    <button type="button" @click="profilePanelView = 'details'" class="w-full flex items-center gap-3 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-[#0d1117] dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-800 px-4 py-3 text-left transition">
+                        <span class="text-lg">👤</span><span><span class="block font-bold text-gray-900 dark:text-white">Profile &amp; care settings</span><span class="block mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">Contact details, home notes, checklist, and alerts</span></span>
+                    </button>
+                    <div x-show="isAdmin" x-cloak class="rounded-2xl bg-slate-800 border border-slate-600 p-3.5 space-y-2">
+                        <p class="font-bold text-white">👑 Admin tools</p>
+                        <button type="button" @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" :class="adminModeActive ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-900'" class="w-full py-2.5 text-xs font-bold rounded-xl transition" x-text="adminModeActive ? 'Admin Mode: On' : 'Turn Admin Mode On'"></button>
+                        <button x-show="adminModeActive" type="button" @click="showProfileModal = false; openAdminModal('points')" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl transition">Open Admin Workspace</button>
+                    </div>
+                    <button type="button" @click="logout()" class="w-full flex items-center gap-3 rounded-2xl bg-gray-50 hover:bg-red-50 dark:bg-[#0d1117] dark:hover:bg-red-950/30 border border-gray-200 dark:border-gray-800 px-4 py-3 text-left text-red-600 dark:text-red-400 transition"><span class="text-lg">↪</span><span class="font-bold">Log out</span></button>
+                </div>
+
+                <form x-show="profilePanelView === 'details'" x-cloak @submit.prevent="updateUserProfile()" class="space-y-4 text-xs">
+                    <button type="button" @click="profilePanelView = 'menu'" class="text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400">← Back to account menu</button>
                     <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 space-y-4">
                         <p class="font-bold text-gray-900 dark:text-white">Contact details</p>
                     <div>
@@ -1666,15 +1684,6 @@
                         </button>
                     </div>
 
-                    <div x-show="isAdmin" x-cloak class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 space-y-3">
-                        <div>
-                            <p class="font-bold text-amber-950 dark:text-amber-100">👑 Admin controls</p>
-                            <p class="text-[11px] text-amber-800 dark:text-amber-200 mt-1">Keep client view on for normal browsing, then switch it on when you need management tools.</p>
-                        </div>
-                        <button type="button" @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" :class="adminModeActive ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-white dark:bg-gray-800 text-amber-900 dark:text-amber-100 border border-amber-300 dark:border-amber-700'" class="w-full py-3 text-sm font-bold rounded-xl transition" x-text="adminModeActive ? '👑 Admin Mode: On' : '👁️ Turn Admin Mode On'"></button>
-                        <button x-show="adminModeActive" type="button" @click="showProfileModal = false; openAdminModal('points')" class="w-full py-3 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-bold rounded-xl transition">Open Admin Workspace</button>
-                    </div>
-
                     <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
                     <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
@@ -1682,7 +1691,6 @@
                         <button type="button" @click="showProfileModal = false" class="flex-1 py-3 bg-gray-200 dark:bg-gray-800 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">Cancel</button>
                         <button type="submit" class="flex-1 py-3 bg-brand-600 text-white text-sm font-bold rounded-2xl hover:bg-brand-700 transition">Save Profile</button>
                     </div>
-                    <button type="button" @click="logout()" class="w-full py-2 text-xs font-bold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition">↪ Log out of this account</button>
                 </form>
             </div>
         </div>
@@ -2276,6 +2284,7 @@
                 showVetAuthModal: false,
                 showChecklistModal: false,
                 showProfileModal: false,
+                profilePanelView: 'menu',
                 showAdminModal: false,
                 showAddTrailModal: false,
                 vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
