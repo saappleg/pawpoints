@@ -6,10 +6,23 @@
   "start_url": "/?view=home",
   "scope": "/",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "orientation": "portrait-primary",
   "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "lifestyle"
+  ],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

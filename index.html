@@ -65,7 +65,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.webp">
 
     <!-- PWA Manifest & Theme Color -->
-    <link rel="manifest" href="manifest.json?v=final">
+    <link rel="manifest" href="manifest.json?v=6">
     <meta name="theme-color" content="#4f46e5">
 
     <!-- Compiled Local Tailwind CSS Output -->
@@ -1921,12 +1921,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => {
-                        reg.update();
-                        if (window.Notification && Notification.permission === 'default') {
-                            Notification.requestPermission();
-                        }
-                    })
+                    .then(reg => reg.update())
                     .catch(err => console.log('Service Worker failed:', err));
             });
         }
