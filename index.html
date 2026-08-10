@@ -149,6 +149,7 @@
         body {
             font-family: 'Inter', sans-serif;
             transition: background-color 0.3s ease, color 0.2s ease;
+            overflow-x: clip;
         }
 
         body.modal-open {
@@ -164,6 +165,38 @@
             position: sticky;
             top: var(--top-bar-height);
             z-index: 1200;
+        }
+
+        .header-actions { min-width: 0; }
+        .social-proof-toast { z-index: 1300; }
+
+        @media (max-width: 767px) {
+            .site-header-content {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 0.75rem;
+                padding-top: 0.9rem;
+                padding-bottom: 0.75rem;
+            }
+            .header-brand { justify-content: center; min-width: 0; }
+            .header-brand-copy { min-width: 0; }
+            .header-brand-copy h1 { font-size: 1.1rem; }
+            .header-brand-copy p { font-size: 0.7rem; }
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .header-actions > *, .header-actions .profile-actions > * { margin-left: 0 !important; }
+            .header-actions .profile-actions { gap: 0.5rem; }
+            .social-proof-toast {
+                right: 1rem;
+                bottom: 5.25rem;
+                left: auto;
+                max-width: min(20rem, calc(100vw - 2rem));
+                padding: 0.75rem;
+            }
         }
 
         footer {
@@ -232,12 +265,12 @@
         
         <div class="rainbow-top-bar sticky top-0 z-40"></div>
         <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-            <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-                <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
+            <div class="site-header-content max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="header-brand flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                     <div class="h-12 w-12 shrink-0 transition-transform hover:scale-105">
                         <img src="android-chrome-192x192.webp" alt="Pet Care by Steven Logo" width="48" height="48" style="aspect-ratio: 1 / 1;" fetchpriority="high" decoding="async" class="w-full h-full object-cover rounded-full shadow-sm" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><text y=%2250%22 font-size=%2240%22>🐾</text></svg>'">
                     </div>
-                    <div>
+                    <div class="header-brand-copy">
                         <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Pet Care by Steven</h1>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Professional Pet Sitting & Dog Walking</p>
                     </div>
@@ -256,14 +289,15 @@
                     </button>
                 </nav>
 
-                <div class="flex items-center space-x-2">
+                <div class="header-actions flex items-center gap-2">
                     <template x-if="user && isAdmin">
                         <button 
                             @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" 
                             aria-label="Toggle Admin Mode"
                             :class="adminModeActive ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600'"
                             class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition flex items-center gap-1.5 shadow-sm">
-                            <span x-text="adminModeActive ? '👑 Admin Mode: ON' : '👁️ Client View (Admin OFF)'"></span>
+                            <span class="hidden md:inline" x-text="adminModeActive ? '👑 Admin Mode: ON' : '👁️ Client View (Admin OFF)'"></span>
+                            <span class="md:hidden" x-text="adminModeActive ? '👑' : '👁️'"></span>
                         </button>
                     </template>
 
@@ -283,12 +317,12 @@
                     </button>
 
                     <template x-if="user">
-                        <div class="flex items-center space-x-2">
+                        <div class="profile-actions flex items-center gap-2">
                             <button x-show="isVerified" @click="triggerViewTransition(() => { showProfileModal = true })" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
-                                <span>👤 Profile</span>
+                            <span>👤</span><span class="hidden md:inline">Profile</span>
                             </button>
                             <button @click="logout()" aria-label="Log Out" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-slate-200 px-3 py-2 rounded-lg font-bold transition">
-                                Log Out
+                                <span>↪</span><span class="hidden md:inline"> Log Out</span>
                             </button>
                         </div>
                     </template>
@@ -634,7 +668,7 @@
                             <input 
                                 type="text" 
                                 x-model="zipInput" 
-                                @input="checkServiceArea()"
+                                @input.debounce.650ms="checkServiceArea()"
                                 placeholder="Start typing City or Zip (e.g., Felicity, 45120, 47250)" 
                                 aria-label="Search by city or zip code"
                                 class="w-full px-4 py-3.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-xs focus:ring-2 focus:ring-brand-500 outline-none shadow-sm">
@@ -642,6 +676,10 @@
                         <template x-if="serviceResult">
                             <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3.5 rounded-xl border text-xs font-semibold text-center transition-all duration-200">
                                 <span x-text="serviceResult.message"></span>
+                                <div x-show="!serviceResult.covered" class="mt-3 flex flex-col sm:flex-row justify-center gap-2">
+                                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27m%20checking%20whether%20you%20serve%20my%20area." target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-700">💬 Ask on WhatsApp</a>
+                                    <a href="#care-plan" class="inline-flex items-center justify-center rounded-lg border border-current px-3 py-2 hover:bg-amber-100 dark:hover:bg-amber-900/40">Request a care plan</a>
+                                </div>
                             </div>
                         </template>
                     </div>
@@ -1930,7 +1968,7 @@
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 translate-y-4"
             x-cloak
-            class="fixed bottom-6 left-6 z-50 bg-slate-900 text-white border border-slate-700 p-3.5 rounded-2xl shadow-xl max-w-xs flex items-center gap-3">
+            class="social-proof-toast fixed bottom-6 left-6 bg-slate-900 text-white border border-slate-700 p-3.5 rounded-2xl shadow-xl max-w-xs flex items-center gap-3">
             <div class="text-xl shrink-0">🐾</div>
             <div class="text-xs">
                 <p class="font-bold text-amber-400">Recent Activity</p>
@@ -2135,16 +2173,10 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        if (db.settings) {
-            try {
-                db.settings({ 
-                    merge: true, 
-                    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED 
-                });
-            } catch(e) {}
-        }
-        
-        db.enablePersistence().catch(err => console.log('Persistence notice:', err.code));
+        // Firestore's old enablePersistence API is being retired. The app keeps
+        // its PWA asset cache through the service worker and uses Firestore's
+        // current default in-memory cache until this compat-based app is fully
+        // migrated to the modular Firestore SDK.
         auth.useDeviceLanguage();
 
         let deferredPrompt;
@@ -2251,6 +2283,7 @@
                 newFaq: { question: '', answer: '' },
                 zipInput: '',
                 serviceResult: null,
+                lastLoggedServiceSearch: null,
                 authMode: 'login',
                 authError: '',
                 authSuccess: '',
@@ -2646,7 +2679,7 @@
                             location: this.newTrailForm.location.trim(),
                             description: this.newTrailForm.description.trim(),
                             petFriendly: this.newTrailForm.petFriendly,
-                            amenities: amenities.length ? amenities : 'No amenities listed',
+                            amenities,
                             safety: this.newTrailForm.safety,
                             bestTime: this.newTrailForm.bestTime,
                             lat: this.newTrailForm.lat,
@@ -2996,13 +3029,13 @@
                 },
 
                 scheduleNextToast() {
-                    const randomDelay = Math.floor(Math.random() * (28000 - 12000 + 1)) + 12000;
+                    const randomDelay = Math.floor(Math.random() * (30000 - 18000 + 1)) + 18000;
                     setTimeout(() => {
                         const randomIndex = Math.floor(Math.random() * this.toastEvents.length);
                         this.toastMessage = this.toastEvents[randomIndex];
                         this.showToast = true;
 
-                        const displayTime = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000;
+                        const displayTime = Math.floor(Math.random() * (4000 - 2500 + 1)) + 2500;
                         setTimeout(() => {
                             this.showToast = false;
                             this.scheduleNextToast();
@@ -3050,12 +3083,19 @@
                         }
                     }
 
+                    const normalizedQuery = cleanQuery;
+                    const now = Date.now();
+                    if (this.lastLoggedServiceSearch && this.lastLoggedServiceSearch.query === normalizedQuery && now - this.lastLoggedServiceSearch.at < 10 * 60 * 1000) {
+                        return;
+                    }
+
                     try {
                         await db.collection('search_logs').add({
                             query: rawQuery,
                             covered: isCovered,
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
+                        this.lastLoggedServiceSearch = { query: normalizedQuery, at: now };
                     } catch (err) {
                         console.error('Failed to log search:', err);
                     }

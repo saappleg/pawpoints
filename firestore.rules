@@ -25,6 +25,23 @@ service cloud.firestore {
         (resource.data.points >= 8000 && request.resource.data.points == resource.data.points - 8000 && validCoupon('$20 Off Next Visit'))
       );
     }
+    function validTrailSubmission() {
+      return request.resource.data.keys().hasOnly([
+        'title', 'location', 'description', 'petFriendly', 'amenities', 'safety', 'bestTime', 'lat', 'lng', 'author', 'votes', 'upvoters', 'createdAt'
+      ])
+        && request.resource.data.title is string && request.resource.data.title.size() >= 2 && request.resource.data.title.size() <= 100
+        && request.resource.data.location is string && request.resource.data.location.size() >= 2 && request.resource.data.location.size() <= 180
+        && request.resource.data.description is string && request.resource.data.description.size() >= 2 && request.resource.data.description.size() <= 2000
+        && request.resource.data.petFriendly in ['Dog friendly', 'Dogs welcome on leash', 'Off-leash area available', 'Pet friendly with restrictions', 'All pets welcome']
+        && request.resource.data.amenities is list && request.resource.data.amenities.size() <= 9
+        && request.resource.data.safety is list && request.resource.data.safety.size() <= 4
+        && request.resource.data.bestTime is string && request.resource.data.bestTime.size() <= 30
+        && (request.resource.data.lat == null || (request.resource.data.lat is number && request.resource.data.lat >= -90 && request.resource.data.lat <= 90))
+        && (request.resource.data.lng == null || (request.resource.data.lng is number && request.resource.data.lng >= -180 && request.resource.data.lng <= 180))
+        && request.resource.data.author is string && request.resource.data.author.size() <= 80
+        && request.resource.data.votes == 0 && request.resource.data.upvoters.size() == 0
+        && request.resource.data.createdAt == request.time;
+    }
 
     match /admins/{userId} {
       allow get: if ownsClient(userId);
@@ -54,7 +71,7 @@ service cloud.firestore {
     }
     match /community_guides/{guideId} {
       allow read: if true;
-      allow create: if signedIn();
+      allow create: if signedIn() && validTrailSubmission();
       allow update: if isAdmin() || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvoters', 'votes']));
       allow delete: if isAdmin();
     }
