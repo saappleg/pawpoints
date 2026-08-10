@@ -99,6 +99,12 @@
         .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
         .profile-modal { z-index: 2000; overflow-y: auto; align-items: flex-start; }
         .profile-modal-dialog { max-height: none; margin: 1rem auto; }
+        .facebook-review-button { background: #1877f2; }
+        .facebook-review-button:hover { background: #166fe5; }
+        .reviews-grid { align-items: start; }
+        .review-card { height: fit-content; }
+        .coverage-map-visual { background: linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%); }
+        .dark .coverage-map-visual { background: linear-gradient(135deg, #062e2b 0%, #172554 100%); }
 
         :root {
             --top-bar-height: 6px;
@@ -387,12 +393,26 @@
                     </div>
                 </section>
 
+                <section class="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <div class="text-center mb-5"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="text-xl font-extrabold text-gray-900 dark:text-white mt-1">Care in four simple steps</h2></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">1️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Request a plan</p></div>
+                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">2️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Free Meet &amp; Greet</p></div>
+                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">3️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Book in Walkies</p></div>
+                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">4️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Get visit updates</p></div>
+                    </div>
+                </section>
+
                 <section id="care-plan" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl scroll-mt-6">
                     <div class="text-center max-w-3xl mx-auto space-y-2 mb-8">
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Not ready to book yet?</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Request a quick personalized care plan</h2>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
                         <p class="text-xs text-brand-700 dark:text-brand-300 font-semibold pt-1">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
+                    </div>
+                    <div class="max-w-3xl mx-auto mb-5 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-4">
+                        <p class="text-xs font-bold text-gray-900 dark:text-white">Helpful to have ready</p>
+                        <p class="text-[11px] text-gray-600 dark:text-gray-300 mt-1">Pet type and count · dates needed · your city/ZIP · care routine or medication notes</p>
                     </div>
                     <form @submit.prevent="submitCarePlanRequest()" class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" x-model.trim="carePlanForm.name" required autocomplete="name" placeholder="Your name" aria-label="Your name" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
@@ -420,12 +440,13 @@
                     </form>
                 </section>
 
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                <section x-data="{ expanded: false }" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                     <div class="space-y-2">
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Day-in-the-life care stories</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Before/after routines that reduce stress for pets</h2>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button @click="expanded = !expanded" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline" x-text="expanded ? 'Hide care stories' : 'Read care stories'">Read care stories</button>
+                    <div x-show="expanded" x-transition class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Anxious Rescue → Calm Midday Routine</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Batavia</p>
@@ -444,12 +465,13 @@
                     </div>
                 </section>
 
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                <section x-data="{ expanded: false }" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                     <div class="space-y-2">
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Safety &amp; reliability</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Emergency protocols, reporting cadence, and plain-language policies</h2>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button @click="expanded = !expanded" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline" x-text="expanded ? 'Hide safety details' : 'View safety details'">View safety details</button>
+                    <div x-show="expanded" x-transition class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Emergency Response</h3>
                             <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">Immediate owner/contact notification, vet transport authorization, and documented treatment decisions when urgent care is needed.</p>
@@ -482,6 +504,15 @@
                                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end p-2.5 text-white text-[10px] font-bold" x-text="photo.caption || 'Pet Visit Photo'"></div>
                             </div>
                         </template>
+                    </div>
+                </section>
+
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                    <div class="text-center sm:text-left"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Pet Parent Notes</span><h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">Simple tips for happier, safer care</h2><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Short, practical reads from Pet Care by Steven.</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Warm weather</p><h3 class="font-bold text-gray-900 dark:text-white">Beat the summer walk heat</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Choose cooler times, bring water, and check pavement before heading out.</p></article>
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Before a visit</p><h3 class="font-bold text-gray-900 dark:text-white">A calm first-day routine</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Leave feeding notes, favorite treats, and access details in one easy-to-find place.</p></article>
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Everyday safety</p><h3 class="font-bold text-gray-900 dark:text-white">Keep pet information current</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Update medication, veterinarian, and emergency contact information before travel.</p></article>
                     </div>
                 </section>
 
@@ -600,7 +631,15 @@
                     </div>
                     <div class="max-w-2xl mx-auto pt-2 space-y-2">
                         <div class="flex items-center justify-between gap-3"><p class="text-xs font-bold text-gray-900 dark:text-white">🗺️ Primary coverage map</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Outline is a quick guide</p></div>
-                        <div id="service-area-map" class="overflow-hidden border border-gray-200 dark:border-gray-700"></div>
+                        <div class="coverage-map-visual overflow-hidden border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4">
+                            <svg viewBox="0 0 700 250" role="img" aria-label="Illustrated map of Pet Care by Steven primary coverage area" class="w-full h-auto">
+                                <path d="M90 60 L300 30 L570 70 L630 155 L500 220 L250 205 L75 150 Z" fill="#6366f1" fill-opacity=".18" stroke="#4f46e5" stroke-width="4" stroke-linejoin="round"/>
+                                <path d="M118 150 C230 95, 355 150, 575 80" fill="none" stroke="#94a3b8" stroke-width="5" stroke-dasharray="10 10" stroke-linecap="round"/>
+                                <g fill="#059669" stroke="#ffffff" stroke-width="3"><circle cx="165" cy="135" r="8"/><circle cx="265" cy="115" r="8"/><circle cx="360" cy="138" r="8"/><circle cx="460" cy="105" r="8"/><circle cx="535" cy="155" r="8"/></g>
+                                <g fill="#1e293b" class="dark:fill-white" font-size="15" font-weight="700"><text x="130" y="165">Cincinnati</text><text x="235" y="95">Amelia</text><text x="325" y="165">Batavia</text><text x="425" y="85">Bethel</text><text x="500" y="185">New Richmond</text></g>
+                                <text x="350" y="55" text-anchor="middle" fill="#4338ca" font-size="19" font-weight="800">Pet Care by Steven Coverage</text>
+                            </svg>
+                        </div>
                     </div>
                 </section>
 
@@ -609,14 +648,14 @@
                         <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
                         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
-                        <div class="flex flex-wrap gap-2 pt-2">
+                        <div class="flex flex-wrap gap-3 pt-3">
                             <a href="https://g.page/r/CfNss-yPfk0nEBM/review" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">★ Leave a Google Review</a>
-                            <a href="https://www.facebook.com/petcarebysteven/reviews" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-[#1877f2] hover:bg-[#166fe5] text-white px-4 py-2 rounded-xl text-xs font-bold transition">f Share a Facebook Review</a>
+                            <a href="https://www.facebook.com/petcarebysteven/reviews" target="_blank" rel="noopener noreferrer" class="facebook-review-button inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-xl text-xs font-bold transition">f Share a Facebook Review</a>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
+                    <div class="reviews-grid grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
                         <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
-                            <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-100 dark:border-gray-800 p-6 rounded-2xl shadow-sm space-y-3 relative flex flex-col justify-between">
+                            <div class="review-card bg-gray-50 dark:bg-[#0d1117] border border-gray-100 dark:border-gray-800 p-6 rounded-2xl shadow-sm space-y-3 relative flex flex-col justify-between">
                                 <div class="space-y-2">
                                     <div class="text-amber-400 text-sm" x-text="'★'.repeat(rev.stars || 5)"></div>
                                     <p class="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed" x-text="`&ldquo;${rev.comment}&rdquo;`"></p>
