@@ -1194,11 +1194,11 @@
                                         </div>
                                         
                                         <button 
-                                            @click="toggleCouponUsed(index)" 
+                                            @click="showCouponForRedemption(index)"
                                             :disabled="coupon.used"
                                             class="px-4 py-2 rounded-xl text-xs font-bold transition self-end sm:self-center" 
                                             :class="coupon.used ? 'bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'">
-                                            <span x-text="coupon.used ? '🔒 Permanently Used' : 'Mark as Used'"></span>
+                                            <span x-text="coupon.used ? '🔒 Used' : 'Use with Steven'"></span>
                                         </button>
                                     </div>
                                 </template>
@@ -1713,6 +1713,17 @@
                     </div>
 
                     <button @click="updateClientPoints()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition shadow-sm">Update Client Points & Tier</button>
+
+                    <div x-show="adminForm.targetUid" class="border-t dark:border-gray-800 pt-4 space-y-2">
+                        <div><p class="font-bold text-gray-900 dark:text-white">Coupon redemption</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Mark a coupon used only after applying it to the booking.</p></div>
+                        <template x-for="(coupon, index) in getClientCoupons(adminForm.targetUid)" :key="`${coupon.code}-${index}`">
+                            <div class="flex items-center justify-between gap-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3" :class="coupon.used ? 'opacity-60' : ''">
+                                <div class="min-w-0"><p class="font-bold text-emerald-700 dark:text-emerald-300" x-text="coupon.title"></p><p class="font-mono text-[11px] text-gray-700 dark:text-gray-300" x-text="coupon.code"></p></div>
+                                <button @click="markClientCouponUsed(adminForm.targetUid, index)" :disabled="coupon.used" class="shrink-0 px-3 py-2 rounded-lg text-[11px] font-bold" :class="coupon.used ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white'" x-text="coupon.used ? 'Used' : 'Mark used'"></button>
+                            </div>
+                        </template>
+                        <p x-show="getClientCoupons(adminForm.targetUid).length === 0" class="text-[11px] italic text-gray-500 dark:text-gray-400">This client has no coupons.</p>
+                    </div>
                 </div>
 
                 <div x-show="adminTab === 'referrals'" class="space-y-4 text-xs" x-cloak>
@@ -3887,7 +3898,7 @@
                     }
                 },
 
-                async toggleCouponUsed(index) {
+                showCouponForRedemption(index) {
                     if (!this.user) return;
 
                     const coupon = this.userData.coupons[index];
@@ -3897,7 +3908,39 @@
                         return;
                     }
 
-                    alert(`Please show ${coupon.code} to Pet Care by Steven when redeeming it. We will mark it used after the visit.`);
+                    alert(`Show this coupon to Steven when booking:\n\n${coupon.code}\n\nSteven will mark it used after applying it to your booking.`);
+                },
+
+                getClientCoupons(clientUid) {
+                    const client = this.clientList.find(item => item.id === clientUid);
+                    return client?.coupons || [];
+                },
+
+                async markClientCouponUsed(clientUid, couponIndex) {
+                    if (!this.isAdmin || !this.adminModeActive) return;
+                    const client = this.clientList.find(item => item.id === clientUid);
+                    const coupon = client?.coupons?.[couponIndex];
+                    if (!coupon || coupon.used) return;
+                    if (!confirm(`Mark ${coupon.code} as used for ${client.name || 'this client'}?`)) return;
+                    try {
+                        const clientRef = db.collection('clients').doc(clientUid);
+                        const snapshot = await clientRef.get();
+                        if (!snapshot.exists) throw new Error('Client not found.');
+                        const coupons = [...(snapshot.data().coupons || [])];
+                        if (!coupons[couponIndex] || coupons[couponIndex].used) throw new Error('This coupon was already used.');
+                        coupons[couponIndex] = {
+                            ...coupons[couponIndex],
+                            used: true,
+                            usedAt: new Date().toISOString(),
+                            usedBy: this.user.uid
+                        };
+                        await clientRef.update({ coupons });
+                        client.coupons = coupons;
+                        if (clientUid === this.user.uid) this.userData.coupons = coupons;
+                        alert(`${coupons[couponIndex].code} is now marked used.`);
+                    } catch (err) {
+                        alert('Unable to mark this coupon used: ' + err.message);
+                    }
                 },
 
                 async updateClientPoints() {
