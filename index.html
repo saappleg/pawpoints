@@ -391,8 +391,8 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
     
-    <!-- MAIN APP CONTENT (HIDDEN ONLY WHEN PRINTING FRIDGE CARD) -->
-    <div x-show="printMode !== 'fridge'" class="flex flex-col min-h-screen w-full">
+    <!-- MAIN APP CONTENT (HIDDEN WHILE PRINTING) -->
+    <div x-show="printMode === ''" class="flex flex-col min-h-screen w-full">
         
         <div class="rainbow-top-bar sticky top-0 z-40"></div>
         <header x-ref="siteHeader" class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -421,7 +421,7 @@
                 </nav>
 
                 <div class="header-actions flex items-center gap-2">
-                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" aria-label="Book Service" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" @click="trackEvent('walkies_booking_click', { placement: 'header' })" aria-label="Book Service" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                         <span>🐕</span>
                         <span>Book Service</span>
                     </a>
@@ -435,6 +435,11 @@
                                 </span><span>Profile</span>
                             </button>
                         </div>
+                    </template>
+                    <template x-if="!user">
+                        <button @click="currentView = 'loyalty'; authMode = 'login'; authError = ''; authSuccess = ''" aria-label="Sign in or create a client account" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <span aria-hidden="true">👤</span><span>Profile</span>
+                        </button>
                     </template>
                 </div>
             </div>
@@ -468,7 +473,7 @@
                                 Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                             </p>
                             <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                                <a href="#care-plan" aria-label="Request a personalized care plan" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                <a href="#care-plan" @click="trackEvent('care_plan_cta_click', { placement: 'hero' })" aria-label="Request a personalized care plan" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                     <span>📋</span>
                                     <span>Request a Care Plan</span>
                                 </a>
@@ -494,7 +499,7 @@
                             Prefer to meet before booking? Schedule a free 30-minute in-home introduction to review your pet’s routine, care needs, and home notes.
                         </p>
                     </div>
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
                         <span>☕ Book on WhatsApp</span>
                     </a>
                 </section>
@@ -561,13 +566,17 @@
                     </div>
                 </section>
 
-                <section class="getting-started-section rounded-3xl p-6 md:p-8 shadow-sm border">
-                    <div class="text-center mb-5"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="getting-started-title text-xl font-extrabold mt-1">Care in four simple steps</h2></div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">1️⃣</span><p class="font-bold text-xs mt-2">Request a plan</p></div>
-                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">2️⃣</span><p class="font-bold text-xs mt-2">Free Meet &amp; Greet</p></div>
-                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">3️⃣</span><p class="font-bold text-xs mt-2">Book in Walkies</p></div>
-                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">4️⃣</span><p class="font-bold text-xs mt-2">Get visit updates</p></div>
+                <section id="how-it-works" class="getting-started-section rounded-3xl p-6 md:p-8 shadow-sm border">
+                    <div class="text-center max-w-2xl mx-auto mb-6"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="getting-started-title text-2xl font-extrabold mt-1">Care in four simple steps</h2><p class="mt-2 text-xs text-slate-600 dark:text-slate-300">A calm, clear start for you and your pet—no guessing about what comes next.</p></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">1️⃣</span><p class="font-bold text-sm mt-2">Request a care plan</p><p class="text-xs mt-1 leading-relaxed opacity-80">Share your pets, preferred dates, city, and anything important about their routine.</p></div>
+                        <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">2️⃣</span><p class="font-bold text-sm mt-2">Free Meet &amp; Greet</p><p class="text-xs mt-1 leading-relaxed opacity-80">First-time clients can meet Steven for a free 30-minute in-home introduction and key handoff.</p></div>
+                        <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">3️⃣</span><p class="font-bold text-sm mt-2">Book in Walkies</p><p class="text-xs mt-1 leading-relaxed opacity-80">Once the care plan is confirmed, choose your visit dates and times in the Walkies booking portal.</p></div>
+                        <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">4️⃣</span><p class="font-bold text-sm mt-2">Get visit updates</p><p class="text-xs mt-1 leading-relaxed opacity-80">Each visit includes photos and notes, so you know how your pet is doing while you are away.</p></div>
+                    </div>
+                    <div class="mt-5 flex flex-col sm:flex-row justify-center gap-3">
+                        <a href="#care-plan" @click="trackEvent('care_plan_cta_click', { placement: 'how_it_works' })" class="rounded-xl bg-brand-600 hover:bg-brand-700 px-5 py-3 text-center text-xs font-bold text-white transition">Request a care plan</a>
+                        <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'how_it_works' })" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-emerald-500 px-5 py-3 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition">Ask about a Meet &amp; Greet</a>
                     </div>
                 </section>
 
@@ -606,6 +615,36 @@
                         </button>
                         <p class="md:col-span-2 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">For pet-care emergencies, availability is usually 24/7. Non-emergency messages are generally answered between 7:00 AM and 12:00 AM EST; please allow time for a response outside those hours.</p>
                     </form>
+                </section>
+
+                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                        <div class="max-w-2xl space-y-2">
+                            <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">New-client prep</span>
+                            <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">A smoother first visit starts here</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Keep this short checklist handy before your Meet &amp; Greet or first service.</p>
+                        </div>
+                        <button @click="trackEvent('new_client_checklist_print'); printNewClientChecklist()" class="rounded-xl border border-brand-500 px-5 py-3 text-xs font-bold text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-950/30 transition">🖨️ Print checklist</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5 space-y-3"><h3 class="font-bold text-gray-900 dark:text-white">Your pet’s routine</h3><ul class="space-y-2 text-xs text-gray-600 dark:text-gray-300"><li>✓ Feeding amounts and timing</li><li>✓ Medication instructions and supplies</li><li>✓ Walk, potty, play, and sleep routine</li><li>✓ Comfort items, triggers, and favorite treats</li></ul></div>
+                        <div class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5 space-y-3"><h3 class="font-bold text-gray-900 dark:text-white">Your home and contacts</h3><ul class="space-y-2 text-xs text-gray-600 dark:text-gray-300"><li>✓ Entry, parking, alarm, or lockbox details</li><li>✓ Emergency contact and veterinarian information</li><li>✓ Waste, litter, trash, and mail instructions</li><li>✓ Best number for visit updates</li></ul></div>
+                    </div>
+                </section>
+
+                <section class="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-3xl p-7 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="max-w-3xl"><span class="text-[11px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-300">Urgent care</span><h2 class="mt-1 text-xl font-extrabold text-amber-950 dark:text-amber-100">Last-minute and pet-care emergencies</h2><p class="mt-2 text-sm leading-relaxed text-amber-900 dark:text-amber-200">Emergency availability is usually 24/7. For non-emergencies, messages are generally answered from 7:00 AM to 12:00 AM EST; please allow time outside those hours.</p></div>
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%20need%20urgent%20pet-care%20help." @click="trackEvent('whatsapp_click', { placement: 'emergency_care' })" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-center text-xs font-bold text-white transition">💬 Contact Steven on WhatsApp</a>
+                </section>
+
+                <section id="pet-parent-guides" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
+                    <div class="max-w-2xl space-y-2"><span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Pet parent guides</span><h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Helpful notes for calmer care</h2><p class="text-sm text-gray-500 dark:text-gray-400">Short, practical guidance from the routines we use every day.</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <article class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5"><p class="text-xs font-black text-brand-600 dark:text-brand-400">FIRST VISIT</p><h3 class="mt-2 font-bold text-gray-900 dark:text-white">Preparing for your first pet-sitting visit</h3><p class="mt-2 text-xs leading-relaxed text-gray-600 dark:text-gray-300">Leave routines in one place, show where supplies live, and share your pet’s comfort cues—not just the basic instructions.</p></article>
+                        <article class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5"><p class="text-xs font-black text-brand-600 dark:text-brand-400">OVERNIGHTS</p><h3 class="mt-2 font-bold text-gray-900 dark:text-white">What to leave for an overnight sitter</h3><p class="mt-2 text-xs leading-relaxed text-gray-600 dark:text-gray-300">Food, medication, sleep routines, vet information, key contacts, and a few familiar comfort items make the stay easier.</p></article>
+                        <article class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5"><p class="text-xs font-black text-brand-600 dark:text-brand-400">SEASONAL CARE</p><h3 class="mt-2 font-bold text-gray-900 dark:text-white">Hot-weather walking safety</h3><p class="mt-2 text-xs leading-relaxed text-gray-600 dark:text-gray-300">We adjust routes, timing, water breaks, and outdoor duration when heat or storms make a standard walk unsafe.</p></article>
+                        <article class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5"><p class="text-xs font-black text-brand-600 dark:text-brand-400">LOCAL WALKS</p><h3 class="mt-2 font-bold text-gray-900 dark:text-white">Finding a pet-friendly local walk</h3><p class="mt-2 text-xs leading-relaxed text-gray-600 dark:text-gray-300">Visit the Trails Guide for community-shared paths, amenities, shade, parking, and pet-access notes.</p><button @click="currentView = 'guide'; trackEvent('trail_guide_open', { placement: 'pet_parent_guides' })" class="mt-3 text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">Open Trails Guide →</button></article>
+                    </div>
                 </section>
 
                 <section x-data="{ expanded: false }" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
@@ -787,7 +826,7 @@
                             <div :class="serviceResult.covered ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800'" class="p-3.5 rounded-xl border text-xs font-semibold text-center transition-all duration-200">
                                 <span x-text="serviceResult.message"></span>
                                 <div x-show="!serviceResult.covered" class="mt-3 flex flex-col sm:flex-row justify-center gap-2">
-                                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27m%20checking%20whether%20you%20serve%20my%20area." target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-700">💬 Ask on WhatsApp</a>
+                                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27m%20checking%20whether%20you%20serve%20my%20area." @click="trackEvent('whatsapp_click', { placement: 'service_checker' })" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-700">💬 Ask on WhatsApp</a>
                                     <a href="#care-plan" class="inline-flex items-center justify-center rounded-lg border border-current px-3 py-2 hover:bg-amber-100 dark:hover:bg-amber-900/40">Request a care plan</a>
                                 </div>
                             </div>
@@ -807,8 +846,8 @@
                         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
                         <div class="flex flex-wrap gap-3 pt-3">
-                            <a href="https://g.page/r/CfNss-yPfk0nEBM/review" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">★ Leave a Google Review</a>
-                            <a href="https://www.facebook.com/petcarebysteven/reviews" target="_blank" rel="noopener noreferrer" class="facebook-review-button inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-xl text-xs font-bold transition">f Share a Facebook Review</a>
+                            <a href="https://g.page/r/CfNss-yPfk0nEBM/review" @click="trackEvent('google_review_click')" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">★ Leave a Google Review</a>
+                            <a href="https://www.facebook.com/petcarebysteven/reviews" @click="trackEvent('facebook_review_click')" target="_blank" rel="noopener noreferrer" class="facebook-review-button inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-xl text-xs font-bold transition">f Share a Facebook Review</a>
                         </div>
                     </div>
                     <div class="reviews-grid grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
@@ -2057,6 +2096,10 @@
                             <p class="font-bold text-indigo-100 mb-1">Best workflow</p>
                             <p>Use <strong>New message</strong> for broadcasts and scheduling, then use OneSignal’s audience builder and delivery report. Clients must first allow notifications in the portal before they can receive a push.</p>
                         </div>
+                        <div class="rounded-xl border border-indigo-300/25 bg-white/5 p-3 text-[11px] text-slate-200">
+                            <p class="font-bold text-indigo-100 mb-2">Simple campaign ideas</p>
+                            <ul class="space-y-1.5 leading-relaxed"><li>• Welcome to Paw Points — send once after a client subscribes.</li><li>• Holiday availability — schedule 2–3 weeks before a busy period.</li><li>• Seasonal care tip — one useful trail, weather, or routine reminder each month.</li></ul>
+                        </div>
                     </div>
 
                     <div class="border-t dark:border-gray-700 pt-4 space-y-3">
@@ -2181,7 +2224,7 @@
                         </a>
                     </li>
                     <li role="none">
-                        <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20get%20more%20information%20about%20setting%20up%20a%20booking!" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
+                        <a href="https://wa.me/15133025418?text=Hi%20Steven,%20I'd%20like%20to%20get%20more%20information%20about%20setting%20up%20a%20booking!" @click="trackEvent('whatsapp_click', { placement: 'chat_menu' })" target="_blank" rel="noopener noreferrer" role="menuitem" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-900 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800 transition text-xs font-bold">
                             <svg class="w-5 h-5 fill-current text-emerald-600" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                             </svg>
@@ -2305,6 +2348,19 @@
                 <p class="text-sm italic text-gray-500">No emergency contacts provided.</p>
             </template>
         </div>
+    </div>
+
+    <!-- PRINTABLE NEW-CLIENT CHECKLIST -->
+    <div x-show="printMode === 'new-client'" class="p-8 bg-white text-black font-sans w-full max-w-3xl mx-auto" x-cloak>
+        <div class="border-b-4 border-brand-600 pb-4 mb-6">
+            <h1 class="text-4xl font-black text-gray-900">New Client Prep Checklist</h1>
+            <p class="text-lg text-gray-600 mt-1">Pet Care by Steven · Bring this to your Meet &amp; Greet or have it ready before the first visit.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base">
+            <section class="border rounded-2xl p-5"><h2 class="font-bold text-xl mb-4">Your pet’s routine</h2><ul class="space-y-3"><li>☐ Feeding amounts and timing</li><li>☐ Medication instructions and supplies</li><li>☐ Walk, potty, play, and sleep routine</li><li>☐ Comfort items, triggers, and favorite treats</li><li>☐ Any allergies, mobility needs, or health changes</li></ul></section>
+            <section class="border rounded-2xl p-5"><h2 class="font-bold text-xl mb-4">Your home and contacts</h2><ul class="space-y-3"><li>☐ Entry, parking, alarm, or lockbox details</li><li>☐ Emergency contact and veterinarian information</li><li>☐ Waste, litter, trash, and mail instructions</li><li>☐ Best number for visit updates</li><li>☐ Supplies are easy to find</li></ul></section>
+        </div>
+        <p class="mt-8 text-sm text-gray-600">Questions or last-minute changes? Message Steven on WhatsApp at 513-302-5418.</p>
     </div>
 
     <!-- Application JavaScript Logic -->
@@ -2663,6 +2719,22 @@
                     this.$nextTick(() => {
                         window.print();
                     });
+                },
+
+                printNewClientChecklist() {
+                    this.printMode = 'new-client';
+                    this.$nextTick(() => {
+                        window.print();
+                    });
+                },
+
+                trackEvent(name, params = {}) {
+                    try {
+                        firebase.analytics().logEvent(name, params);
+                    } catch (err) {
+                        // Analytics must never interrupt a care-plan request or navigation.
+                        console.debug('Analytics event skipped:', name);
+                    }
                 },
 
                 fireConfetti() {
@@ -3624,6 +3696,7 @@
                         }
                         this.carePlanForm = { name: '', email: '', phone: '', source: '', details: '', honey: '', startedAt: Date.now() };
                         this.carePlanStatus = { submitting: false, success: true, message: 'Your care-plan request is received.' };
+                        this.trackEvent('care_plan_submit_success', { source: request.source.toLowerCase().replace(/\s+/g, '_').slice(0, 40) });
                     } catch (err) {
                         console.error('Care-plan request error:', err);
                         this.carePlanStatus = { submitting: false, success: false, message: 'We could not send your request right now. Please try again or email support@petcarebysteven.me.' };
