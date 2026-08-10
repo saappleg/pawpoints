@@ -283,9 +283,9 @@
                                 Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                             </p>
                             <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                                <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule and Book Walkies" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
-                                    <span>📅</span>
-                                    <span>Schedule & Book Walkies</span>
+                                <a href="#care-plan" aria-label="Request a personalized care plan" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                    <span>📋</span>
+                                    <span>Request a Care Plan</span>
                                 </a>
                                 <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                     <span>🎁</span>
@@ -303,14 +303,14 @@
                     <div class="space-y-1 text-center md:text-left">
                         <div class="flex items-center justify-center md:justify-start gap-2">
                             <span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">New Clients</span>
-                            <h2 class="font-extrabold text-base text-gray-900 dark:text-white">Schedule a Free Meet & Greet</h2>
+                            <h2 class="font-extrabold text-base text-gray-900 dark:text-white">First-time clients: free Meet &amp; Greet available</h2>
                         </div>
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
-                            Want to introduce your dogs or cats before making a booking? Steven will come to your home for a quick 30-minute consultation to learn about feedings, your typical walking paths, and house notes.
+                            Prefer to meet before booking? Schedule a free 30-minute in-home introduction to review your pet’s routine, care needs, and home notes.
                         </p>
                     </div>
-                    <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" aria-label="Schedule Free Meet and Greet" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
-                        <span>☕ Schedule Free Meet & Greet</span>
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="w-full md:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                        <span>☕ Book on WhatsApp</span>
                     </a>
                 </section>
 
@@ -324,7 +324,6 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 space-y-4">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Verified Trust Signals</h3>
                             <div class="flex flex-wrap gap-3 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                                <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Insured &amp; Bonded</span>
                                 <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Background Checked</span>
                                 <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Pet CPR / First Aid</span>
                                 <span class="border border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-2 rounded-2xl">✓ Local Service Specialist</span>
@@ -377,11 +376,12 @@
                     </div>
                 </section>
 
-                <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl">
+                <section id="care-plan" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl scroll-mt-6">
                     <div class="text-center max-w-3xl mx-auto space-y-2 mb-8">
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Not ready to book yet?</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Request a quick personalized care plan</h2>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
+                        <p class="text-xs text-brand-700 dark:text-brand-300 font-semibold pt-1">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
                     </div>
                     <form @submit.prevent="submitCarePlanRequest()" class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" x-model.trim="carePlanForm.name" required autocomplete="name" placeholder="Your name" aria-label="Your name" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
@@ -400,6 +400,7 @@
                         <button type="submit" :disabled="carePlanStatus.submitting" class="bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
                             <span x-text="carePlanStatus.submitting ? 'Sending…' : 'Send Care Plan Request'"></span>
                         </button>
+                        <p class="md:col-span-2 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">For pet-care emergencies, availability is usually 24/7. Non-emergency messages are generally answered between 7:00 AM and 12:00 AM EST; please allow time for a response outside those hours.</p>
                     </form>
                 </section>
 
@@ -524,7 +525,7 @@
                         </div>
                         
                         <div class="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 rounded-2xl text-[11px] text-amber-800 dark:text-amber-400/80 leading-relaxed text-center sm:text-left transition-colors">
-                            <strong class="font-bold">Please Note:</strong> This calculator provides an estimate. Final pricing is not binding until the booking is fully confirmed. A standard mileage reimbursement fee applies for long-distance sittings located more than 50 miles outside of the central service area.
+                            <strong class="font-bold">Please Note:</strong> This calculator provides an estimate. Final pricing is not binding until the booking is fully confirmed. Long-distance daily visits may have extended-distance pricing; overnight and multi-day stays normally do not carry an additional long-distance upcharge.
                         </div>
                     </div>
                 </section>
@@ -573,10 +574,11 @@
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
-                    <div class="text-center sm:text-left space-y-1">
+                    <div class="text-center sm:text-left space-y-3">
                         <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
                         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
+                        <a href="https://g.page/r/CfNss-yPfk0nEBM/review" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">★ Leave a Google Review</a>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
                         <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
