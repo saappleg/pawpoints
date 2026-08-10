@@ -1277,7 +1277,10 @@
                     </div>
                     <div>
                         <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Trail address or city</label>
-                        <input type="text" x-model="newTrailForm.location" @change="findTrailLocation()" placeholder="e.g. 2970 Westwood Northern Blvd, Cincinnati, OH" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <div class="flex gap-2">
+                            <input type="text" x-model="newTrailForm.location" @input.debounce.1500ms="findTrailLocation()" @change="findTrailLocation()" placeholder="e.g. 2970 Westwood Northern Blvd, Cincinnati, OH" required class="min-w-0 flex-1 px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                            <button type="button" @click="findTrailLocation(true)" class="px-3 py-2 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 font-bold rounded-lg whitespace-nowrap">Locate</button>
+                        </div>
                         <p x-show="trailLocationStatus" x-text="trailLocationStatus" :class="newTrailForm.lat !== null ? 'text-emerald-700 dark:text-emerald-300' : 'text-gray-500 dark:text-gray-400'" class="text-[10px] mt-1 font-semibold" aria-live="polite"></p>
                     </div>
                     <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3 rounded-xl space-y-2">
@@ -2330,9 +2333,10 @@
                     [100, 400].forEach(delay => setTimeout(() => this.trailPickerMap?.invalidateSize({ pan: false }), delay));
                 },
 
-                async findTrailLocation() {
+                async findTrailLocation(force = false) {
                     const query = this.newTrailForm.location.trim();
-                    if (query.length < 3 || query === this.lastTrailGeocodeQuery) return;
+                    if (query.length < 3) return;
+                    if (!force && query === this.lastTrailGeocodeQuery) return;
                     this.lastTrailGeocodeQuery = query;
                     this.trailLocationStatus = 'Finding the map location…';
                     try {
@@ -2355,6 +2359,7 @@
                             else this.trailPickerMarker = window.L.marker(latLng).addTo(this.trailPickerMap);
                         }
                     } catch (err) {
+                        console.warn('Trail location lookup failed:', err);
                         this.trailLocationStatus = 'Could not find that location automatically. You can still use Pick on map.';
                     }
                 },
@@ -2374,7 +2379,7 @@
                 async submitNewTrail() {
                     if (!this.newTrailForm.title || !this.newTrailForm.description) return;
                     try {
-                        if (this.newTrailForm.lat === null) await this.findTrailLocation();
+                        if (this.newTrailForm.lat === null) await this.findTrailLocation(true);
                         const trailObj = {
                             title: this.newTrailForm.title.trim(),
                             location: this.newTrailForm.location.trim(),
