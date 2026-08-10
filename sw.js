@@ -1,4 +1,4 @@
-const CACHE_NAME = 'paw-points-offline-v9';
+const CACHE_NAME = 'paw-points-offline-v10';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
@@ -101,18 +101,20 @@ self.addEventListener('push', (event) => {
   try {
     const data = event.data.json();
     const options = {
-      body: data.body || 'You have a new update from Pet Care by Steven!',
+      body: data.body || 'There is a new update waiting in your portal.',
       icon: '/android-chrome-192x192.webp',
       badge: '/android-chrome-192x192.webp',
-      data: { url: data.url || '/' }
+      tag: data.tag || 'pet-care-update',
+      renotify: false,
+      data: { url: data.url || '/?view=home' }
     };
-    event.waitUntil(self.registration.showNotification(data.title || 'Pet Care Update', options));
+    event.waitUntil(self.registration.showNotification(data.title || 'Pet Care by Steven', options));
   } catch (e) {
     const options = {
       body: event.data.text(),
       icon: '/android-chrome-192x192.webp'
     };
-    event.waitUntil(self.registration.showNotification('Pet Care Update', options));
+    event.waitUntil(self.registration.showNotification('Pet Care by Steven', options));
   }
 });
 

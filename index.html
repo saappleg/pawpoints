@@ -102,6 +102,41 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 
+    <!-- OneSignal uses a separate, narrow-scope worker so it does not conflict with this PWA's offline worker. -->
+    <script>
+        // This public App ID identifies the Pet Care by Steven OneSignal Web Push app.
+        // Never put a OneSignal REST API key in this file.
+        window.PET_CARE_ONESIGNAL_APP_ID = '3ad329ab-90a9-43d9-94a0-fceb39aafa38';
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(async function (OneSignal) {
+            if (!window.PET_CARE_ONESIGNAL_APP_ID) return;
+            await OneSignal.init({
+                appId: window.PET_CARE_ONESIGNAL_APP_ID,
+                serviceWorkerPath: 'push/onesignal/OneSignalSDKWorker.js',
+                serviceWorkerParam: { scope: '/push/onesignal/' },
+                welcomeNotification: {
+                    title: 'Pet Care by Steven',
+                    message: 'You’re all set for thoughtful pet-care updates.',
+                    url: '/?view=home'
+                },
+                promptOptions: {
+                    slidedown: {
+                        prompts: [{
+                            type: 'push',
+                            autoPrompt: false,
+                            text: {
+                                actionMessage: 'Get personal updates about care, rewards, and openings.',
+                                acceptButton: 'Keep me posted',
+                                cancelButton: 'Not now'
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
     <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -2266,18 +2301,26 @@
             });
         }
 
-        function firePwaNotification(title, body) {
+        function firePwaNotification(title, body, options = {}) {
             if (window.Notification && Notification.permission === 'granted') {
+                const notificationOptions = {
+                    body: body,
+                    icon: 'android-chrome-192x192.webp',
+                    badge: 'android-chrome-192x192.webp',
+                    tag: options.tag || 'pet-care-update',
+                    renotify: false,
+                    data: { url: options.url || '/?view=home' }
+                };
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.ready.then(registration => {
-                        registration.showNotification(title, {
-                            body: body,
-                            icon: 'android-chrome-192x192.webp',
-                            badge: 'android-chrome-192x192.webp'
+                        // A notification tag replaces an older update of the same kind instead of stacking duplicates.
+                        registration.getNotifications({ tag: notificationOptions.tag }).then(notifications => {
+                            notifications.forEach(notification => notification.close());
+                            return registration.showNotification(title, notificationOptions);
                         });
                     });
                 } else {
-                    new Notification(title, { body: body, icon: 'android-chrome-192x192.webp' });
+                    new Notification(title, notificationOptions);
                 }
             }
         }
@@ -2317,6 +2360,7 @@
                 showChatWidget: false,
                 calcSpend: 150,
                 pushEnabled: false,
+                oneSignalConfigured: Boolean(window.PET_CARE_ONESIGNAL_APP_ID),
                 quoteForm: { type: 'Walk', duration: 30, pets: 1, visits: 3 },
                 carePlanForm: { name: '', email: '', phone: '', source: '', details: '', honey: '', startedAt: Date.now() },
                 carePlanStatus: { submitting: false, success: false, message: '' },
@@ -2497,7 +2541,7 @@
                                     const data = change.doc.data();
                                     const docTime = data.timestamp ? data.timestamp.toDate() : new Date();
                                     if (new Date() - docTime < 60000) {
-                                         firePwaNotification(data.title || "New Update", data.body || "");
+                                         this.showPersonalNotification(data.title || 'An update from Steven', data.body || '', 'broadcast');
                                     }
                                 }
                             });
@@ -2516,6 +2560,7 @@
 
                             if (this.isVerified) {
                                 await this.fetchUserData(u.uid);
+                                await this.identifyOneSignalUser();
 
                                 if (targetClientUid && this.isAdmin) {
                                     this.currentView = 'loyalty';
@@ -2565,6 +2610,24 @@
 
                 async enablePushNotifications() {
                     if (!this.user) return;
+                    if (this.oneSignalConfigured) {
+                        try {
+                            window.OneSignalDeferred.push(async (OneSignal) => {
+                                await OneSignal.login(this.user.uid);
+                                if (!OneSignal.User.PushSubscription.optedIn) {
+                                    await OneSignal.Slidedown.promptPush({ force: true });
+                                }
+                                this.pushEnabled = Boolean(OneSignal.User.PushSubscription.optedIn);
+                                alert(this.pushEnabled
+                                    ? 'Personal push updates are enabled on this device!'
+                                    : 'Notifications were not enabled. You can try again whenever you are ready.');
+                            });
+                        } catch (err) {
+                            console.error('OneSignal setup error:', err);
+                            alert('Unable to enable notifications right now. Please try again shortly.');
+                        }
+                        return;
+                    }
                     if (this.pushEnabled) {
                         alert("Push notifications are already enabled for this device!");
                         return;
@@ -2590,6 +2653,31 @@
                         console.error("FCM Token Error:", err);
                         alert("Unable to enable notifications. Ensure your browser supports it and you are not in Incognito mode.");
                     }
+                },
+
+                async identifyOneSignalUser() {
+                    if (!this.user || !this.oneSignalConfigured) return;
+                    window.OneSignalDeferred.push(async (OneSignal) => {
+                        try {
+                            await OneSignal.login(this.user.uid);
+                            const firstName = (this.userData.name || this.user.displayName || 'Pet Parent').trim().split(/\s+/)[0];
+                            await OneSignal.User.addTags({
+                                first_name: firstName,
+                                account_type: this.isAdmin ? 'admin' : 'client',
+                                paw_points: String(this.userData.points || 0)
+                            });
+                            this.pushEnabled = Boolean(OneSignal.User.PushSubscription.optedIn);
+                        } catch (err) {
+                            console.warn('OneSignal user identification failed:', err);
+                        }
+                    });
+                },
+
+                showPersonalNotification(subject, message = '', tag = 'pet-care-update', url = '/?view=home') {
+                    const firstName = (this.userData.name || this.user?.displayName || '').trim().split(/\s+/)[0];
+                    const greeting = firstName ? `Hi ${firstName} 👋 ` : '';
+                    const detail = message ? `${subject}: ${message}` : subject;
+                    firePwaNotification('Pet Care by Steven', `${greeting}${detail}`, { tag: `pet-care-${tag}`, url });
                 },
 
                 trailLatLng(trail) {
@@ -3143,9 +3231,8 @@
                             body: this.broadcastForm.body,
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                        firePwaNotification(this.broadcastForm.title, this.broadcastForm.body);
                         this.broadcastForm = { title: '', body: '' };
-                        alert('Broadcast notification sent successfully to all devices!');
+                        alert('Broadcast posted successfully. Open client portals will receive one branded notification.');
                     } catch (err) {
                         alert('Error sending broadcast: ' + err.message);
                     }
@@ -3697,7 +3784,7 @@
                         this.userData.lifetimePoints = this.userData.lifetimePoints || this.userData.points || 0;
 
                         if (oldPoints !== undefined && oldPoints !== this.userData.points) {
-                            firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${this.userData.points} Pts.`);
+                            this.showPersonalNotification('🐾 Paw Points updated', `You now have ${this.userData.points} Paw Points.`, 'points', '/?view=loyalty');
                         }
 
                         this.profileForm = {
@@ -3837,6 +3924,7 @@
                         this.userData.photoUrl = photoUrl;
                         this.profilePhotoFailed = false;
                         if (checklistSaved) this.userData.firstVisitChecklist = this.firstVisitChecklist;
+                        await this.identifyOneSignalUser();
 
                         this.profileSuccess = checklistSaved
                             ? 'Profile details updated successfully!'
@@ -4081,7 +4169,8 @@
                         });
                         this.userData.points -= cost;
                         this.userData.coupons = updatedCoupons;
-                        firePwaNotification('🎁 Reward Redeemed!', `Your coupon code is ${couponCode}`);
+                        await this.identifyOneSignalUser();
+                        this.showPersonalNotification('🎁 Your reward is ready', `Your coupon code is ${couponCode}. Show it when booking.`, 'reward', '/?view=loyalty');
                         alert(`Reward redeemed!\n\nYour coupon code is: ${couponCode}`);
                     }
                 },
@@ -4172,7 +4261,8 @@
                         this.userData.points = newPts;
                         this.userData.lifetimePoints = newLifetime;
                         this.userData.yearlyPoints = newYearly;
-                        firePwaNotification("🐾 Paw Points Updated!", `Your balance is now ${newPts} Pts.`);
+                        await this.identifyOneSignalUser();
+                        this.showPersonalNotification('🐾 Paw Points updated', `You now have ${newPts} Paw Points.`, 'points', '/?view=loyalty');
                     }
                     
                     this.showAdminModal = false;
@@ -4180,6 +4270,11 @@
                 },
 
                 async logout() {
+                    if (this.oneSignalConfigured) {
+                        window.OneSignalDeferred.push(async (OneSignal) => {
+                            try { await OneSignal.logout(); } catch (err) { console.warn('OneSignal logout failed:', err); }
+                        });
+                    }
                     await auth.signOut();
                     this.user = null;
                     this.userData = {};
