@@ -102,9 +102,10 @@
         // This public App ID identifies the Pet Care by Steven OneSignal Web Push app.
         // Never put a OneSignal REST API key in this file.
         window.PET_CARE_ONESIGNAL_APP_ID = '3ad329ab-90a9-43d9-94a0-fceb39aafa38';
-        // Push broadcasts are managed directly in the OneSignal dashboard.
-        // Keeping this blank prevents the portal from attempting automated sends.
-        window.PET_CARE_NOTIFICATIONS_URL = '';
+        // Set this to the deployed Cloudflare notification Worker URL to enable
+        // automatic point and Paw Status pushes. The Worker keeps the OneSignal
+        // REST key private; it must never be added to this website.
+        window.PET_CARE_NOTIFICATIONS_URL = 'https://petcare-notifications.sapplegater.workers.dev';
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function (OneSignal) {
             if (!window.PET_CARE_ONESIGNAL_APP_ID) return;
@@ -3624,10 +3625,10 @@
                     return result;
                 },
 
-                async sendPointUpdatePush(clientUid, points) {
+                async sendPointUpdatePush(clientUid, points, statusName = '') {
                     if (!this.notificationServiceConfigured) return false;
                     try {
-                        await this.notificationRequest('/v1/notifications/point-update', { clientUid, points });
+                        await this.notificationRequest('/v1/notifications/point-update', { clientUid, points, statusName });
                         return true;
                     } catch (err) {
                         // A push failure must never undo a successful points transaction.
@@ -4674,7 +4675,11 @@
                             reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
                             reviewedBy: this.user.uid
                         });
-                        await this.sendPointUpdatePush(claim.referrerUid, currentPoints + 1000);
+                        await this.sendPointUpdatePush(
+                            claim.referrerUid,
+                            currentPoints + 1000,
+                            statusTier !== currentTier ? this.getClientTier({ statusTier }).name : ''
+                        );
                         await this.fetchPendingReferrals();
                         await this.fetchClientsList();
                         const upgradeMessage = statusTier !== currentTier ? ` ${statusTier === 'gold' ? 'Gold Paw VIP' : 'Silver Paw'} status is now active for ${this.tierSeasonYear}.` : '';
@@ -4765,6 +4770,12 @@
                                 qualifyingYear: targetYear
                             });
                         }));
+                        // Delivery is best-effort: a successful status rollover must never be
+                        // undone because a client has not opted into push notifications.
+                        await Promise.allSettled(clientsToRoll.map(client => {
+                            const earnedStatus = this.tierKeyForPoints(client.yearlyPoints || 0);
+                            return this.sendPointUpdatePush(client.id, client.points || 0, this.getClientTier({ statusTier: earnedStatus }).name);
+                        }));
                         await this.fetchClientsList();
                         alert(`The ${targetYear} Paw Status season is ready.`);
                     } catch (err) {
@@ -4814,7 +4825,11 @@
                     if (issuedCoupon) {
                         await this.sendCouponPush(this.adminForm.targetUid, issuedCoupon, newPts);
                     } else if (delta !== 0 || this.adminForm.overrideStatusTier) {
-                        await this.sendPointUpdatePush(this.adminForm.targetUid, newPts);
+                        await this.sendPointUpdatePush(
+                            this.adminForm.targetUid,
+                            newPts,
+                            this.adminForm.overrideStatusTier ? this.getClientTier({ statusTier: this.adminForm.overrideStatusTier }).name : ''
+                        );
                     }
                     
                     alert(`Updated client points and tier successfully!`);

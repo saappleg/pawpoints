@@ -18,6 +18,8 @@ This free Cloudflare Worker sends OneSignal pushes without exposing the OneSigna
 7. Deploy: `wrangler deploy`.
 8. Copy the Worker URL (for example `https://petcare-notifications.your-account.workers.dev`) into `window.PET_CARE_NOTIFICATIONS_URL` in the site root `index.html`.
 
+Once connected, eligible point changes, referral-driven status upgrades, and the annual status rollover automatically send a OneSignal push to that specific client. Push delivery while the PWA is closed still requires that client to have opted in to notifications on their device.
+
 ## Security model
 
 - The portal sends the current Firebase ID token with every request.

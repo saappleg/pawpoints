@@ -226,14 +226,17 @@ async function sendPointUpdate(request, env) {
   const body = await readJson(request);
   const clientUid = cleanText(body.clientUid, 128);
   const points = Number(body.points);
+  const statusName = cleanText(body.statusName, 60);
   if (!clientUid || !Number.isFinite(points) || points < 0) throw new Error('A client and valid point balance are required.');
 
   const result = await sendOneSignal(env, {
     title: '🐾 Paw Points updated',
-    body: `You now have ${Math.round(points).toLocaleString()} Paw Points.`,
+    body: statusName
+      ? `You now have ${Math.round(points).toLocaleString()} Paw Points. Your Paw Status: ${statusName}.`
+      : `You now have ${Math.round(points).toLocaleString()} Paw Points.`,
     url: '/?view=loyalty',
     externalIds: [clientUid],
-    data: { type: 'points', points: Math.round(points) }
+    data: { type: statusName ? 'points_and_status' : 'points', points: Math.round(points), statusName }
   });
   await audit(env, { actorUid: admin.uid, audience: 'client', title: 'Paw Points updated', oneSignalId: result.id });
   return json({ ok: true, id: result.id });
