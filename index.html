@@ -28,7 +28,20 @@
       "email": "support@petcarebysteven.me",
       "priceRange": "$$",
       "areaServed": ["Cincinnati", "Amelia", "Batavia", "Bethel", "New Richmond", "Williamsburg", "Felicity"],
-      "description": "Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!"
+      "description": "Trusted local pet sitting and dog walking services. Earn Paw Points on every visit!",
+      "sameAs": [
+        "https://www.facebook.com/petcarebysteven",
+        "https://g.page/r/CfNss-yPfk0nEBM/review"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Pet Care Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Dog Walking" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "In-Home Pet Sitting" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Free First-Time Meet and Greet" } }
+        ]
+      }
     }
     </script>
 
@@ -85,6 +98,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 
     <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -492,6 +507,7 @@
                         <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-3">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Policy Snapshot</h3>
                             <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">A 3-day cancellation window, severe-weather safety adjustments, and holiday premium messaging are published in advance in your portal and reminders.</p>
+                            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500">Last reviewed: August 2026</p>
                         </div>
                     </div>
                 </section>
@@ -633,6 +649,7 @@
                         <div class="flex items-center justify-between gap-3"><p class="text-xs font-bold text-gray-900 dark:text-white">🗺️ Primary coverage map</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Use the checker for exact coverage</p></div>
                         <div id="service-area-map" class="overflow-hidden border border-gray-200 dark:border-gray-700"></div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center">Not listed? Send a care-plan request—longer-distance care may still be available.</p>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500 text-center" x-text="serviceAreasLastUpdated"></p>
                     </div>
                 </section>
 
@@ -2085,7 +2102,23 @@
 
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
-            
+        }
+
+        // App Check uses the reCAPTCHA Enterprise site key already registered for this domain.
+        // Enforcement remains a Firebase Console decision after you verify the incoming metrics.
+        try {
+            firebase.appCheck().activate(
+                new firebase.appCheck.ReCaptchaEnterpriseProvider('6LdHb30tAAAAAPl6jpX4ri5rNHAnWbxtOtFVRmgh'),
+                true
+            );
+        } catch (err) {
+            console.warn('App Check is not active yet:', err.message);
+        }
+
+        try {
+            firebase.analytics();
+        } catch (err) {
+            console.warn('Analytics is unavailable in this browser:', err.message);
         }
         
         const auth = firebase.auth();
@@ -2221,6 +2254,7 @@
                 pendingReferrals: [],
                 trailReports: [],
                 serviceAreas: [],
+                serviceAreasLastUpdated: 'Service areas last reviewed: August 2026',
                 bulkAreaInput: '',
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
@@ -2831,9 +2865,13 @@
                         const doc = await docRef.get();
                         if (doc.exists && doc.data().areas && doc.data().areas.length > 0) {
                             this.serviceAreas = doc.data().areas;
+                            const updatedAt = doc.data().updatedAt;
+                            if (updatedAt && typeof updatedAt.toDate === 'function') {
+                                this.serviceAreasLastUpdated = `Service areas last reviewed: ${updatedAt.toDate().toLocaleDateString()}`;
+                            }
                         } else {
                             this.serviceAreas = fallbackAreas;
-                            await docRef.set({ areas: this.serviceAreas });
+                            await docRef.set({ areas: this.serviceAreas, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
                         }
                     } catch (err) {
                         this.serviceAreas = fallbackAreas;
@@ -3040,7 +3078,8 @@
                                 _honey: request.honey,
                                 _subject: 'New personalized care plan request',
                                 _replyto: request.email,
-                                _template: 'table'
+                                _template: 'table',
+                                _autoresponse: `Hi ${request.name},\n\nThanks for reaching out to Pet Care by Steven. Your care-plan request was received, and I’ll review your pet’s needs and preferred timeline before following up with options—usually much sooner than one business day.\n\nFor a pet-care emergency, please contact me directly.\n\n— Steven\nPet Care by Steven`
                             })
                         });
 
@@ -3087,7 +3126,8 @@
                     });
 
                     try {
-                        await db.collection('settings').doc('serviceConfig').set({ areas: this.serviceAreas });
+                        await db.collection('settings').doc('serviceConfig').set({ areas: this.serviceAreas, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                        this.serviceAreasLastUpdated = `Service areas last reviewed: ${new Date().toLocaleDateString()}`;
                         this.bulkAreaInput = '';
                         alert(`Successfully added ${addedCount} new location group(s) and synced to Firestore!`);
                     } catch (err) {
@@ -3099,7 +3139,8 @@
                     if (confirm('Remove this service location?')) {
                         this.serviceAreas.splice(idx, 1);
                         try {
-                            await db.collection('settings').doc('serviceConfig').set({ areas: this.serviceAreas });
+                            await db.collection('settings').doc('serviceConfig').set({ areas: this.serviceAreas, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                            this.serviceAreasLastUpdated = `Service areas last reviewed: ${new Date().toLocaleDateString()}`;
                         } catch (err) {
                             alert('Error updating Firestore: ' + err.message);
                         }
