@@ -2290,6 +2290,7 @@
                 trailCommentText: '',
                 showTrailReportModal: false,
                 trailReportForm: { reason: '', details: '' },
+                trailsUnsubscribe: null,
 
                 get estimatedQuote() {
                     let base = 25; 
@@ -2615,11 +2616,20 @@
 
                 async loadCommunityTrails() {
                     try {
-                        const snap = await db.collection('community_guides').orderBy('createdAt', 'desc').get({ source: 'cache' }).catch(() => db.collection('community_guides').orderBy('createdAt', 'desc').get({ source: 'server' }));
+                        const trailQuery = db.collection('community_guides').orderBy('createdAt', 'desc');
+                        const snap = await trailQuery.get({ source: 'server' }).catch(() => trailQuery.get({ source: 'cache' }));
                         if (!snap.empty) {
                             this.communityTrails = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         }
                         this.$nextTick(() => this.refreshTrailMapPins());
+                        if (!this.trailsUnsubscribe) {
+                            this.trailsUnsubscribe = trailQuery.onSnapshot((snapshot) => {
+                                const submittedTrails = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                                const staticTrails = this.communityTrails.filter(trail => trail.isStatic);
+                                this.communityTrails = [...submittedTrails, ...staticTrails.filter(staticTrail => !submittedTrails.some(trail => trail.id === staticTrail.id))];
+                                this.$nextTick(() => this.refreshTrailMapPins());
+                            }, (err) => console.warn('Trail live updates are unavailable:', err));
+                        }
                     } catch (err) {
                         console.log('Using default static trails offline.');
                     }
