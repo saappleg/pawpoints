@@ -201,6 +201,38 @@
         .dark .care-plan-prep { background: #172554; border-color: #3730a3; color: #ffffff; }
         .dark .care-plan-prep-muted { color: #cbd5e1; }
 
+        /* Dark-mode depth: page, section, and card surfaces stay visibly distinct. */
+        .dark body { background: #090f1d; }
+        .dark main > section:not(.rainbow-frame),
+        .dark main > div > section {
+            background: #111a2b;
+            border-color: #26354d;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+        }
+        .dark main > section .bg-gray-50,
+        .dark main > div > section .bg-gray-50,
+        .dark main > section .bg-gray-50\/60,
+        .dark main > div > section .bg-gray-50\/60,
+        .dark main > section .bg-gray-50\/50,
+        .dark main > div > section .bg-gray-50\/50,
+        .dark main > section .bg-gray-50\/40,
+        .dark main > div > section .bg-gray-50\/40 {
+            background: #0b1321;
+            border-color: #26354d;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.025) inset;
+        }
+        .dark main .text-gray-400 { color: #b4c0d1; }
+        .dark main .text-gray-500 { color: #a7b4c6; }
+        .dark main .text-gray-600 { color: #c0cada; }
+        .dark main input,
+        .dark main select,
+        .dark main textarea {
+            border-color: #3a4a62;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+        }
+        .dark .profile-modal-dialog,
+        .dark .app-modal > div { box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 1px 0 rgba(255, 255, 255, 0.04) inset; }
+
         :root {
             --top-bar-height: 6px;
         }
@@ -221,6 +253,8 @@
             font-family: 'Inter', sans-serif;
             transition: background-color 0.3s ease, color 0.2s ease;
             overflow-x: clip;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
         body.modal-open {
@@ -243,6 +277,21 @@
         .install-prompt { z-index: 1300; right: 1rem; bottom: 6rem; width: min(22rem, calc(100vw - 2rem)); }
 
         @media (max-width: 767px) {
+            main {
+                gap: 2rem !important;
+                padding-left: 0.875rem !important;
+                padding-right: 0.875rem !important;
+            }
+            main > section:not(.rainbow-frame),
+            main > div > section {
+                border-radius: 1.35rem !important;
+                box-shadow: 0 12px 26px rgba(15, 23, 42, 0.13), 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+            }
+            .dark main > section:not(.rainbow-frame),
+            .dark main > div > section {
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+            }
+            main :is(input, select, textarea, button) { -webkit-tap-highlight-color: transparent; }
             .site-header-content {
                 align-items: stretch;
                 flex-direction: column;
