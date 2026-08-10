@@ -1082,15 +1082,9 @@
                                 <p class="text-[11px] text-gray-500 dark:text-slate-400 italic" x-text="tierProgress.description"></p>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                                <button @click="triggerViewTransition(() => { showChecklistModal = true })" aria-label="House and Care Sheet" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-4 rounded-2xl font-bold text-xs transition shadow-md flex items-center justify-center gap-2">
-                                    <span>📋</span>
-                                    <span>House & Care Sheet</span>
-                                </button>
-                                <button @click="triggerViewTransition(() => openProfilePanel('details'))" aria-label="Account Profile" class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-4 rounded-2xl font-bold text-xs transition border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2">
-                                    <span>⚙️</span>
-                                    <span>Account Profile</span>
-                                </button>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 p-4">
+                                <div><p class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Next best step</p><p class="mt-1 text-xs font-semibold text-gray-800 dark:text-gray-100">See which Paw Points rewards are ready to claim.</p></div>
+                                <button @click="$nextTick(() => document.getElementById('available-rewards')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))" class="shrink-0 rounded-xl bg-brand-600 hover:bg-brand-700 px-4 py-2.5 text-xs font-bold text-white transition">View rewards</button>
                             </div>
                         </div>
 
@@ -1406,7 +1400,7 @@
                         <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
                             <div class="flex justify-between items-center border-b dark:border-gray-800 pb-4">
                                 <div>
-                                    <h2 class="font-bold text-base text-gray-900 dark:text-white">Available Rewards & Support Tipping</h2>
+                                    <h2 id="available-rewards" class="scroll-mt-6 font-bold text-base text-gray-900 dark:text-white">Available Rewards & Support Tipping</h2>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">Redeem your points for discounts or send a tip. Tips earn <strong>10x bonus Paw Points</strong>!</p>
                                 </div>
                             </div>
@@ -1795,6 +1789,9 @@
                     </div>
                     <button type="button" @click="profilePanelView = 'details'" class="account-menu-action w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition">
                         <span class="text-lg">👤</span><span><span class="block font-bold text-gray-900 dark:text-white">Profile &amp; care settings</span><span class="block mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">Contact details, home notes, checklist, and alerts</span></span>
+                    </button>
+                    <button type="button" @click="closeProfilePanel(); showChecklistModal = true" class="account-menu-action w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition">
+                        <span class="text-lg">📋</span><span><span class="block font-bold text-gray-900 dark:text-white">House &amp; care sheet</span><span class="block mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">Feeding, medication, and home-task instructions</span></span>
                     </button>
                     <div class="rounded-xl border border-gray-200 dark:border-gray-800 px-3 py-3">
                         <div class="flex items-center justify-between gap-3"><span class="font-bold text-gray-900 dark:text-white">🌗 Appearance</span><span class="text-[10px] text-gray-500 dark:text-gray-400" x-text="themePreference === 'system' ? 'Device setting' : (themePreference === 'dark' ? 'Dark' : 'Light')"></span></div>
