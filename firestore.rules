@@ -9,7 +9,7 @@ service cloud.firestore {
         'name', 'email', 'phone', 'address', 'pets', 'homeEntryNotes',
         'lockboxCode', 'alarmInstructions', 'emergencyContacts', 'vetClinic',
         'vetPhone', 'vetAuth', 'houseChecklist', 'fcmToken', 'referralCode',
-        'savedTrailIds', 'firstVisitChecklist'
+        'savedTrailIds', 'firstVisitChecklist', 'photoUrl'
       ]);
     }
     function validCoupon(title) {
