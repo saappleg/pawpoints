@@ -504,6 +504,7 @@
                                     <option value="30">30 Minutes</option>
                                     <option value="60">60 Minutes</option>
                                 </select>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">15 min: $18 · 30 min: $25 · 1 hour: $40</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Number of Pets</label>
@@ -511,6 +512,7 @@
                                     <input type="range" min="1" max="5" step="1" x-model.number="quoteForm.pets" aria-label="Select Number of Pets" class="flex-1 accent-brand-600">
                                     <span class="font-bold text-lg text-brand-600 dark:text-brand-400 w-8 text-center" x-text="quoteForm.pets"></span>
                                 </div>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1" x-text="`Additional pets: $${additionalPetFee} each`"></p>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Visits per Week</label>
@@ -1260,7 +1262,7 @@
         </main>
 
         <!-- SUBMIT TRAIL MODAL -->
-        <div x-show="showAddTrailModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div x-show="showAddTrailModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[2000]">
             <div @click.away="showAddTrailModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <h2 class="font-bold text-lg text-gray-900 dark:text-white">Submit a Walking Trail</h2>
@@ -2075,8 +2077,12 @@
                     if (this.quoteForm.duration === 15) base = 18;
                     if (this.quoteForm.duration === 60) base = 40;
                     
-                    let petFee = (this.quoteForm.pets > 1) ? ((this.quoteForm.pets - 1) * 5) : 0; 
+                    let petFee = (this.quoteForm.pets > 1) ? ((this.quoteForm.pets - 1) * this.additionalPetFee) : 0;
                     return (base + petFee) * this.quoteForm.visits;
+                },
+
+                get additionalPetFee() {
+                    return this.quoteForm.type === 'Walk' && this.quoteForm.duration === 60 ? 10 : 5;
                 },
 
                 get quoteWhatsAppLink() {
