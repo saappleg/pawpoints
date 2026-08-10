@@ -336,7 +336,7 @@
 
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
-                            <button x-ref="profileTrigger" x-show="isVerified" @click="triggerViewTransition(() => openProfilePanel('menu'))" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <button x-ref="profileTrigger" x-show="isVerified" @click="triggerViewTransition(() => toggleProfilePanel())" :aria-expanded="showProfileModal" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                                 <span>👤</span><span>Profile</span>
                             </button>
                         </div>
@@ -2988,6 +2988,14 @@
                         const header = this.$refs.siteHeader;
                         if (header) this.profilePanelTop = `${Math.round(header.getBoundingClientRect().bottom + 8)}px`;
                     });
+                },
+
+                toggleProfilePanel() {
+                    if (this.showProfileModal) {
+                        this.showProfileModal = false;
+                        return;
+                    }
+                    this.openProfilePanel('menu');
                 },
 
                 async loadServiceAreasFromFirestore() {
