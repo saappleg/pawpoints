@@ -396,7 +396,12 @@
                         </select>
                         <textarea x-model.trim="carePlanForm.details" required rows="4" placeholder="Tell us about your pets, needed services, and preferred timeline" aria-label="Pet care request details" class="md:col-span-2 w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                         <input type="text" x-model="carePlanForm.honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
-                        <p x-show="carePlanStatus.message" x-text="carePlanStatus.message" :class="carePlanStatus.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'" class="md:col-span-2 text-sm font-semibold" aria-live="polite"></p>
+                        <div x-show="carePlanStatus.success" x-cloak class="md:col-span-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 rounded-2xl p-5 text-left space-y-2" aria-live="polite">
+                            <p class="font-extrabold text-emerald-950 dark:text-emerald-100">✓ Your care-plan request is received.</p>
+                            <p class="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">Steven will review your pet’s needs and preferred timeline, then follow up with care options within one business day—usually much sooner.</p>
+                            <p class="text-[11px] text-emerald-800 dark:text-emerald-300">For a pet-care emergency, please contact Steven directly.</p>
+                        </div>
+                        <p x-show="carePlanStatus.message && !carePlanStatus.success" x-text="carePlanStatus.message" class="md:col-span-2 text-sm font-semibold text-red-600 dark:text-red-400" aria-live="polite"></p>
                         <button type="submit" :disabled="carePlanStatus.submitting" class="bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
                             <span x-text="carePlanStatus.submitting ? 'Sending…' : 'Send Care Plan Request'"></span>
                         </button>
@@ -852,8 +857,8 @@
                                 <div class="flex items-center space-x-2">
                                     <template x-if="!isEditingPets">
                                         <div class="flex space-x-2">
-                                            <button @click="triggerFridgePrint()" aria-label="Print Fridge Card" class="text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold px-4 py-1.5 rounded-lg shadow-sm transition border border-indigo-200 dark:border-indigo-800 flex items-center gap-2">
-                                                🖨️ Print Fridge Card
+                                            <button @click="triggerFridgePrint()" aria-label="Print Emergency Pet Card" class="text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold px-4 py-1.5 rounded-lg shadow-sm transition border border-indigo-200 dark:border-indigo-800 flex items-center gap-2">
+                                                🖨️ Print Emergency Pet Card
                                             </button>
                                             <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
                                                 ✏️ Edit Information
@@ -2500,7 +2505,7 @@
                     }
 
                     if (request.honey || Date.now() - request.startedAt < 1500) {
-                        this.carePlanStatus = { submitting: false, success: true, message: 'Thanks! Your care-plan request was sent. Steven will follow up soon.' };
+                        this.carePlanStatus = { submitting: false, success: true, message: 'Your care-plan request is received.' };
                         return;
                     }
 
@@ -2534,7 +2539,7 @@
                             throw new Error(result.message || 'Care-plan email request failed.');
                         }
                         this.carePlanForm = { name: '', email: '', phone: '', source: '', details: '', honey: '', startedAt: Date.now() };
-                        this.carePlanStatus = { submitting: false, success: true, message: 'Thanks! Your care-plan request was sent. Steven will follow up soon.' };
+                        this.carePlanStatus = { submitting: false, success: true, message: 'Your care-plan request is received.' };
                     } catch (err) {
                         console.error('Care-plan request error:', err);
                         this.carePlanStatus = { submitting: false, success: false, message: 'We could not send your request right now. Please try again or email support@petcarebysteven.me.' };
