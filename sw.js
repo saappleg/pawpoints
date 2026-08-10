@@ -1,4 +1,4 @@
-const CACHE_NAME = 'paw-points-offline-v6';
+const CACHE_NAME = 'paw-points-offline-v7';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
@@ -51,7 +51,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
   const isCacheableProtocol = requestUrl.protocol === 'http:' || requestUrl.protocol === 'https:';
-  if (event.request.method !== 'GET' || !isCacheableProtocol || requestUrl.hostname === 'firestore.googleapis.com') return;
+  const isMapTile = requestUrl.hostname === 'tile.openstreetmap.org';
+  if (event.request.method !== 'GET' || !isCacheableProtocol || requestUrl.hostname === 'firestore.googleapis.com' || isMapTile) return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

@@ -50,11 +50,13 @@
     <link rel="preconnect" href="https://images.unsplash.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://tile.openstreetmap.org">
 
     <!-- Preload Critical Assets & Fonts -->
     <link rel="preload" as="image" href="android-chrome-192x192.webp">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
     <!-- Dedicated Favicons for Browser Tabs -->
     <link rel="icon" type="image/webp" sizes="32x32" href="favicon-32x32.webp">
@@ -76,6 +78,7 @@
 
     <!-- Confetti Engine CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- Firebase Web SDKs (Synchronous to prevent initialization crash) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -88,6 +91,9 @@
 
     <style>
         [x-cloak] { display: none !important; }
+
+        #trail-map, #trail-picker-map { height: 340px; border-radius: 1rem; }
+        #trail-picker-map { height: 240px; }
 
         :root {
             --top-bar-height: 6px;
@@ -1215,6 +1221,15 @@
                         </button>
                     </div>
 
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between gap-3">
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">🗺️ Trail map</h3>
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400">Select a trail below to locate it.</span>
+                        </div>
+                        <div id="trail-map" class="border border-gray-200 dark:border-gray-700 overflow-hidden bg-gray-100 dark:bg-gray-800" aria-label="Interactive trail map"></div>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400">Pins are shown for trails with a shared map location. Other listings open a map search.</p>
+                    </div>
+
                     <!-- Trails Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <template x-for="trail in communityTrails" :key="trail.id">
@@ -1230,6 +1245,7 @@
                                     <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
                                     <div class="flex items-center gap-3">
                                         <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                        <button @click="focusTrailMap(trail)" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">Map</button>
                                         <button @click="upvoteTrail(trail.id)" aria-label="Upvote Trail" class="flex items-center gap-1 transition-colors" :class="(trail.upvoters && user && trail.upvoters.includes(user.uid)) ? 'text-brand-500' : 'text-gray-400 hover:text-brand-400'">
                                             <span class="text-sm">▲</span>
                                             <span class="font-bold text-xs" x-text="trail.votes || 0"></span>
@@ -1259,6 +1275,14 @@
                     <div>
                         <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">City / Neighborhood</label>
                         <input type="text" x-model="newTrailForm.location" placeholder="e.g. Cincinnati, OH" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                    </div>
+                    <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3 rounded-xl space-y-2">
+                        <div class="flex items-center justify-between gap-3">
+                            <div><p class="font-bold text-gray-800 dark:text-gray-100">Map pin <span class="font-normal text-gray-500">(recommended)</span></p><p class="text-[10px] text-gray-500 dark:text-gray-400">Open the picker, then click the trail or park location.</p></div>
+                            <button type="button" @click="showTrailMapPicker = !showTrailMapPicker; $nextTick(() => initTrailPickerMap())" class="shrink-0 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg">🗺️ <span x-text="showTrailMapPicker ? 'Hide map' : 'Pick on map'"></span></button>
+                        </div>
+                        <div x-show="showTrailMapPicker" x-cloak id="trail-picker-map" class="overflow-hidden border border-gray-300 dark:border-gray-700"></div>
+                        <p x-show="newTrailForm.lat !== null" x-cloak class="text-[10px] font-semibold text-emerald-700 dark:text-emerald-300">✓ Map location selected</p>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Description & Tips</label>
@@ -2039,7 +2063,12 @@
                     { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
                     { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
                 ],
-                newTrailForm: { title: '', location: '', description: '', amenities: '' },
+                newTrailForm: { title: '', location: '', description: '', amenities: '', lat: null, lng: null },
+                showTrailMapPicker: false,
+                trailMap: null,
+                trailMapMarkers: null,
+                trailPickerMap: null,
+                trailPickerMarker: null,
 
                 get estimatedQuote() {
                     let base = 25; 
@@ -2084,10 +2113,15 @@
                     await this.loadGalleryPhotosFromFirestore();
                     await this.loadCommunityTrails();
 
+                    if (this.currentView === 'guide') {
+                        this.$nextTick(() => this.initTrailMap());
+                    }
+
                     this.$watch('currentView', (value) => {
                         const url = new URL(window.location);
                         url.searchParams.set('view', value);
                         window.history.pushState({}, '', url);
+                        if (value === 'guide') this.$nextTick(() => this.initTrailMap());
                     });
 
                     window.addEventListener('popstate', () => {
@@ -2210,12 +2244,88 @@
                     }
                 },
 
+                trailLatLng(trail) {
+                    const lat = Number(trail.lat);
+                    const lng = Number(trail.lng);
+                    return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
+                },
+
+                trailPopup(trail) {
+                    const content = document.createElement('div');
+                    const title = document.createElement('strong');
+                    title.textContent = trail.title || 'Walking trail';
+                    const location = document.createElement('p');
+                    location.className = 'text-xs';
+                    location.textContent = trail.location || 'Location shared by the community';
+                    content.append(title, location);
+                    return content;
+                },
+
+                initTrailMap() {
+                    if (!window.L || this.trailMap || !document.getElementById('trail-map')) return;
+                    this.trailMap = window.L.map('trail-map', { scrollWheelZoom: false }).setView([39.1031, -84.5120], 10);
+                    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(this.trailMap);
+                    this.trailMapMarkers = window.L.layerGroup().addTo(this.trailMap);
+                    this.refreshTrailMapPins();
+                    setTimeout(() => this.trailMap.invalidateSize(), 100);
+                },
+
+                refreshTrailMapPins() {
+                    if (!this.trailMap || !this.trailMapMarkers || !window.L) return;
+                    this.trailMapMarkers.clearLayers();
+                    const points = this.communityTrails
+                        .map(trail => ({ trail, latLng: this.trailLatLng(trail) }))
+                        .filter(item => item.latLng);
+                    points.forEach(({ trail, latLng }) => {
+                        window.L.marker(latLng).addTo(this.trailMapMarkers).bindPopup(this.trailPopup(trail));
+                    });
+                    if (points.length) this.trailMap.fitBounds(window.L.latLngBounds(points.map(item => item.latLng)).pad(0.2));
+                },
+
+                focusTrailMap(trail) {
+                    const latLng = this.trailLatLng(trail);
+                    if (!latLng) {
+                        const query = encodeURIComponent(`${trail.title || ''} ${trail.location || ''}`.trim());
+                        window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener');
+                        return;
+                    }
+                    this.initTrailMap();
+                    this.trailMap.setView(latLng, 15);
+                    this.trailMapMarkers.eachLayer(marker => {
+                        if (marker.getLatLng().lat === latLng[0] && marker.getLatLng().lng === latLng[1]) marker.openPopup();
+                    });
+                    document.getElementById('trail-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                },
+
+                initTrailPickerMap() {
+                    if (!this.showTrailMapPicker || !window.L) return;
+                    if (!this.trailPickerMap) {
+                        this.trailPickerMap = window.L.map('trail-picker-map').setView([39.1031, -84.5120], 10);
+                        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '&copy; OpenStreetMap contributors'
+                        }).addTo(this.trailPickerMap);
+                        this.trailPickerMap.on('click', (event) => {
+                            const { lat, lng } = event.latlng;
+                            this.newTrailForm.lat = Number(lat.toFixed(6));
+                            this.newTrailForm.lng = Number(lng.toFixed(6));
+                            if (this.trailPickerMarker) this.trailPickerMarker.setLatLng(event.latlng);
+                            else this.trailPickerMarker = window.L.marker(event.latlng).addTo(this.trailPickerMap);
+                        });
+                    }
+                    setTimeout(() => this.trailPickerMap.invalidateSize(), 100);
+                },
+
                 async loadCommunityTrails() {
                     try {
                         const snap = await db.collection('community_guides').orderBy('createdAt', 'desc').get({ source: 'cache' }).catch(() => db.collection('community_guides').orderBy('createdAt', 'desc').get({ source: 'server' }));
                         if (!snap.empty) {
                             this.communityTrails = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                         }
+                        this.$nextTick(() => this.refreshTrailMapPins());
                     } catch (err) {
                         console.log('Using default static trails offline.');
                     }
@@ -2229,6 +2339,8 @@
                             location: this.newTrailForm.location.trim(),
                             description: this.newTrailForm.description.trim(),
                             amenities: this.newTrailForm.amenities.trim() || 'Dog Friendly',
+                            lat: this.newTrailForm.lat,
+                            lng: this.newTrailForm.lng,
                             author: this.userData.name || 'Local Pet Owner',
                             votes: 0,
                             upvoters: [],
@@ -2236,7 +2348,13 @@
                         };
                         const docRef = await db.collection('community_guides').add(trailObj);
                         this.communityTrails.unshift({ id: docRef.id, ...trailObj });
-                        this.newTrailForm = { title: '', location: '', description: '', amenities: '' };
+                        this.newTrailForm = { title: '', location: '', description: '', amenities: '', lat: null, lng: null };
+                        this.showTrailMapPicker = false;
+                        if (this.trailPickerMarker) {
+                            this.trailPickerMap.removeLayer(this.trailPickerMarker);
+                            this.trailPickerMarker = null;
+                        }
+                        this.$nextTick(() => this.refreshTrailMapPins());
                         this.showAddTrailModal = false;
                         alert('Thank you! Your trail recommendation has been published.');
                     } catch (err) {
