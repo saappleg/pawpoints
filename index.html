@@ -95,6 +95,7 @@
         #trail-map, #trail-picker-map { height: 340px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
         #trail-picker-map { height: 240px; }
         .trail-submission-modal { z-index: 2000; }
+        .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
 
         :root {
             --top-bar-height: 6px;
@@ -1236,7 +1237,7 @@
                     <!-- Trails Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <template x-for="trail in communityTrails" :key="trail.id">
-                            <div class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-5 rounded-2xl space-y-3 shadow-sm flex flex-col justify-between">
+                            <div @click="openTrailComments(trail)" class="bg-gray-50 dark:bg-[#0d1117] border dark:border-gray-800 p-5 rounded-2xl space-y-3 shadow-sm flex flex-col justify-between cursor-pointer hover:border-brand-400 dark:hover:border-brand-500 transition">
                                 <div class="space-y-2">
                                     <div class="flex justify-between items-start">
                                         <h3 class="font-bold text-base text-gray-900 dark:text-white" x-text="trail.title"></h3>
@@ -1244,17 +1245,19 @@
                                     </div>
                                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed" x-text="trail.description"></p>
                                 </div>
-                                <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400 mt-2">
-                                    <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
-                                        <button @click="focusTrailMap(trail)" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">Map</button>
-                                        <button @click="upvoteTrail(trail.id)" aria-label="Upvote Trail" class="flex items-center gap-1 transition-colors" :class="(trail.upvoters && user && trail.upvoters.includes(user.uid)) ? 'text-brand-500' : 'text-gray-400 hover:text-brand-400'">
-                                            <span class="text-sm">▲</span>
-                                            <span class="font-bold text-xs" x-text="trail.votes || 0"></span>
-                                        </button>
+                                    <div class="flex justify-between items-center pt-3 border-t dark:border-gray-800 text-[11px] text-gray-400 mt-2">
+                                        <span x-text="`Submitted by: ${trail.author || 'Local Pet Owner'}`"></span>
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-brand-600 dark:text-brand-400 font-bold">💬 Discuss</span>
+                                            <span class="text-emerald-600 dark:text-emerald-400 font-bold" x-text="trail.amenities || 'Dog Friendly'"></span>
+                                            <button @click.stop="focusTrailMap(trail)" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">Map</button>
+                                            <button @click.stop="upvoteTrail(trail.id)" aria-label="Upvote Trail" class="flex items-center gap-1 transition-colors" :class="(trail.upvoters && user && trail.upvoters.includes(user.uid)) ? 'text-brand-500' : 'text-gray-400 hover:text-brand-400'">
+                                                <span class="text-sm">▲</span>
+                                                <span class="font-bold text-xs" x-text="trail.votes || 0"></span>
+                                            </button>
+                                            <button x-show="isAdmin && adminModeActive && !trail.isStatic" @click.stop="deleteTrail(trail)" aria-label="Delete Trail" class="text-red-500 hover:text-red-600 font-bold">Delete</button>
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         </template>
                     </div>
@@ -1264,7 +1267,7 @@
 
         <!-- SUBMIT TRAIL MODAL -->
         <div x-show="showAddTrailModal" x-transition x-cloak class="trail-submission-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div @click.away="showAddTrailModal = false" class="bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
+            <div @click.away="showAddTrailModal = false" class="trail-submission-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <h2 class="font-bold text-lg text-gray-900 dark:text-white">Submit a Walking Trail</h2>
                     <button @click="showAddTrailModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
@@ -1303,6 +1306,36 @@
                         Publish Trail
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- TRAIL DISCUSSION MODAL -->
+        <div x-show="showTrailCommentsModal" x-transition x-cloak class="trail-submission-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div @click.away="showTrailCommentsModal = false" class="trail-submission-dialog bg-white dark:bg-[#111827] max-w-lg w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
+                <div class="flex justify-between items-start border-b dark:border-gray-800 pb-3 gap-3">
+                    <div><p class="text-[10px] uppercase font-black tracking-widest text-brand-600 dark:text-brand-400">Trail discussion</p><h2 class="font-bold text-lg text-gray-900 dark:text-white" x-text="selectedTrail?.title || 'Trail comments'"></h2></div>
+                    <button @click="showTrailCommentsModal = false" aria-label="Close trail comments" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
+                </div>
+                <div class="max-h-64 overflow-y-auto space-y-3 pr-1">
+                    <template x-for="comment in trailComments" :key="comment.id">
+                        <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="font-bold text-xs text-gray-900 dark:text-white" x-text="comment.authorName || 'Pet parent'"></p>
+                                <button x-show="isAdmin && adminModeActive" @click="deleteTrailComment(comment)" class="text-[10px] font-bold text-red-500 hover:text-red-600">Delete</button>
+                            </div>
+                            <p class="text-xs text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-line" x-text="comment.message"></p>
+                        </div>
+                    </template>
+                    <p x-show="trailCommentsLoading" class="text-xs text-gray-500 dark:text-gray-400 text-center py-3">Loading comments…</p>
+                    <p x-show="!trailCommentsLoading && trailComments.length === 0" class="text-xs text-gray-500 dark:text-gray-400 text-center py-3">Be the first to share a trail tip.</p>
+                </div>
+                <template x-if="user">
+                    <form @submit.prevent="submitTrailComment()" class="space-y-2 border-t dark:border-gray-800 pt-4">
+                        <textarea x-model.trim="trailCommentText" rows="3" maxlength="500" placeholder="Share a helpful trail tip, condition, or pet-parent note…" aria-label="Trail comment" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition">Post comment</button>
+                    </form>
+                </template>
+                <p x-show="!user" class="text-xs text-gray-500 dark:text-gray-400 text-center border-t dark:border-gray-800 pt-4">Log in to add a comment.</p>
             </div>
         </div>
 
@@ -2067,8 +2100,8 @@
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
                 communityTrails: [
-                    { id: '1', title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
-                    { id: '2', title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
+                    { id: '1', isStatic: true, title: 'Mount Airy Forest Trails', location: 'Cincinnati, OH', description: 'Extensive wooded paths and historic tree collections. Great for structured sniffing walks!', amenities: 'Shaded, Dirt Trails', author: 'Steven', votes: 12, upvoters: [] },
+                    { id: '2', isStatic: true, title: 'Withamsville Park Loop', location: 'Amelia, OH', description: 'Quiet walking loops with good paved paths and open grassy areas.', amenities: 'Paved, Family Friendly', author: 'Local Client', votes: 5, upvoters: [] }
                 ],
                 newTrailForm: { title: '', location: '', description: '', amenities: '', lat: null, lng: null },
                 showTrailMapPicker: false,
@@ -2078,6 +2111,11 @@
                 trailPickerMarker: null,
                 trailLocationStatus: '',
                 lastTrailGeocodeQuery: '',
+                showTrailCommentsModal: false,
+                selectedTrail: null,
+                trailComments: [],
+                trailCommentsLoading: false,
+                trailCommentText: '',
 
                 get estimatedQuote() {
                     let base = 25; 
@@ -2295,7 +2333,7 @@
                     points.forEach(({ trail, latLng }) => {
                         window.L.marker(latLng).addTo(this.trailMapMarkers).bindPopup(this.trailPopup(trail));
                     });
-                    if (points.length) this.trailMap.fitBounds(window.L.latLngBounds(points.map(item => item.latLng)).pad(0.2));
+                    if (points.length) this.trailMap.fitBounds(window.L.latLngBounds(points.map(item => item.latLng)).pad(0.2), { maxZoom: 10 });
                 },
 
                 focusTrailMap(trail) {
@@ -2306,7 +2344,7 @@
                         return;
                     }
                     this.initTrailMap();
-                    this.trailMap.setView(latLng, 15);
+                    this.trailMap.setView(latLng, 10);
                     this.trailMapMarkers.eachLayer(marker => {
                         if (marker.getLatLng().lat === latLng[0] && marker.getLatLng().lng === latLng[1]) marker.openPopup();
                     });
@@ -2407,6 +2445,74 @@
                         alert('Thank you! Your trail recommendation has been published.');
                     } catch (err) {
                         alert('Error publishing trail: ' + err.message);
+                    }
+                },
+
+                async deleteTrail(trail) {
+                    if (!this.isAdmin || !this.adminModeActive) return;
+                    if (!confirm(`Delete "${trail.title}" from the Trails Guide? This cannot be undone.`)) return;
+                    try {
+                        await db.collection('community_guides').doc(trail.id).delete();
+                        this.communityTrails = this.communityTrails.filter(item => item.id !== trail.id);
+                        this.refreshTrailMapPins();
+                    } catch (err) {
+                        alert('Unable to delete this trail: ' + err.message);
+                    }
+                },
+
+                async openTrailComments(trail) {
+                    this.selectedTrail = trail;
+                    this.trailCommentText = '';
+                    this.showTrailCommentsModal = true;
+                    await this.loadTrailComments();
+                },
+
+                async loadTrailComments() {
+                    if (!this.selectedTrail) return;
+                    this.trailCommentsLoading = true;
+                    try {
+                        const snapshot = await db.collection('community_guides').doc(this.selectedTrail.id)
+                            .collection('comments').orderBy('createdAt', 'asc').get();
+                        this.trailComments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    } catch (err) {
+                        console.warn('Unable to load trail comments:', err);
+                        this.trailComments = [];
+                    } finally {
+                        this.trailCommentsLoading = false;
+                    }
+                },
+
+                async submitTrailComment() {
+                    if (!this.user) return alert('Please log in to comment.');
+                    const message = this.trailCommentText.trim();
+                    if (!message || !this.selectedTrail) return;
+                    try {
+                        const docRef = await db.collection('community_guides').doc(this.selectedTrail.id).collection('comments').add({
+                            authorUid: this.user.uid,
+                            authorName: this.userData.name || this.user.displayName || 'Pet parent',
+                            message,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        this.trailComments.push({
+                            id: docRef.id,
+                            authorUid: this.user.uid,
+                            authorName: this.userData.name || this.user.displayName || 'Pet parent',
+                            message
+                        });
+                        this.trailCommentText = '';
+                    } catch (err) {
+                        alert('Unable to post your comment: ' + err.message);
+                    }
+                },
+
+                async deleteTrailComment(comment) {
+                    if (!this.isAdmin || !this.adminModeActive || !this.selectedTrail) return;
+                    if (!confirm('Delete this trail comment? This cannot be undone.')) return;
+                    try {
+                        await db.collection('community_guides').doc(this.selectedTrail.id).collection('comments').doc(comment.id).delete();
+                        this.trailComments = this.trailComments.filter(item => item.id !== comment.id);
+                    } catch (err) {
+                        alert('Unable to delete this comment: ' + err.message);
                     }
                 },
 

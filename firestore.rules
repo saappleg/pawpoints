@@ -87,6 +87,18 @@ service cloud.firestore {
         signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvoters', 'votes'])
       );
       allow delete: if isAdmin();
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if signedIn()
+          && request.resource.data.keys().hasOnly(['authorUid', 'authorName', 'message', 'createdAt'])
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.message is string
+          && request.resource.data.message.size() > 0
+          && request.resource.data.message.size() <= 500;
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
     }
 
     match /reviews/{reviewId} {
