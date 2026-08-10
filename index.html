@@ -1117,13 +1117,17 @@
                                     <span class="text-[10px] uppercase font-extrabold tracking-widest bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-3.5 py-1 rounded-full">Earn Free Care</span>
                                     <h3 class="font-extrabold text-xl text-gray-900 dark:text-white mt-2">Refer a Friend, Get 1,000 Pts! 🎁</h3>
                                     <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 max-w-lg leading-relaxed">
-                                        Give your friends $10 off their first sitting or walk! When they sign up, you'll instantly receive <strong>1,000 Paw Points</strong> toward your next reward.
+                                        Give your friends $10 off their first sitting or walk! When their referral is approved, you receive <strong>1,000 Paw Points</strong> toward your next reward.
                                     </p>
                                 </div>
                                 <div class="hidden sm:block text-right">
                                     <span class="text-2xl font-black text-gray-900 dark:text-white" x-text="userData.referralsCount || 0">0</span>
                                     <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Friends Referred</p>
                                 </div>
+                            </div>
+
+                            <div class="rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/30 px-4 py-3 text-xs text-indigo-950 dark:text-indigo-100">
+                                <strong>Referral status upgrades:</strong> 1 approved referral unlocks Silver Paw status for the current year; 5 approved referrals unlock Gold Paw VIP for the current year.
                             </div>
 
                             <div class="bg-gray-50 dark:bg-[#0d1117] p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-gray-200 dark:border-gray-800">
@@ -4636,7 +4640,7 @@
                 },
 
                 async approveReferral(claim) {
-                    if (!confirm(`Award 1,000 Paw Points to ${claim.referrerName} for referring ${claim.clientName}?`)) return;
+                    if (!confirm(`Approve ${claim.clientName}'s referral? ${claim.referrerName} will receive 1,000 Paw Points and may unlock a current-year status upgrade.`)) return;
                     try {
                         const referrerRef = db.collection('clients').doc(claim.referrerUid);
                         const claimRef = db.collection('referral_claims').doc(claim.id);
@@ -4644,11 +4648,21 @@
                         if (!referrer.exists) throw new Error('The referring client could not be found.');
                         const data = referrer.data();
                         const currentPoints = data.points || 0;
-                        await referrerRef.update({
+                        const referralsCount = Number(data.referralsCount || 0) + 1;
+                        const currentTier = this.getClientTier(data).key;
+                        const referralTier = referralsCount >= 5 ? 'gold' : (referralsCount >= 1 ? 'silver' : currentTier);
+                        const tierRank = { bronze: 0, silver: 1, gold: 2 };
+                        const statusTier = (tierRank[referralTier] || 0) > (tierRank[currentTier] || 0) ? referralTier : currentTier;
+                        const update = {
                             points: currentPoints + 1000,
                             lifetimePoints: (data.lifetimePoints || currentPoints) + 1000,
-                            referralsCount: (data.referralsCount || 0) + 1
-                        });
+                            referralsCount
+                        };
+                        if (statusTier !== currentTier) {
+                            update.statusTier = statusTier;
+                            update.statusYear = this.tierSeasonYear;
+                        }
+                        await referrerRef.update(update);
                         await claimRef.update({
                             status: 'awarded',
                             reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -4657,7 +4671,8 @@
                         await this.sendPointUpdatePush(claim.referrerUid, currentPoints + 1000);
                         await this.fetchPendingReferrals();
                         await this.fetchClientsList();
-                        alert('Referral reward approved and points added.');
+                        const upgradeMessage = statusTier !== currentTier ? ` ${statusTier === 'gold' ? 'Gold Paw VIP' : 'Silver Paw'} status is now active for ${this.tierSeasonYear}.` : '';
+                        alert(`Referral reward approved and 1,000 Paw Points added.${upgradeMessage}`);
                     } catch (err) {
                         alert('Unable to award referral points: ' + err.message);
                     }
