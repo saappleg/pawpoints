@@ -2667,11 +2667,14 @@
                     if (this.oneSignalConfigured) {
                         try {
                             const isSubscribed = await this.withOneSignal(async (OneSignal) => {
-                                await OneSignal.login(this.user.uid);
-                                if (!OneSignal.User.PushSubscription.optedIn) {
-                                    await OneSignal.Slidedown.promptPush({ force: true });
+                                // Ask the browser directly from this user-initiated click. A OneSignal
+                                // slide prompt alone is only a pre-prompt; it is not proof that the
+                                // operating system granted notification permission.
+                                if (!OneSignal.Notifications.permission) {
+                                    await OneSignal.Notifications.requestPermission();
                                 }
-                                return Boolean(OneSignal.User.PushSubscription.optedIn);
+                                await OneSignal.login(this.user.uid);
+                                return await this.waitForOneSignalSubscription(OneSignal);
                             });
                             this.pushEnabled = isSubscribed;
                             alert(this.pushEnabled
@@ -2741,6 +2744,18 @@
                             }
                         });
                     });
+                },
+
+                async waitForOneSignalSubscription(OneSignal) {
+                    // The browser permission can resolve just before OneSignal finishes creating its
+                    // push subscription. Wait briefly so the UI never claims success too early.
+                    for (let attempt = 0; attempt < 8; attempt++) {
+                        if (OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn) {
+                            return true;
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 250));
+                    }
+                    return Boolean(OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn);
                 },
 
                 async sendNotificationDisplayTest() {
