@@ -184,8 +184,8 @@
         .admin-mode-toggle { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; }
         .admin-mode-toggle:hover { background: #e2e8f0; }
         .admin-mode-toggle.is-active { background: #4f46e5; color: #ffffff; border-color: #6366f1; }
-        .facebook-review-button { background: #1877f2; }
-        .facebook-review-button:hover { background: #166fe5; }
+        .facebook-review-button { background: #166fe5; }
+        .facebook-review-button:hover { background: #0f62cc; }
         .reviews-grid { align-items: start; }
         .review-card { height: fit-content; }
         .getting-started-section { background: #eef2ff; border-color: #c7d2fe; }
@@ -500,6 +500,11 @@
                     </div>
                 </section>
 
+                <section x-show="seasonalNotice.active" x-cloak class="bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-800 p-5 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div><span class="text-[10px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-300">Availability update</span><h2 class="mt-1 text-lg font-extrabold text-amber-950 dark:text-amber-100" x-text="seasonalNotice.title"></h2><p class="mt-1 text-xs leading-relaxed text-amber-900 dark:text-amber-200" x-text="seasonalNotice.message"></p></div>
+                    <a href="#care-plan" class="shrink-0 rounded-xl bg-amber-800 hover:bg-amber-900 px-4 py-2.5 text-center text-xs font-bold text-white transition">Check availability</a>
+                </section>
+
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="space-y-1 text-center md:text-left">
                         <div class="flex items-center justify-center md:justify-start gap-2">
@@ -645,7 +650,7 @@
 
                 <section class="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-3xl p-7 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
                     <div class="max-w-3xl"><span class="text-[11px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-300">Urgent care</span><h2 class="mt-1 text-xl font-extrabold text-amber-950 dark:text-amber-100">Last-minute and pet-care emergencies</h2><p class="mt-2 text-sm leading-relaxed text-amber-900 dark:text-amber-200">Emergency availability is usually 24/7. For non-emergencies, messages are generally answered from 7:00 AM to 12:00 AM EST; please allow time outside those hours.</p></div>
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%20need%20urgent%20pet-care%20help." @click="trackEvent('whatsapp_click', { placement: 'emergency_care' })" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-center text-xs font-bold text-white transition">💬 Contact Steven on WhatsApp</a>
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%20need%20urgent%20pet-care%20help." @click="trackEvent('whatsapp_click', { placement: 'emergency_care' })" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-xl bg-emerald-700 hover:bg-emerald-800 px-6 py-3 text-center text-xs font-bold text-white transition">💬 Contact Steven on WhatsApp</a>
                 </section>
 
                 <section id="pet-parent-guides" class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
@@ -729,8 +734,8 @@
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
                     <div class="text-center sm:text-left"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Pet Parent Notes</span><h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">Simple tips for happier, safer care</h2><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Short, practical reads from Pet Care by Steven.</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Warm weather</p><h3 class="font-bold text-gray-900 dark:text-white">Beat the summer walk heat</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Choose cooler times, bring water, and check pavement before heading out.</p></article>
-                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Before a visit</p><h3 class="font-bold text-gray-900 dark:text-white">A calm first-day routine</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Leave feeding notes, favorite treats, and access details in one easy-to-find place.</p></article>
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300">Warm weather</p><h3 class="font-bold text-gray-900 dark:text-white">Beat the summer walk heat</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Choose cooler times, bring water, and check pavement before heading out.</p></article>
+                        <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Before a visit</p><h3 class="font-bold text-gray-900 dark:text-white">A calm first-day routine</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Leave feeding notes, favorite treats, and access details in one easy-to-find place.</p></article>
                         <article class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-5 space-y-2"><p class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Everyday safety</p><h3 class="font-bold text-gray-900 dark:text-white">Keep pet information current</h3><p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Update medication, veterinarian, and emergency contact information before travel.</p></article>
                     </div>
                 </section>
@@ -783,7 +788,7 @@
                                 <p class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Estimated Weekly Total</p>
                                 <div class="flex items-end gap-3">
                                     <span class="text-4xl font-black text-gray-900 dark:text-white" x-text="`$${estimatedQuote}`"></span>
-                                    <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-1" x-text="`+${estimatedQuote * 10} Pts`"></span>
+                                    <span class="text-sm font-bold text-emerald-700 dark:text-emerald-300 mb-1" x-text="`+${estimatedQuote * 10} Pts`"></span>
                                 </div>
                             </div>
                             <a :href="quoteWhatsAppLink" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-sm transition shadow-md text-center flex items-center justify-center gap-2">
@@ -847,7 +852,7 @@
                         <div class="flex items-center justify-between gap-3"><p class="text-xs font-bold text-gray-900 dark:text-white">🗺️ Primary coverage map</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Use the checker for exact coverage</p></div>
                         <div id="service-area-map" class="overflow-hidden border border-gray-200 dark:border-gray-700"></div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center">Not listed? Send a care-plan request—longer-distance care may still be available.</p>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 text-center" x-text="serviceAreasLastUpdated"></p>
+                        <p class="text-[10px] text-gray-600 dark:text-gray-300 text-center" x-text="serviceAreasLastUpdated"></p>
                     </div>
                 </section>
 
@@ -2111,6 +2116,13 @@
                         <textarea x-model="inAppAnnouncementForm.body" maxlength="240" rows="2" placeholder="Announcement message" aria-label="In-app announcement message" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
                         <button @click="postInAppAnnouncement()" class="w-full py-3 bg-slate-700 text-white font-bold rounded-2xl hover:bg-slate-600 transition">Post in-app announcement</button>
                     </div>
+
+                    <div class="border-t dark:border-gray-700 pt-4 space-y-3">
+                        <div><p class="font-bold text-gray-900 dark:text-white">Seasonal availability notice</p><p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">A temporary homepage message for holiday openings, weather changes, or last-minute availability.</p></div>
+                        <input type="text" x-model.trim="seasonalNotice.title" maxlength="80" placeholder="e.g. Thanksgiving week availability" aria-label="Seasonal availability notice title" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <textarea x-model.trim="seasonalNotice.message" maxlength="240" rows="2" placeholder="Short update for pet parents" aria-label="Seasonal availability notice message" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
+                        <div class="grid grid-cols-2 gap-2"><button @click="saveSeasonalNotice(true)" class="py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl transition">Publish notice</button><button @click="saveSeasonalNotice(false)" class="py-2.5 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-bold rounded-xl transition">Hide notice</button></div>
+                    </div>
                 </div>
 
                 <!-- TAB 7: QR BADGE GENERATOR -->
@@ -2582,6 +2594,7 @@
                 trailReports: [],
                 serviceAreas: [],
                 serviceAreasLastUpdated: 'Service areas last reviewed: August 2026',
+                seasonalNotice: { active: false, title: '', message: '' },
                 bulkAreaInput: '',
                 reviewsList: [],
                 newReview: { stars: 5, comment: '', author: '' },
@@ -2650,12 +2663,17 @@
 
                 async init() {
                     this.scheduleNextToast();
+                    // The home page is complete with local fallback content, so show it
+                    // immediately instead of holding the first render for Firestore reads.
+                    // This avoids the large visual jump Lighthouse previously measured.
+                    if (this.currentView === 'home') this.loading = false;
                     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
                         if (this.themePreference === 'system') this.darkMode = event.matches;
                     });
                     if (this.shouldShowInstallPrompt()) {
                         setTimeout(() => { this.showInstallBanner = true; }, 8000);
                     }
+                    await this.loadSeasonalNotice();
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
@@ -3392,6 +3410,41 @@
                         }
                     } catch (err) {
                         this.serviceAreas = fallbackAreas;
+                    }
+                },
+
+                async loadSeasonalNotice() {
+                    try {
+                        const doc = await db.collection('settings').doc('seasonalNotice').get();
+                        if (doc.exists) {
+                            const data = doc.data();
+                            this.seasonalNotice = {
+                                active: data.active === true,
+                                title: typeof data.title === 'string' ? data.title.slice(0, 80) : '',
+                                message: typeof data.message === 'string' ? data.message.slice(0, 240) : ''
+                            };
+                        }
+                    } catch (err) {
+                        console.debug('Seasonal notice unavailable:', err.message);
+                    }
+                },
+
+                async saveSeasonalNotice(active) {
+                    if (!this.isAdmin || !this.adminModeActive) return;
+                    const title = this.seasonalNotice.title.trim();
+                    const message = this.seasonalNotice.message.trim();
+                    if (active && (!title || !message)) return alert('Add both a title and a short message before publishing.');
+                    try {
+                        await db.collection('settings').doc('seasonalNotice').set({
+                            active,
+                            title: title.slice(0, 80),
+                            message: message.slice(0, 240),
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }, { merge: true });
+                        this.seasonalNotice.active = active;
+                        alert(active ? 'Seasonal notice is now visible on the homepage.' : 'Seasonal notice hidden.');
+                    } catch (err) {
+                        alert('Could not save the seasonal notice: ' + err.message);
                     }
                 },
 
