@@ -770,7 +770,7 @@
                             <div class="accordion-content grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs" :class="{ 'open': showGuide }">
                                 <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl border dark:border-gray-700 space-y-1">
                                     <span class="font-black text-brand-600 dark:text-brand-400 text-xs">1. Free Meet & Greet</span>
-                                    <p class="text-[11px] text-gray-600 dark:text-gray-300 leading-snug">Schedule a quick 15-min in-person intro to cover feedings, walk routes, and home keys.</p>
+                                    <p class="text-[11px] text-gray-600 dark:text-gray-300 leading-snug">Schedule a quick 30-minute in-person intro to cover feedings, walk routes, and home keys.</p>
                                 </div>
                                 <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl border dark:border-gray-700 space-y-1">
                                     <span class="font-black text-brand-600 dark:text-brand-400 text-xs">2. Complete Profiles</span>
@@ -1276,8 +1276,9 @@
                         <input type="text" x-model="newTrailForm.title" placeholder="e.g. Mount Airy Forest Trails" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
                     </div>
                     <div>
-                        <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">City / Neighborhood</label>
-                        <input type="text" x-model="newTrailForm.location" placeholder="e.g. Cincinnati, OH" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Trail address or city</label>
+                        <input type="text" x-model="newTrailForm.location" @change="findTrailLocation()" placeholder="e.g. 2970 Westwood Northern Blvd, Cincinnati, OH" required class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
+                        <p x-show="trailLocationStatus" x-text="trailLocationStatus" :class="newTrailForm.lat !== null ? 'text-emerald-700 dark:text-emerald-300' : 'text-gray-500 dark:text-gray-400'" class="text-[10px] mt-1 font-semibold" aria-live="polite"></p>
                     </div>
                     <div class="bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3 rounded-xl space-y-2">
                         <div class="flex items-center justify-between gap-3">
@@ -2033,7 +2034,7 @@
                     "A client in Anderson scheduled a daily walk sequence!",
                     "A client in Cincinnati booked weekend drop-in visits!",
                     "A client in Pierce Township earned 1,000 Paw Points from a referral!",
-                    "A new client requested a free 15-minute Meet & Greet!",
+                    "A new client requested a free 30-minute Meet & Greet!",
                     "A client in Williamsburg reserved a 5-night sitting package!"
                 ],
                 photoGrid: [],
@@ -2072,6 +2073,8 @@
                 trailMapMarkers: null,
                 trailPickerMap: null,
                 trailPickerMarker: null,
+                trailLocationStatus: '',
+                lastTrailGeocodeQuery: '',
 
                 get estimatedQuote() {
                     let base = 25; 
@@ -2319,11 +2322,41 @@
                             const { lat, lng } = event.latlng;
                             this.newTrailForm.lat = Number(lat.toFixed(6));
                             this.newTrailForm.lng = Number(lng.toFixed(6));
+                            this.trailLocationStatus = '✓ Map location selected.';
                             if (this.trailPickerMarker) this.trailPickerMarker.setLatLng(event.latlng);
                             else this.trailPickerMarker = window.L.marker(event.latlng).addTo(this.trailPickerMap);
                         });
                     }
                     [100, 400].forEach(delay => setTimeout(() => this.trailPickerMap?.invalidateSize({ pan: false }), delay));
+                },
+
+                async findTrailLocation() {
+                    const query = this.newTrailForm.location.trim();
+                    if (query.length < 3 || query === this.lastTrailGeocodeQuery) return;
+                    this.lastTrailGeocodeQuery = query;
+                    this.trailLocationStatus = 'Finding the map location…';
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&q=${encodeURIComponent(query)}`, {
+                            headers: { Accept: 'application/json' }
+                        });
+                        if (!response.ok) throw new Error('Location lookup failed.');
+                        const results = await response.json();
+                        if (!results.length) {
+                            this.trailLocationStatus = 'No map match found. You can still use Pick on map.';
+                            return;
+                        }
+                        this.newTrailForm.lat = Number(Number(results[0].lat).toFixed(6));
+                        this.newTrailForm.lng = Number(Number(results[0].lon).toFixed(6));
+                        this.trailLocationStatus = '✓ Map location found automatically. You can adjust it with Pick on map.';
+                        if (this.trailPickerMap) {
+                            const latLng = [this.newTrailForm.lat, this.newTrailForm.lng];
+                            this.trailPickerMap.setView(latLng, 15);
+                            if (this.trailPickerMarker) this.trailPickerMarker.setLatLng(latLng);
+                            else this.trailPickerMarker = window.L.marker(latLng).addTo(this.trailPickerMap);
+                        }
+                    } catch (err) {
+                        this.trailLocationStatus = 'Could not find that location automatically. You can still use Pick on map.';
+                    }
                 },
 
                 async loadCommunityTrails() {
@@ -2341,6 +2374,7 @@
                 async submitNewTrail() {
                     if (!this.newTrailForm.title || !this.newTrailForm.description) return;
                     try {
+                        if (this.newTrailForm.lat === null) await this.findTrailLocation();
                         const trailObj = {
                             title: this.newTrailForm.title.trim(),
                             location: this.newTrailForm.location.trim(),
@@ -2356,6 +2390,8 @@
                         const docRef = await db.collection('community_guides').add(trailObj);
                         this.communityTrails.unshift({ id: docRef.id, ...trailObj });
                         this.newTrailForm = { title: '', location: '', description: '', amenities: '', lat: null, lng: null };
+                        this.trailLocationStatus = '';
+                        this.lastTrailGeocodeQuery = '';
                         this.showTrailMapPicker = false;
                         if (this.trailPickerMarker) {
                             this.trailPickerMap.removeLayer(this.trailPickerMarker);
