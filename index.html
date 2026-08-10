@@ -200,6 +200,17 @@
         .new-client-print { position: absolute; top: 0; right: 0; height: 2.25rem; }
         .care-plan-prep { background: #eef2ff; border-color: #c7d2fe; color: #1f2937; margin-bottom: 1.5rem; }
         .care-plan-prep-muted { color: #475569; }
+        /* High-contrast secondary actions that remain visible on dark panels. */
+        .hero-rewards-action,
+        .meet-greet-action {
+            color: #ffffff;
+            border: 1px solid;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.28);
+        }
+        .hero-rewards-action { background: #3730a3; border-color: #a5b4fc; }
+        .hero-rewards-action:hover { background: #4f46e5; }
+        .meet-greet-action { background: #047857; border-color: #6ee7b7; }
+        .meet-greet-action:hover { background: #059669; }
         @media (max-width: 639px) {
             .new-client-prep-header { padding-right: 0; }
             .new-client-print { position: static; margin-top: 0.25rem; }
@@ -488,7 +499,7 @@
                                     <span>📋</span>
                                     <span>Request a Care Plan</span>
                                 </a>
-                                <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="w-full sm:w-auto bg-black/20 hover:bg-black/30 text-white border-none px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                <button @click="currentView = 'loyalty'" aria-label="View Client Rewards" class="hero-rewards-action w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-base transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                     <span>🎁</span>
                                     <span>View Client Rewards</span>
                                 </button>
@@ -515,7 +526,7 @@
                             Prefer to meet before booking? Schedule a free 30-minute in-home introduction to review your pet’s routine, care needs, and home notes.
                         </p>
                     </div>
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="w-full md:w-auto shrink-0 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black px-8 py-4 rounded-2xl transition shadow-md text-center flex items-center justify-center gap-2">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="meet-greet-action w-full md:w-auto shrink-0 text-xs font-black px-8 py-4 rounded-2xl transition text-center flex items-center justify-center gap-2">
                         <span>☕ Book on WhatsApp</span>
                     </a>
                 </section>
