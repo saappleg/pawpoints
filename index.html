@@ -107,8 +107,9 @@
         // This public App ID identifies the Pet Care by Steven OneSignal Web Push app.
         // Never put a OneSignal REST API key in this file.
         window.PET_CARE_ONESIGNAL_APP_ID = '3ad329ab-90a9-43d9-94a0-fceb39aafa38';
-        // Cloudflare Worker gateway for secure, personalized OneSignal notifications.
-        window.PET_CARE_NOTIFICATIONS_URL = 'https://petcare-notifications.sapplegater.workers.dev';
+        // Push broadcasts are managed directly in the OneSignal dashboard.
+        // Keeping this blank prevents the portal from attempting automated sends.
+        window.PET_CARE_NOTIFICATIONS_URL = '';
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function (OneSignal) {
             if (!window.PET_CARE_ONESIGNAL_APP_ID) return;
@@ -2044,54 +2045,17 @@
                     </div>
                 </div>
 
-                <!-- TAB 6: REMOTE PUSH, SCHEDULED REMINDERS, AND IN-APP ANNOUNCEMENTS -->
+                <!-- TAB 6: ONESIGNAL PUSH AND IN-APP ANNOUNCEMENTS -->
                 <div x-show="adminTab === 'broadcast'" class="space-y-4 text-xs" x-cloak>
-                    <div class="bg-indigo-950/30 border border-indigo-400/40 rounded-2xl p-3 space-y-3">
+                    <div class="bg-indigo-950/30 border border-indigo-400/40 rounded-2xl p-4 space-y-3">
                         <div>
-                            <p class="font-bold text-indigo-200">Real push notification</p>
-                            <p class="text-[11px] text-slate-300 mt-1">Sends through OneSignal even when the client portal is closed.</p>
+                            <p class="font-bold text-indigo-100">🔔 OneSignal Push Center</p>
+                            <p class="text-[11px] text-slate-200 mt-1">Create, schedule, personalize, and review delivery of real push notifications directly in OneSignal.</p>
                         </div>
-                        <p x-show="!notificationServiceConfigured" class="text-[11px] text-amber-200 bg-amber-950/40 border border-amber-500/50 rounded-xl p-2.5">Cloudflare notification service is not connected yet. Follow <code>notifications-worker/README.md</code>, then add its URL to this site.</p>
-                        <div>
-                            <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Audience</label>
-                            <select x-model="notificationForm.audience" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                                <option value="all">All subscribed clients</option>
-                                <option value="client">One client</option>
-                            </select>
-                        </div>
-                        <div x-show="notificationForm.audience === 'client'">
-                            <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Client</label>
-                            <select x-model="notificationForm.clientUid" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                                <option value="">-- Choose a client --</option>
-                                <template x-for="client in clientList" :key="client.id"><option :value="client.id" x-text="client.name || client.email || client.id"></option></template>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Message Body</label>
-                            <input type="text" x-model="notificationForm.title" maxlength="80" placeholder="e.g. Holiday booking reminder 🎄" aria-label="Push notification title" class="w-full px-3 py-2.5 mb-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                            <textarea x-model="notificationForm.body" maxlength="240" rows="3" placeholder="Only two holiday slots remain." aria-label="Push notification body" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
-                        </div>
-                        <button @click="sendRemoteNotification()" :disabled="!notificationServiceConfigured" class="w-full py-3 bg-indigo-600 disabled:opacity-50 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Send real push now</button>
-                    </div>
-
-                    <div class="bg-emerald-950/25 border border-emerald-500/40 rounded-2xl p-3 space-y-3">
-                        <div><p class="font-bold text-emerald-200">Schedule a client reminder</p><p class="text-[11px] text-slate-300 mt-1">For manual Walkies booking reminders. It sends within five minutes of the selected time.</p></div>
-                        <div>
-                            <label class="block font-bold text-gray-500 dark:text-slate-300 mb-1">Client</label>
-                            <select x-model="reminderForm.clientUid" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"><option value="">-- Choose a client --</option><template x-for="client in clientList" :key="client.id"><option :value="client.id" x-text="client.name || client.email || client.id"></option></template></select>
-                        </div>
-                        <input type="datetime-local" x-model="reminderForm.sendAt" aria-label="Reminder time" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <input type="text" x-model="reminderForm.title" maxlength="80" placeholder="Reminder title" aria-label="Reminder title" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                        <textarea x-model="reminderForm.body" maxlength="240" rows="2" placeholder="Your visit reminder message" aria-label="Reminder message" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none"></textarea>
-                        <button @click="scheduleClientReminder()" :disabled="!notificationServiceConfigured" class="w-full py-3 bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-2xl hover:bg-emerald-700 transition">Schedule reminder</button>
-                        <div x-show="scheduledReminders.length" class="space-y-2 pt-1">
-                            <p class="font-bold text-emerald-200">Upcoming reminders</p>
-                            <template x-for="reminder in scheduledReminders" :key="reminder.id">
-                                <div class="flex items-center justify-between gap-2 bg-slate-950/40 border border-emerald-700/40 rounded-xl p-2.5">
-                                    <div class="min-w-0"><p class="font-semibold text-slate-100 truncate" x-text="reminder.title"></p><p class="text-[10px] text-slate-300" x-text="`${clientNameFor(reminder.client_uid)} · ${new Date(reminder.send_at).toLocaleString()}`"></p></div>
-                                    <button @click="cancelScheduledReminder(reminder.id)" class="shrink-0 text-[11px] text-red-200 hover:text-red-100 font-bold">Cancel</button>
-                                </div>
-                            </template>
+                        <a href="https://dashboard.onesignal.com/" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Open OneSignal Dashboard ↗</a>
+                        <div class="text-[11px] leading-relaxed text-slate-200 bg-slate-950/35 border border-indigo-300/25 rounded-xl p-3">
+                            <p class="font-bold text-indigo-100 mb-1">Best workflow</p>
+                            <p>Use <strong>New message</strong> for broadcasts and scheduling, then use OneSignal’s audience builder and delivery report. Clients must first allow notifications in the portal before they can receive a push.</p>
                         </div>
                     </div>
 
