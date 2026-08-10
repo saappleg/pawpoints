@@ -119,10 +119,31 @@
             position: fixed;
             top: calc(var(--top-bar-height) + 4.75rem);
             right: 1rem;
+            width: min(23rem, calc(100vw - 2rem));
+            max-width: none;
             max-height: calc(100dvh - 6rem);
             overflow-y: auto;
             margin: 0;
+            padding: 0.9rem;
+            border-radius: 1.25rem;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.28);
         }
+        .profile-modal-dialog::before {
+            content: '';
+            position: absolute;
+            top: -0.42rem;
+            right: 1.3rem;
+            width: 0.82rem;
+            height: 0.82rem;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            border-left: 1px solid #e5e7eb;
+            transform: rotate(45deg);
+        }
+        .dark .profile-modal-dialog::before { background: #111827; border-color: #1f2937; }
+        .account-menu-action { background: transparent; border-color: transparent; }
+        .account-menu-action:hover { background: #f3f4f6; }
+        .dark .account-menu-action:hover { background: #1f2937; }
         .facebook-review-button { background: #1877f2; }
         .facebook-review-button:hover { background: #166fe5; }
         .reviews-grid { align-items: start; }
@@ -207,13 +228,13 @@
                 padding: 0.75rem;
             }
             .profile-modal-dialog {
-                top: 11rem;
                 right: 0.75rem;
                 left: 0.75rem;
                 width: auto;
-                max-height: calc(100dvh - 12rem);
-                padding: 1.25rem;
+                max-height: calc(100dvh - 1rem);
+                padding: 0.75rem;
             }
+            .profile-modal-dialog::before { display: none; }
         }
 
         footer {
@@ -281,7 +302,7 @@
     <div x-show="printMode !== 'fridge'" class="flex flex-col min-h-screen w-full">
         
         <div class="rainbow-top-bar sticky top-0 z-40"></div>
-        <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <header x-ref="siteHeader" class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
             <div class="site-header-content max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="header-brand flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                     <div class="h-12 w-12 shrink-0 transition-transform hover:scale-105">
@@ -320,7 +341,7 @@
 
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
-                            <button x-show="isVerified" @click="triggerViewTransition(() => { profilePanelView = 'menu'; showProfileModal = true })" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <button x-ref="profileTrigger" x-show="isVerified" @click="triggerViewTransition(() => openProfilePanel('menu'))" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                                 <span>👤</span><span>Profile</span>
                             </button>
                         </div>
@@ -926,7 +947,7 @@
                                     <span>📋</span>
                                     <span>House & Care Sheet</span>
                                 </button>
-                                <button @click="triggerViewTransition(() => { profilePanelView = 'details'; showProfileModal = true })" aria-label="Account Profile" class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-4 rounded-2xl font-bold text-xs transition border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2">
+                                <button @click="triggerViewTransition(() => openProfilePanel('details'))" aria-label="Account Profile" class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-4 rounded-2xl font-bold text-xs transition border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2">
                                     <span>⚙️</span>
                                     <span>Account Profile</span>
                                 </button>
@@ -1615,8 +1636,8 @@
 
         <!-- ACCOUNT PROFILE MODAL -->
         <div x-show="showProfileModal" x-transition x-cloak class="profile-modal fixed inset-0" role="dialog" aria-modal="false" aria-labelledby="modal-profile-title">
-            <div @click.away="showProfileModal = false" class="profile-modal-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
-                <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
+            <div @click.away="showProfileModal = false" :style="{ top: profilePanelTop }" class="profile-modal-dialog bg-white dark:bg-[#111827] space-y-4 border dark:border-gray-800">
+                <div class="flex justify-between items-center border-b dark:border-gray-800 px-1 pb-3">
                     <div>
                         <h2 id="modal-profile-title" class="font-bold text-lg text-gray-900 dark:text-white" x-text="profilePanelView === 'menu' ? 'Account' : 'Your Profile & Preferences'"></h2>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5" x-text="profilePanelView === 'menu' ? 'Manage your account and preferences.' : 'Keep your contact details current so care updates reach you.'"></p>
@@ -1624,12 +1645,12 @@
                     <button @click="showProfileModal = false" aria-label="Close Modal" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button>
                 </div>
 
-                <div x-show="profilePanelView === 'menu'" x-cloak class="space-y-3 text-xs">
+                <div x-show="profilePanelView === 'menu'" x-cloak class="space-y-2 text-xs">
                     <div class="flex items-center gap-3 rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-3.5">
                         <div class="h-10 w-10 shrink-0 rounded-full bg-brand-600 text-white flex items-center justify-center text-lg font-black" x-text="(userData.name || user?.email || 'P').charAt(0).toUpperCase()"></div>
                         <div class="min-w-0"><p class="truncate font-bold text-gray-900 dark:text-white" x-text="userData.name || 'Pet Parent'"></p><p class="truncate text-[11px] text-gray-500 dark:text-gray-400" x-text="user?.email"></p></div>
                     </div>
-                    <button type="button" @click="profilePanelView = 'details'" class="w-full flex items-center gap-3 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-[#0d1117] dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-800 px-4 py-3 text-left transition">
+                    <button type="button" @click="profilePanelView = 'details'" class="account-menu-action w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition">
                         <span class="text-lg">👤</span><span><span class="block font-bold text-gray-900 dark:text-white">Profile &amp; care settings</span><span class="block mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">Contact details, home notes, checklist, and alerts</span></span>
                     </button>
                     <div x-show="isAdmin" x-cloak class="rounded-2xl bg-slate-800 border border-slate-600 p-3.5 space-y-2">
@@ -1637,7 +1658,7 @@
                         <button type="button" @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" :class="adminModeActive ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-900'" class="w-full py-2.5 text-xs font-bold rounded-xl transition" x-text="adminModeActive ? 'Admin Mode: On' : 'Turn Admin Mode On'"></button>
                         <button x-show="adminModeActive" type="button" @click="showProfileModal = false; openAdminModal('points')" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl transition">Open Admin Workspace</button>
                     </div>
-                    <button type="button" @click="logout()" class="w-full flex items-center gap-3 rounded-2xl bg-gray-50 hover:bg-red-50 dark:bg-[#0d1117] dark:hover:bg-red-950/30 border border-gray-200 dark:border-gray-800 px-4 py-3 text-left text-red-600 dark:text-red-400 transition"><span class="text-lg">↪</span><span class="font-bold">Log out</span></button>
+                    <button type="button" @click="logout()" class="account-menu-action w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left text-red-600 dark:text-red-400 transition"><span class="text-lg">↪</span><span class="font-bold">Log out</span></button>
                 </div>
 
                 <form x-show="profilePanelView === 'details'" x-cloak @submit.prevent="updateUserProfile()" class="space-y-4 text-xs">
@@ -2285,6 +2306,7 @@
                 showChecklistModal: false,
                 showProfileModal: false,
                 profilePanelView: 'menu',
+                profilePanelTop: '5rem',
                 showAdminModal: false,
                 showAddTrailModal: false,
                 vetAuthForm: { capAmount: 500, insuranceInfo: '', signature: '', dateSigned: '', isSigned: false },
@@ -2948,6 +2970,15 @@
                 dismissInstallPrompt() {
                     this.showInstallBanner = false;
                     localStorage.setItem('pwaInstallPromptDismissedAt', String(Date.now()));
+                },
+
+                openProfilePanel(view = 'menu') {
+                    this.profilePanelView = view;
+                    this.showProfileModal = true;
+                    this.$nextTick(() => {
+                        const header = this.$refs.siteHeader;
+                        if (header) this.profilePanelTop = `${Math.round(header.getBoundingClientRect().bottom + 8)}px`;
+                    });
                 },
 
                 async loadServiceAreasFromFirestore() {
