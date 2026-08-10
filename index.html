@@ -1393,7 +1393,7 @@
                             <label class="flex items-center gap-2"><input type="checkbox" value="Fenced area" x-model="newTrailForm.amenities"> Fenced area</label>
                         </div>
                         <input type="text" x-model="newTrailForm.otherAmenities" placeholder="Other amenity (optional)" class="w-full mt-3 px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 outline-none">
-                    </div>
+                    </fieldset>
                     <fieldset>
                         <legend class="block font-bold text-gray-700 dark:text-gray-300 mb-2">Safety notes</legend>
                         <div class="grid grid-cols-2 gap-2 text-[11px] text-gray-700 dark:text-gray-300">
@@ -3612,26 +3612,36 @@
                     this.profileSuccess = '';
 
                     try {
+                        const clientRef = db.collection('clients').doc(this.user.uid);
+                        await clientRef.update({
+                            name: this.profileForm.name,
+                            email: this.profileForm.email,
+                            phone: this.profileForm.phone,
+                            address: this.profileForm.address
+                        });
+
+                        let checklistSaved = true;
+                        try {
+                            await clientRef.update({ firstVisitChecklist: this.firstVisitChecklist });
+                        } catch (checklistError) {
+                            console.warn('First-visit checklist save failed:', checklistError);
+                            checklistSaved = false;
+                        }
+
                         if (this.profileForm.email !== this.user.email) {
                             await this.user.updateEmail(this.profileForm.email);
                             await this.user.sendEmailVerification();
                         }
 
-                        await db.collection('clients').doc(this.user.uid).update({
-                            name: this.profileForm.name,
-                            email: this.profileForm.email,
-                            phone: this.profileForm.phone,
-                            address: this.profileForm.address,
-                            firstVisitChecklist: this.firstVisitChecklist
-                        });
-
                         this.userData.name = this.profileForm.name;
                         this.userData.email = this.profileForm.email;
                         this.userData.phone = this.profileForm.phone;
                         this.userData.address = this.profileForm.address;
-                        this.userData.firstVisitChecklist = this.firstVisitChecklist;
+                        if (checklistSaved) this.userData.firstVisitChecklist = this.firstVisitChecklist;
 
-                        this.profileSuccess = 'Profile details updated successfully!';
+                        this.profileSuccess = checklistSaved
+                            ? 'Profile details updated successfully!'
+                            : 'Contact profile saved. Publish the latest Firestore rules to save the first-visit checklist.';
                         setTimeout(() => { this.showProfileModal = false; this.profileSuccess = ''; }, 1500);
                     } catch (err) {
                         this.profileError = err.message;
