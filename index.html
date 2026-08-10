@@ -196,8 +196,19 @@
         .getting-started-section { background: #eef2ff; border-color: #c7d2fe; }
         .getting-started-title { color: #172554; }
         .getting-started-step { background: #ffffff; color: #1f2937; border: 1px solid #dbeafe; }
+        .section-heading { display: grid; gap: 0.65rem; margin-bottom: 2rem; }
+        .section-heading > * { margin: 0; }
+        .getting-started-header { display: grid; gap: 0.65rem; margin: 0 auto 2rem; }
+        .getting-started-header > * { margin: 0; }
+        .getting-started-actions { margin-top: 1.5rem; padding-top: 0.25rem; }
+        .new-client-prep-header { position: relative; min-height: 3rem; padding-right: 9rem; }
+        .new-client-print { position: absolute; top: 0; right: 0; height: 2.25rem; }
         .care-plan-prep { background: #eef2ff; border-color: #c7d2fe; color: #1f2937; margin-bottom: 1.5rem; }
         .care-plan-prep-muted { color: #475569; }
+        @media (max-width: 639px) {
+            .new-client-prep-header { padding-right: 0; }
+            .new-client-print { position: static; margin-top: 0.25rem; }
+        }
         .dark .getting-started-section { background: #172554; border-color: #3730a3; }
         .dark .getting-started-title { color: #ffffff; }
         .dark .getting-started-step { background: #0d1117; color: #f8fafc; border-color: #334155; }
@@ -510,7 +521,7 @@
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-7">
-                    <div class="space-y-2">
+                    <div class="section-heading">
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Why Pet Parents Choose Us</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Transparent trust, safety, and local expertise</h2>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Built for consistency, communication, and real in-home care.</p>
@@ -572,14 +583,14 @@
                 </section>
 
                 <section id="how-it-works" class="getting-started-section rounded-3xl p-6 md:p-8 shadow-sm border">
-                    <div class="text-center max-w-2xl mx-auto mb-8 md:mb-9"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="getting-started-title text-2xl font-extrabold mt-1">Care in four simple steps</h2><p class="mt-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300">A calm, clear start for you and your pet—no guessing about what comes next.</p></div>
+                    <div class="getting-started-header text-center max-w-2xl"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="getting-started-title text-2xl font-extrabold">Care in four simple steps</h2><p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">A calm, clear start for you and your pet—no guessing about what comes next.</p></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">1️⃣</span><p class="font-bold text-sm mt-2">Request a care plan</p><p class="text-xs mt-1 leading-relaxed opacity-80">Share your pets, preferred dates, city, and anything important about their routine.</p></div>
                         <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">2️⃣</span><p class="font-bold text-sm mt-2">Free Meet &amp; Greet</p><p class="text-xs mt-1 leading-relaxed opacity-80">First-time clients can meet Steven for a free 30-minute in-home introduction and key handoff.</p></div>
                         <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">3️⃣</span><p class="font-bold text-sm mt-2">Book in Walkies</p><p class="text-xs mt-1 leading-relaxed opacity-80">Once the care plan is confirmed, choose your visit dates and times in the Walkies booking portal.</p></div>
                         <div class="getting-started-step rounded-2xl p-5 text-left"><span class="text-lg">4️⃣</span><p class="font-bold text-sm mt-2">Get visit updates</p><p class="text-xs mt-1 leading-relaxed opacity-80">Each visit includes photos and notes, so you know how your pet is doing while you are away.</p></div>
                     </div>
-                    <div class="mt-6 pt-1 flex flex-col items-stretch sm:flex-row sm:items-center sm:justify-center gap-3">
+                    <div class="getting-started-actions flex flex-col items-stretch sm:flex-row sm:items-center sm:justify-center gap-3">
                         <a href="#care-plan" @click="trackEvent('care_plan_cta_click', { placement: 'how_it_works' })" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-600 hover:bg-brand-700 px-5 py-3 text-center text-xs font-bold text-white transition">Request a care plan</a>
                         <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'how_it_works' })" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-emerald-500 px-5 py-3 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition">Ask about a Meet &amp; Greet</a>
                     </div>
@@ -607,7 +618,7 @@
                             <option>Social Media</option>
                             <option>Other</option>
                         </select>
-                        <textarea x-model.trim="carePlanForm.details" required rows="4" placeholder="Tell us about your pets, needed services, and preferred timeline" aria-label="Pet care request details" class="md:col-span-2 w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        <textarea x-model.trim="carePlanForm.details" required rows="4" placeholder="Tell us about your pets, needed services, and preferred timeline" aria-label="Pet care request details" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                         <input type="text" x-model="carePlanForm.honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
                         <div x-show="carePlanStatus.success" x-cloak class="md:col-span-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 rounded-2xl p-5 text-left space-y-2" aria-live="polite">
                             <p class="font-extrabold text-emerald-950 dark:text-emerald-100">✓ Your care-plan request is received.</p>
@@ -615,7 +626,7 @@
                             <p class="text-[11px] text-emerald-800 dark:text-emerald-300">For a pet-care emergency, please contact Steven directly.</p>
                         </div>
                         <p x-show="carePlanStatus.message && !carePlanStatus.success" x-text="carePlanStatus.message" class="md:col-span-2 text-sm font-semibold text-red-600 dark:text-red-400" aria-live="polite"></p>
-                        <button type="submit" :disabled="carePlanStatus.submitting" class="h-fit self-center bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
+                        <button type="submit" :disabled="carePlanStatus.submitting" class="h-14 self-start bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 rounded-2xl transition shadow-md">
                             <span x-text="carePlanStatus.submitting ? 'Sending…' : 'Send Care Plan Request'"></span>
                         </button>
                         <p class="md:col-span-2 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">For pet-care emergencies, availability is usually 24/7. Non-emergency messages are generally answered between 7:00 AM and 12:00 AM EST; please allow time for a response outside those hours.</p>
@@ -623,13 +634,13 @@
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div class="new-client-prep-header">
                         <div class="max-w-2xl space-y-2">
                             <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">New-client prep</span>
                             <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">A smoother first visit starts here</h2>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Keep this short checklist handy before your Meet &amp; Greet or first service.</p>
                         </div>
-                        <button @click="trackEvent('new_client_checklist_print'); printNewClientChecklist()" class="inline-flex h-9 shrink-0 items-center justify-center self-start sm:self-auto whitespace-nowrap rounded-lg border border-brand-500 px-3 text-[11px] font-bold text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-950/30 transition">🖨️ Print checklist</button>
+                        <button @click="trackEvent('new_client_checklist_print'); printNewClientChecklist()" class="new-client-print inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-brand-500 px-3 text-[11px] font-bold text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-950/30 transition">🖨️ Print checklist</button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5 space-y-3"><h3 class="font-bold text-gray-900 dark:text-white">Your pet’s routine</h3><ul class="space-y-2 text-xs text-gray-600 dark:text-gray-300"><li>✓ Feeding amounts and timing</li><li>✓ Medication instructions and supplies</li><li>✓ Walk, potty, play, and sleep routine</li><li>✓ Comfort items, triggers, and favorite treats</li></ul></div>
