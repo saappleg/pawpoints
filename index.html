@@ -107,9 +107,8 @@
         // This public App ID identifies the Pet Care by Steven OneSignal Web Push app.
         // Never put a OneSignal REST API key in this file.
         window.PET_CARE_ONESIGNAL_APP_ID = '3ad329ab-90a9-43d9-94a0-fceb39aafa38';
-        // Add the deployed Cloudflare Worker URL here after following notifications-worker/README.md.
-        // Leave blank until then; the admin panel will keep the in-app announcement option available.
-        window.PET_CARE_NOTIFICATIONS_URL = '';
+        // Cloudflare Worker gateway for secure, personalized OneSignal notifications.
+        window.PET_CARE_NOTIFICATIONS_URL = 'https://petcare-notifications.sapplegater.workers.dev';
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function (OneSignal) {
             if (!window.PET_CARE_ONESIGNAL_APP_ID) return;
