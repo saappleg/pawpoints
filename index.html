@@ -103,8 +103,16 @@
         .facebook-review-button:hover { background: #166fe5; }
         .reviews-grid { align-items: start; }
         .review-card { height: fit-content; }
-        .coverage-map-visual { background: linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%); }
-        .dark .coverage-map-visual { background: linear-gradient(135deg, #062e2b 0%, #172554 100%); }
+        .getting-started-section { background: #eef2ff; border-color: #c7d2fe; }
+        .getting-started-title { color: #172554; }
+        .getting-started-step { background: #ffffff; color: #1f2937; border: 1px solid #dbeafe; }
+        .care-plan-prep { background: #eef2ff; border-color: #c7d2fe; color: #1f2937; }
+        .care-plan-prep-muted { color: #475569; }
+        .dark .getting-started-section { background: #172554; border-color: #3730a3; }
+        .dark .getting-started-title { color: #ffffff; }
+        .dark .getting-started-step { background: #0d1117; color: #f8fafc; border-color: #334155; }
+        .dark .care-plan-prep { background: #172554; border-color: #3730a3; color: #ffffff; }
+        .dark .care-plan-prep-muted { color: #cbd5e1; }
 
         :root {
             --top-bar-height: 6px;
@@ -393,13 +401,13 @@
                     </div>
                 </section>
 
-                <section class="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 rounded-3xl p-6 md:p-8 shadow-sm">
-                    <div class="text-center mb-5"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="text-xl font-extrabold text-gray-900 dark:text-white mt-1">Care in four simple steps</h2></div>
+                <section class="getting-started-section rounded-3xl p-6 md:p-8 shadow-sm border">
+                    <div class="text-center mb-5"><span class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Getting started</span><h2 class="getting-started-title text-xl font-extrabold mt-1">Care in four simple steps</h2></div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">1️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Request a plan</p></div>
-                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">2️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Free Meet &amp; Greet</p></div>
-                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">3️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Book in Walkies</p></div>
-                        <div class="bg-white dark:bg-[#0d1117] rounded-2xl p-4"><span class="text-lg">4️⃣</span><p class="font-bold text-xs text-gray-900 dark:text-white mt-2">Get visit updates</p></div>
+                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">1️⃣</span><p class="font-bold text-xs mt-2">Request a plan</p></div>
+                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">2️⃣</span><p class="font-bold text-xs mt-2">Free Meet &amp; Greet</p></div>
+                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">3️⃣</span><p class="font-bold text-xs mt-2">Book in Walkies</p></div>
+                        <div class="getting-started-step rounded-2xl p-4"><span class="text-lg">4️⃣</span><p class="font-bold text-xs mt-2">Get visit updates</p></div>
                     </div>
                 </section>
 
@@ -410,9 +418,9 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
                         <p class="text-xs text-brand-700 dark:text-brand-300 font-semibold pt-1">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
                     </div>
-                    <div class="max-w-3xl mx-auto mb-5 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-900 dark:text-white">Helpful to have ready</p>
-                        <p class="text-[11px] text-gray-600 dark:text-gray-300 mt-1">Pet type and count · dates needed · your city/ZIP · care routine or medication notes</p>
+                    <div class="care-plan-prep max-w-3xl mx-auto mb-5 border rounded-2xl p-4">
+                        <p class="text-xs font-bold">Helpful to have ready</p>
+                        <p class="care-plan-prep-muted text-[11px] mt-1">Pet type and count · dates needed · your city/ZIP · care routine or medication notes</p>
                     </div>
                     <form @submit.prevent="submitCarePlanRequest()" class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" x-model.trim="carePlanForm.name" required autocomplete="name" placeholder="Your name" aria-label="Your name" class="w-full px-4 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
@@ -620,26 +628,10 @@
                             </div>
                         </template>
                     </div>
-                    <div class="max-w-2xl mx-auto pt-2 border-t border-gray-100 dark:border-gray-800">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-center mb-3">Current primary coverage</p>
-                        <div class="flex flex-wrap justify-center gap-2">
-                            <template x-for="area in serviceAreas" :key="area.city">
-                                <span class="bg-indigo-50 dark:bg-gray-800 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-100 dark:border-gray-700 text-[11px] font-bold" x-text="area.city"></span>
-                            </template>
-                        </div>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center mt-3">Not listed? Send a care-plan request—longer-distance care may still be available.</p>
-                    </div>
                     <div class="max-w-2xl mx-auto pt-2 space-y-2">
-                        <div class="flex items-center justify-between gap-3"><p class="text-xs font-bold text-gray-900 dark:text-white">🗺️ Primary coverage map</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Outline is a quick guide</p></div>
-                        <div class="coverage-map-visual overflow-hidden border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4">
-                            <svg viewBox="0 0 700 250" role="img" aria-label="Illustrated map of Pet Care by Steven primary coverage area" class="w-full h-auto">
-                                <path d="M90 60 L300 30 L570 70 L630 155 L500 220 L250 205 L75 150 Z" fill="#6366f1" fill-opacity=".18" stroke="#4f46e5" stroke-width="4" stroke-linejoin="round"/>
-                                <path d="M118 150 C230 95, 355 150, 575 80" fill="none" stroke="#94a3b8" stroke-width="5" stroke-dasharray="10 10" stroke-linecap="round"/>
-                                <g fill="#059669" stroke="#ffffff" stroke-width="3"><circle cx="165" cy="135" r="8"/><circle cx="265" cy="115" r="8"/><circle cx="360" cy="138" r="8"/><circle cx="460" cy="105" r="8"/><circle cx="535" cy="155" r="8"/></g>
-                                <g fill="#1e293b" class="dark:fill-white" font-size="15" font-weight="700"><text x="130" y="165">Cincinnati</text><text x="235" y="95">Amelia</text><text x="325" y="165">Batavia</text><text x="425" y="85">Bethel</text><text x="500" y="185">New Richmond</text></g>
-                                <text x="350" y="55" text-anchor="middle" fill="#4338ca" font-size="19" font-weight="800">Pet Care by Steven Coverage</text>
-                            </svg>
-                        </div>
+                        <div class="flex items-center justify-between gap-3"><p class="text-xs font-bold text-gray-900 dark:text-white">🗺️ Primary coverage map</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Use the checker for exact coverage</p></div>
+                        <div id="service-area-map" class="overflow-hidden border border-gray-200 dark:border-gray-700"></div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center">Not listed? Send a care-plan request—longer-distance care may still be available.</p>
                     </div>
                 </section>
 
@@ -2482,7 +2474,7 @@
                         if (latLng) window.L.circleMarker(latLng, { radius: 6, color: '#059669', fillColor: '#10b981', fillOpacity: 1, weight: 2 })
                             .bindPopup(`<strong>${area.city}</strong><br>Primary coverage area`).addTo(this.serviceAreaLayers);
                     });
-                    setTimeout(() => this.serviceAreaMap.invalidateSize(), 100);
+                    [100, 400, 900, 1600].forEach(delay => setTimeout(() => this.serviceAreaMap?.invalidateSize({ pan: false }), delay));
                 },
 
                 initTrailMap() {
