@@ -211,6 +211,12 @@
         .hero-rewards-action:hover { background: #4f46e5; }
         .meet-greet-action { background: #047857; border-color: #6ee7b7; }
         .meet-greet-action:hover { background: #059669; }
+        /* Referral and print actions need fixed colors: Tailwind utility variants
+           can otherwise blend into the dark portal surface after deployment. */
+        .referral-status-notice { background: #172554; border-color: #6366f1; color: #dbeafe; }
+        .referral-status-notice strong { color: #ffffff; }
+        .emergency-card-print { background: #312e81; border-color: #a5b4fc; color: #ffffff; }
+        .emergency-card-print:hover { background: #4338ca; }
         @media (max-width: 639px) {
             .new-client-prep-header { padding-right: 0; }
             .new-client-print { position: static; margin-top: 0.25rem; }
@@ -1126,7 +1132,7 @@
                                 </div>
                             </div>
 
-                            <div class="rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/30 px-4 py-3 text-xs text-indigo-950 dark:text-indigo-100">
+                            <div class="referral-status-notice rounded-2xl border px-4 py-3 text-xs">
                                 <strong>Referral status upgrades:</strong> 1 approved referral unlocks Silver Paw status for the current year; 5 approved referrals unlock Gold Paw VIP for the current year.
                             </div>
 
@@ -1153,7 +1159,7 @@
                                 <div class="flex items-center space-x-2">
                                     <template x-if="!isEditingPets">
                                         <div class="flex space-x-2">
-                                            <button @click="triggerFridgePrint()" aria-label="Print Emergency Pet Card" class="text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold px-4 py-1.5 rounded-lg shadow-sm transition border border-indigo-200 dark:border-indigo-800 flex items-center gap-2">
+                                            <button @click="triggerFridgePrint()" aria-label="Print Emergency Pet Card" class="emergency-card-print text-xs font-bold px-4 py-1.5 rounded-lg shadow-sm transition border flex items-center gap-2">
                                                 🖨️ Print Emergency Pet Card
                                             </button>
                                             <button @click="isEditingPets = true" class="text-xs bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition">
