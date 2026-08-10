@@ -97,6 +97,7 @@
         #service-area-map { height: 300px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
         .trail-submission-modal { z-index: 2000; }
         .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
+        .app-modal { z-index: 2000; }
         .profile-modal { z-index: 2000; overflow-y: auto; align-items: flex-start; }
         .profile-modal-dialog { max-height: none; margin: 1rem auto; }
         .facebook-review-button { background: #1877f2; }
@@ -1440,7 +1441,7 @@
         </div>
 
         <!-- HOUSE CARE & MEDICATION CHECKLIST MODAL -->
-        <div x-show="showChecklistModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-checklist-title">
+        <div x-show="showChecklistModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-checklist-title">
             <div @click.away="showChecklistModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
                     <div>
@@ -1492,7 +1493,7 @@
         </div>
 
         <!-- VET AUTHORIZATION MODAL -->
-        <div x-show="showVetAuthModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-vetauth-title">
+        <div x-show="showVetAuthModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-vetauth-title">
             <div @click.away="showVetAuthModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
                     <div>
@@ -1624,7 +1625,7 @@
         </div>
 
         <!-- ADMIN PANEL MODAL -->
-        <div x-show="showAdminModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
+        <div x-show="showAdminModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
             <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
@@ -1872,7 +1873,7 @@
         </div>
 
         <!-- iOS INSTALL INSTRUCTIONS MODAL -->
-        <div x-show="showIOSInstallModal" x-transition x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
+        <div x-show="showIOSInstallModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
             <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
                 <div class="flex justify-center">
                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
