@@ -51,7 +51,8 @@
 
     <!-- Prevent FOUC: Apply Dark Theme Class Before Paint -->
     <script>
-        if (localStorage.getItem('theme') === 'dark') {
+        const savedThemePreference = localStorage.getItem('themePreference') || 'system';
+        if (savedThemePreference === 'dark' || (savedThemePreference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
     </script>
@@ -332,12 +333,6 @@
                         <span>🐕</span>
                         <span>Book Service</span>
                     </a>
-
-                    <button @click="toggleDarkMode()" class="theme-toggle-btn p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" aria-label="Toggle Dark Mode">
-                        <span x-show="!darkMode">🌙</span>
-                        <span x-show="darkMode" x-cloak>☀️</span>
-                        <span class="text-[11px] font-bold">Theme</span>
-                    </button>
 
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
@@ -1653,6 +1648,14 @@
                     <button type="button" @click="profilePanelView = 'details'" class="account-menu-action w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition">
                         <span class="text-lg">👤</span><span><span class="block font-bold text-gray-900 dark:text-white">Profile &amp; care settings</span><span class="block mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">Contact details, home notes, checklist, and alerts</span></span>
                     </button>
+                    <div class="rounded-xl border border-gray-200 dark:border-gray-800 px-3 py-3">
+                        <div class="flex items-center justify-between gap-3"><span class="font-bold text-gray-900 dark:text-white">🌗 Appearance</span><span class="text-[10px] text-gray-500 dark:text-gray-400" x-text="themePreference === 'system' ? 'Device setting' : (themePreference === 'dark' ? 'Dark' : 'Light')"></span></div>
+                        <div class="grid grid-cols-3 gap-1.5 mt-2">
+                            <button type="button" @click="setThemePreference('system')" :class="themePreference === 'system' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200'" class="rounded-lg py-2 text-[10px] font-bold transition">Auto</button>
+                            <button type="button" @click="setThemePreference('light')" :class="themePreference === 'light' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200'" class="rounded-lg py-2 text-[10px] font-bold transition">Light</button>
+                            <button type="button" @click="setThemePreference('dark')" :class="themePreference === 'dark' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200'" class="rounded-lg py-2 text-[10px] font-bold transition">Dark</button>
+                        </div>
+                    </div>
                     <div x-show="isAdmin" x-cloak class="rounded-2xl bg-slate-800 border border-slate-600 p-3.5 space-y-2">
                         <p class="font-bold text-white">👑 Admin tools</p>
                         <button type="button" @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" :class="adminModeActive ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-900'" class="w-full py-2.5 text-xs font-bold rounded-xl transition" x-text="adminModeActive ? 'Admin Mode: On' : 'Turn Admin Mode On'"></button>
@@ -2276,12 +2279,15 @@
         function pawApp() {
             const params = new URLSearchParams(window.location.search);
             let initialView = params.get('view') || 'home';
+            const initialThemePreference = localStorage.getItem('themePreference') || 'system';
+            const initialDarkMode = initialThemePreference === 'dark' || (initialThemePreference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (!['home', 'loyalty', 'guide'].includes(initialView)) {
                 initialView = 'home';
             }
 
             return {
-                darkMode: localStorage.getItem('theme') === 'dark',
+                darkMode: initialDarkMode,
+                themePreference: initialThemePreference,
                 currentView: initialView,
                 printMode: '',
                 loading: true,
@@ -2422,6 +2428,9 @@
 
                 async init() {
                     this.scheduleNextToast();
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+                        if (this.themePreference === 'system') this.darkMode = event.matches;
+                    });
                     if (this.shouldShowInstallPrompt()) {
                         setTimeout(() => { this.showInstallBanner = true; }, 8000);
                     }
@@ -3121,9 +3130,10 @@
                     }, randomDelay);
                 },
 
-                toggleDarkMode() {
-                    this.darkMode = !this.darkMode;
-                    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+                setThemePreference(preference) {
+                    this.themePreference = preference;
+                    localStorage.setItem('themePreference', preference);
+                    this.darkMode = preference === 'dark' || (preference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
                 },
 
                 async checkServiceArea() {
