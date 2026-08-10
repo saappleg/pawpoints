@@ -92,7 +92,7 @@
     <style>
         [x-cloak] { display: none !important; }
 
-        #trail-map, #trail-picker-map { height: 340px; border-radius: 1rem; }
+        #trail-map, #trail-picker-map { height: 340px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
         #trail-picker-map { height: 240px; }
 
         :root {
@@ -128,7 +128,7 @@
         header {
             position: sticky;
             top: var(--top-bar-height);
-            z-index: 30;
+            z-index: 1200;
         }
 
         footer {
@@ -196,7 +196,7 @@
     <div x-show="printMode !== 'fridge'" class="flex flex-col min-h-screen w-full">
         
         <div class="rainbow-top-bar sticky top-0 z-40"></div>
-        <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 z-30">
+        <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
             <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
                     <div class="h-12 w-12 shrink-0 transition-transform hover:scale-105">
