@@ -1806,6 +1806,10 @@
                         <button type="button" @click="enablePushNotifications()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl border border-indigo-400 transition flex items-center justify-center gap-2">
                             <span x-text="pushEnabled ? '🔔 Personal updates enabled' : '🔕 Enable personal updates'"></span>
                         </button>
+                        <button type="button" @click="sendNotificationDisplayTest()" class="w-full mt-2 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-100 text-xs font-bold rounded-xl border border-slate-500 transition">
+                            Send a test notification
+                        </button>
+                        <p class="text-[10px] text-slate-300 mt-2">If the test does not appear, notifications are blocked by this device or browser—not by your account.</p>
                     </div>
 
                     <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
@@ -2737,6 +2741,39 @@
                             }
                         });
                     });
+                },
+
+                async sendNotificationDisplayTest() {
+                    if (!('Notification' in window)) {
+                        alert('This browser does not support notifications.');
+                        return;
+                    }
+                    if (Notification.permission !== 'granted') {
+                        alert('Notifications are blocked for this app. Enable them in your device or browser settings, then try again.');
+                        return;
+                    }
+                    try {
+                        const options = {
+                            body: 'If you can see this, notifications are displaying correctly on this device.',
+                            icon: 'android-chrome-192x192.webp',
+                            badge: 'android-chrome-192x192.webp',
+                            tag: 'pet-care-notification-test',
+                            renotify: true,
+                            data: { url: '/?view=profile' }
+                        };
+                        if ('serviceWorker' in navigator) {
+                            const registration = await navigator.serviceWorker.ready;
+                            const existing = await registration.getNotifications({ tag: options.tag });
+                            existing.forEach(notification => notification.close());
+                            await registration.showNotification('Pet Care by Steven — test', options);
+                        } else {
+                            new Notification('Pet Care by Steven — test', options);
+                        }
+                        alert('Test sent. Check your notification banner or notification center.');
+                    } catch (err) {
+                        console.error('Notification display test failed:', err);
+                        alert('The device prevented the notification from displaying. Check your browser and system notification settings.');
+                    }
                 },
 
                 showPersonalNotification(subject, message = '', tag = 'pet-care-update', url = '/?view=home') {
