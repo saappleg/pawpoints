@@ -1009,11 +1009,6 @@
 
                 <template x-if="user && isVerified">
                     <div class="space-y-6">
-                        <div x-show="isAdmin && adminModeActive" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
-                            <span class="text-amber-800 dark:text-amber-200 font-bold">👑 Admin Controls Active</span>
-                            <button @click="openAdminModal('points')" class="bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-xl hover:bg-amber-700 transition shadow-sm">Open Admin Panel</button>
-                        </div>
-
                         <template x-if="petBirthdayAlert || isFirstVisitCompleted">
                             <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-5 rounded-3xl shadow-md flex items-center justify-between gap-4 text-sm">
                                 <div class="flex items-center gap-4">
