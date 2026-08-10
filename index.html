@@ -1065,20 +1065,31 @@
                             </div>
                         </div>
 
-                        <!-- 🐾 PAW LEVELS & YEARLY PROGRESS GAUGE -->
+                        <!-- 🐾 PAW POINTS, STATUS & YEARLY QUALIFICATION -->
                         <div class="bg-white dark:bg-[#111827] text-gray-900 dark:text-white rounded-3xl p-6 md:p-8 shadow-xl space-y-6 border border-gray-100 dark:border-gray-800">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-4">
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-slate-400 font-bold">Annual Status Tier (2026 Season)</p>
-                                        <span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border" :class="clientTier.badgeColor" x-text="clientTier.name"></span>
+                                        <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-slate-400 font-bold">Available to redeem now</p>
                                     </div>
-                                    <h2 class="text-3xl font-extrabold mt-1"><span x-text="userData.yearlyPoints || 0"></span> <span class="text-lg font-normal text-gray-500 dark:text-slate-400">Annual Pts</span> <span class="text-xs font-normal text-gray-400 dark:text-slate-500">(Spendable: <span x-text="userData.points || 0"></span> Pts)</span></h2>
+                                    <h2 class="text-3xl font-extrabold mt-1"><span x-text="userData.points || 0"></span> <span class="text-lg font-normal text-gray-500 dark:text-slate-400">Paw Points</span></h2>
+                                    <p class="mt-1 text-[11px] text-gray-500 dark:text-slate-400">Use these points for rewards whenever you are ready.</p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-800/80 px-4 py-2 rounded-2xl text-right border border-gray-200 dark:border-gray-700 text-xs">
-                                    <span class="block text-gray-500 dark:text-slate-400 font-semibold">Status Reset Date:</span>
-                                    <span class="font-bold text-amber-600 dark:text-amber-400">Dec 31, 2026</span>
+                                    <span class="block text-gray-500 dark:text-slate-400 font-semibold">Your <span x-text="tierSeasonYear"></span> Paw Status</span>
+                                    <span class="mt-1 inline-flex text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border" :class="clientTier.badgeColor" x-text="clientTier.name"></span>
                                 </div>
+                            </div>
+
+                            <div class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-4">
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Working toward <span x-text="nextTierSeasonYear"></span> status</p>
+                                        <p class="mt-1 text-sm font-bold"><span x-text="qualifyingPoints"></span> qualifying points this year</p>
+                                    </div>
+                                    <div class="text-[11px] text-gray-500 dark:text-slate-400 sm:text-right">Qualifying year ends<br><strong class="text-amber-600 dark:text-amber-400">Dec 31, <span x-text="tierSeasonYear"></span></strong></div>
+                                </div>
+                                <p class="mt-3 text-[11px] text-gray-600 dark:text-gray-300">Eligible paid-visit points build next year’s status. Redeeming rewards never reduces your status progress.</p>
                             </div>
 
                             <!-- Progress Gauge Bar -->
@@ -1920,7 +1931,7 @@
                         <select x-model="adminForm.targetUid" aria-label="Select Client" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none">
                             <option value="">-- Choose a Client --</option>
                             <template x-for="c in clientList" :key="c.id">
-                                <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Pts: ${c.points || 0} | Tier: ${c.yearlyPoints >= 15000 ? 'Gold' : c.yearlyPoints >= 5001 ? 'Silver' : 'Bronze'}`"></option>
+                                <option :value="c.id" x-text="`${c.name || 'Unnamed Client'} (${c.email || c.id}) - Redeemable: ${c.points || 0} | ${getClientTier(c).shortName} (${getClientQualifyingPoints(c)} qualifying)`"></option>
                             </template>
                         </select>
                     </div>
@@ -1940,13 +1951,18 @@
                     </div>
 
                     <div class="border-t dark:border-gray-800 pt-3 space-y-2">
-                        <label class="block font-bold text-amber-600 dark:text-amber-400">👑 Force Manual Tier Override</label>
-                        <select x-model.number="adminForm.overrideYearlyPoints" aria-label="Force Manual Tier Override" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none font-bold">
+                        <label class="flex items-start gap-2 text-gray-700 dark:text-gray-200"><input type="checkbox" x-model="adminForm.countsTowardStatus" class="mt-0.5 rounded border-gray-300 text-brand-600 focus:ring-brand-500"><span><strong>Count added points toward next year’s status</strong><span class="block mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">Use this for eligible paid visits. Referral and goodwill points can stay redeemable without changing status.</span></span></label>
+                    </div>
+
+                    <div class="border-t dark:border-gray-800 pt-3 space-y-2">
+                        <label class="block font-bold text-amber-600 dark:text-amber-400">👑 Override current member status</label>
+                        <select x-model="adminForm.overrideStatusTier" aria-label="Override current member status" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 text-sm outline-none font-bold">
                             <option value="">-- Don't Override Tier --</option>
-                            <option value="0">🥉 Bronze Level (0+ Annual Pts)</option>
-                            <option value="5001">🥈 Silver Level (5,001+ Annual Pts)</option>
-                            <option value="15000">🥇 Gold VIP Level (15,000+ Annual Pts)</option>
+                            <option value="bronze">🥉 Bronze Paw Member</option>
+                            <option value="silver">🥈 Silver Paw Member</option>
+                            <option value="gold">🥇 Gold Paw VIP</option>
                         </select>
+                        <p class="text-[10px] text-gray-400">This changes the active status only; it does not rewrite the client’s qualifying total.</p>
                     </div>
 
                     <div>
@@ -1955,7 +1971,13 @@
                         <p class="text-[10px] text-gray-400 mt-1">A unique coupon code is added when you save the client update.</p>
                     </div>
 
-                    <button @click="updateClientPoints()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition shadow-sm">Update Client Points & Tier</button>
+                    <button @click="updateClientPoints()" class="w-full py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition shadow-sm">Update Client Points & Status</button>
+
+                    <div x-show="pendingStatusRolloverCount" x-cloak class="rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 p-3 space-y-2">
+                        <p class="font-bold text-amber-900 dark:text-amber-200">New-season status rollover is ready</p>
+                        <p class="text-[10px] text-amber-800 dark:text-amber-300"><span x-text="pendingStatusRolloverCount"></span> client<span x-show="pendingStatusRolloverCount !== 1">s</span> earned a status from last year’s qualifying visits. This locks that status for the current year and starts a fresh qualifying balance.</p>
+                        <button @click="rolloverLoyaltyStatuses()" class="w-full rounded-xl bg-amber-700 hover:bg-amber-800 px-3 py-2.5 text-[11px] font-bold text-white transition">Start <span x-text="tierSeasonYear"></span> status season</button>
+                    </div>
 
                     <div x-show="adminForm.targetUid" class="border-t dark:border-gray-800 pt-4 space-y-2">
                         <div><p class="font-bold text-gray-900 dark:text-white">Coupon redemption</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Mark a coupon used only after applying it to the booking.</p></div>
@@ -2599,7 +2621,7 @@
                 profileError: '',
                 profileSuccess: '',
                 clientList: [],
-                adminForm: { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '', couponTitle: '' },
+                adminForm: { targetUid: '', pointsDelta: 0, tipAmount: '', couponTitle: '', countsTowardStatus: true, overrideStatusTier: '' },
                 adminTab: 'points',
                 pendingReferrals: [],
                 trailReports: [],
@@ -2650,25 +2672,57 @@
                     return `https://wa.me/15133025418?text=${msg}`;
                 },
 
+                get tierSeasonYear() {
+                    return new Date().getFullYear();
+                },
+
+                get nextTierSeasonYear() {
+                    return this.tierSeasonYear + 1;
+                },
+
+                tierKeyForPoints(points) {
+                    const total = Number(points || 0);
+                    if (total >= 15000) return 'gold';
+                    if (total >= 5001) return 'silver';
+                    return 'bronze';
+                },
+
+                getClientQualifyingPoints(client) {
+                    const qualifyingYear = Number(client?.qualifyingYear || this.tierSeasonYear);
+                    return qualifyingYear === this.tierSeasonYear ? Number(client?.yearlyPoints || 0) : 0;
+                },
+
+                getClientTier(client) {
+                    const key = client?.statusTier || client?.tierLevel || this.tierKeyForPoints(this.getClientQualifyingPoints(client));
+                    if (key === 'gold') return { key, shortName: 'Gold VIP', name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: '1.5x Points Multiplier & Holiday Priority' };
+                    if (key === 'silver') return { key, shortName: 'Silver', name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: '1.25x Points Multiplier' };
+                    return { key: 'bronze', shortName: 'Bronze', name: '🥉 Bronze Paw Member', badgeColor: 'bg-amber-900/20 text-amber-700 border-amber-300', perk: 'Start earning toward next year’s status' };
+                },
+
+                get qualifyingPoints() {
+                    return this.getClientQualifyingPoints(this.userData);
+                },
+
                 get clientTier() {
-                    const yearlyPts = this.userData.yearlyPoints || 0;
-                    if (yearlyPts >= 15000) return { name: '🥇 Gold Paw VIP', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300', perk: 'Status Active for 2026: 1.5x Points Multiplier & Holiday Priority' };
-                    if (yearlyPts >= 5001) return { name: '🥈 Silver Paw Member', badgeColor: 'bg-slate-200 text-slate-800 border-slate-400', perk: 'Status Active for 2026: 1.25x Points Multiplier' };
-                    return { name: '🥉 Bronze Paw Member', badgeColor: 'bg-amber-900/20 text-amber-700 border-amber-300', perk: 'Building Status for 2026 Season' };
+                    return this.getClientTier(this.userData);
+                },
+
+                get pendingStatusRolloverCount() {
+                    return this.clientList.filter(client => Number(client.qualifyingYear || this.tierSeasonYear) < this.tierSeasonYear).length;
                 },
 
                 get tierProgress() {
-                    const pts = this.userData.yearlyPoints || 0;
+                    const pts = this.qualifyingPoints;
                     if (pts < 5001) {
                         const needed = 5001 - pts;
                         const pct = Math.min(100, Math.round((pts / 5001) * 100));
-                        return { currentTierName: 'Bronze Level', nextTierText: `${needed.toLocaleString()} Pts to Silver`, percentage: pct, description: 'Earn 5,001 annual points by Dec 31 to unlock Silver Status for the year!' };
+                        return { currentTierName: 'Bronze progress', nextTierText: `${needed.toLocaleString()} Pts to Silver`, percentage: pct, description: `Earn 5,001 qualifying points by Dec 31, ${this.tierSeasonYear} to unlock Silver status for ${this.nextTierSeasonYear}.` };
                     } else if (pts < 15000) {
                         const needed = 15000 - pts;
                         const pct = Math.min(100, Math.round(((pts - 5001) / (15000 - 5001)) * 100));
-                        return { currentTierName: 'Silver Level Achieved!', nextTierText: `${needed.toLocaleString()} Pts to Gold VIP`, percentage: pct, description: 'Silver status active! Earn up to 15,000 pts to lock in Gold VIP status for the year.' };
+                        return { currentTierName: 'Silver progress', nextTierText: `${needed.toLocaleString()} Pts to Gold VIP`, percentage: pct, description: `Earn 15,000 qualifying points by Dec 31, ${this.tierSeasonYear} to unlock Gold VIP status for ${this.nextTierSeasonYear}.` };
                     } else {
-                        return { currentTierName: 'Gold Paw VIP Achieved! 🥇', nextTierText: 'Max Tier Reached', percentage: 100, description: 'Congratulations! Top annual tier secured through the end of the year.' };
+                        return { currentTierName: 'Gold VIP secured! 🥇', nextTierText: 'Next year’s top tier reached', percentage: 100, description: `Congratulations! Gold VIP status is secured for ${this.nextTierSeasonYear}.` };
                     }
                 },
 
@@ -4056,6 +4110,8 @@
                                 points: 0,
                                 lifetimePoints: 0,
                                 yearlyPoints: 0,
+                                qualifyingYear: new Date().getFullYear(),
+                                statusTier: 'bronze',
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
@@ -4135,6 +4191,8 @@
                                 points: 0,
                                 lifetimePoints: 0,
                                 yearlyPoints: 0,
+                                qualifyingYear: new Date().getFullYear(),
+                                statusTier: 'bronze',
                                 statusYear: new Date().getFullYear().toString(),
                                 coupons: initialCoupons,
                                 pets: [{ name: '', notes: '', birthday: '', breed: '', photo: '' }],
@@ -4589,7 +4647,6 @@
                         await referrerRef.update({
                             points: currentPoints + 1000,
                             lifetimePoints: (data.lifetimePoints || currentPoints) + 1000,
-                            yearlyPoints: (data.yearlyPoints || 0) + 1000,
                             referralsCount: (data.referralsCount || 0) + 1
                         });
                         await claimRef.update({
@@ -4670,6 +4727,30 @@
                     }
                 },
 
+                async rolloverLoyaltyStatuses() {
+                    if (!this.isAdmin || !this.adminModeActive) return;
+                    const targetYear = this.tierSeasonYear;
+                    const clientsToRoll = this.clientList.filter(client => Number(client.qualifyingYear || targetYear) < targetYear);
+                    if (!clientsToRoll.length) return;
+                    if (!confirm(`Start the ${targetYear} Paw Status season for ${clientsToRoll.length} client(s)? Their status will be set from last year's qualifying points, and their new qualifying balance will begin at zero.`)) return;
+
+                    try {
+                        await Promise.all(clientsToRoll.map(client => {
+                            const earnedStatus = this.tierKeyForPoints(client.yearlyPoints || 0);
+                            return db.collection('clients').doc(client.id).update({
+                                statusTier: earnedStatus,
+                                statusYear: targetYear,
+                                yearlyPoints: 0,
+                                qualifyingYear: targetYear
+                            });
+                        }));
+                        await this.fetchClientsList();
+                        alert(`The ${targetYear} Paw Status season is ready.`);
+                    } catch (err) {
+                        alert('Unable to roll over member statuses: ' + err.message);
+                    }
+                },
+
                 async updateClientPoints() {
                     if (!this.adminForm.targetUid) return alert('Select a client.');
                     
@@ -4680,21 +4761,24 @@
                     
                     const currentPts = doc.data().points || 0;
                     const currentLifetime = doc.data().lifetimePoints || currentPts;
-                    let currentYearly = doc.data().yearlyPoints || currentPts;
+                    const currentProgramYear = this.tierSeasonYear;
+                    const storedQualifyingYear = Number(doc.data().qualifyingYear || currentProgramYear);
+                    const currentYearly = storedQualifyingYear === currentProgramYear ? Number(doc.data().yearlyPoints || 0) : 0;
                     const delta = parseInt(this.adminForm.pointsDelta || 0);
                     const newPts = currentPts + delta;
                     const newLifetime = delta > 0 ? currentLifetime + delta : currentLifetime;
-                    let newYearly = delta > 0 ? currentYearly + delta : currentYearly;
-
-                    if (this.adminForm.overrideYearlyPoints !== '') {
-                        newYearly = parseInt(this.adminForm.overrideYearlyPoints);
-                    }
+                    const newYearly = this.adminForm.countsTowardStatus && delta > 0 ? currentYearly + delta : currentYearly;
                     
                     const update = {
                         points: newPts, 
                         lifetimePoints: newLifetime,
-                        yearlyPoints: newYearly 
+                        yearlyPoints: newYearly,
+                        qualifyingYear: currentProgramYear
                     };
+                    if (this.adminForm.overrideStatusTier) {
+                        update.statusTier = this.adminForm.overrideStatusTier;
+                        update.statusYear = currentProgramYear;
+                    }
                     let issuedCoupon = null;
                     if (this.adminForm.couponTitle) {
                         issuedCoupon = {
@@ -4708,7 +4792,7 @@
                     await targetRef.update(update);
                     if (issuedCoupon) {
                         await this.sendCouponPush(this.adminForm.targetUid, issuedCoupon, newPts);
-                    } else if (delta !== 0 || this.adminForm.overrideYearlyPoints !== '') {
+                    } else if (delta !== 0 || this.adminForm.overrideStatusTier) {
                         await this.sendPointUpdatePush(this.adminForm.targetUid, newPts);
                     }
                     
@@ -4718,12 +4802,17 @@
                         this.userData.points = newPts;
                         this.userData.lifetimePoints = newLifetime;
                         this.userData.yearlyPoints = newYearly;
+                        this.userData.qualifyingYear = currentProgramYear;
+                        if (this.adminForm.overrideStatusTier) {
+                            this.userData.statusTier = this.adminForm.overrideStatusTier;
+                            this.userData.statusYear = currentProgramYear;
+                        }
                         await this.identifyOneSignalUser();
                         this.showPersonalNotification('🐾 Paw Points updated', `You now have ${newPts} Paw Points.`, 'points', '/?view=loyalty');
                     }
                     
                     this.showAdminModal = false;
-                    this.adminForm = { targetUid: '', pointsDelta: 0, overrideYearlyPoints: '', tipAmount: '', couponTitle: '' };
+                    this.adminForm = { targetUid: '', pointsDelta: 0, tipAmount: '', couponTitle: '', countsTowardStatus: true, overrideStatusTier: '' };
                 },
 
                 async logout() {
