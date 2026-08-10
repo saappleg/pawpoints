@@ -94,6 +94,7 @@
 
         #trail-map, #trail-picker-map { height: 340px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
         #trail-picker-map { height: 240px; }
+        #service-area-map { height: 300px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
         .trail-submission-modal { z-index: 2000; }
         .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
         .profile-modal { z-index: 2000; overflow-y: auto; align-items: flex-start; }
@@ -597,6 +598,10 @@
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center mt-3">Not listed? Send a care-plan request—longer-distance care may still be available.</p>
                     </div>
+                    <div class="max-w-2xl mx-auto pt-2 space-y-2">
+                        <div class="flex items-center justify-between gap-3"><p class="text-xs font-bold text-gray-900 dark:text-white">🗺️ Primary coverage map</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Outline is a quick guide</p></div>
+                        <div id="service-area-map" class="overflow-hidden border border-gray-200 dark:border-gray-700"></div>
+                    </div>
                 </section>
 
                 <section class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-xl space-y-6">
@@ -604,7 +609,10 @@
                         <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Testimonials</span>
                         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">What Clients Say</h2>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Real feedback from pet owners who trust Pet Care by Steven.</p>
-                        <a href="https://g.page/r/CfNss-yPfk0nEBM/review" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">★ Leave a Google Review</a>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <a href="https://g.page/r/CfNss-yPfk0nEBM/review" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">★ Leave a Google Review</a>
+                            <a href="https://www.facebook.com/petcarebysteven/reviews" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-[#1877f2] hover:bg-[#166fe5] text-white px-4 py-2 rounded-xl text-xs font-bold transition">f Share a Facebook Review</a>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[160px]">
                         <template x-for="(rev, idx) in reviewsList" :key="rev.id || idx">
@@ -2192,6 +2200,8 @@
                 showTrailMapPicker: false,
                 trailMap: null,
                 trailMapMarkers: null,
+                serviceAreaMap: null,
+                serviceAreaLayers: null,
                 trailPickerMap: null,
                 trailPickerMarker: null,
                 trailLocationStatus: '',
@@ -2254,12 +2264,16 @@
                     if (this.currentView === 'guide') {
                         this.$nextTick(() => this.initTrailMap());
                     }
+                    if (this.currentView === 'home') {
+                        this.$nextTick(() => this.initServiceAreaMap());
+                    }
 
                     this.$watch('currentView', (value) => {
                         const url = new URL(window.location);
                         url.searchParams.set('view', value);
                         window.history.pushState({}, '', url);
                         if (value === 'guide') this.$nextTick(() => this.initTrailMap());
+                        if (value === 'home') this.$nextTick(() => this.initServiceAreaMap());
                     });
 
                     window.addEventListener('popstate', () => {
@@ -2397,6 +2411,39 @@
                     location.textContent = trail.location || 'Location shared by the community';
                     content.append(title, location);
                     return content;
+                },
+
+                initServiceAreaMap() {
+                    if (!window.L || !document.getElementById('service-area-map')) return;
+                    if (!this.serviceAreaMap) {
+                        this.serviceAreaMap = window.L.map('service-area-map', { scrollWheelZoom: false, attributionControl: true })
+                            .setView([39.02, -84.24], 10);
+                        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 18,
+                            attribution: '&copy; OpenStreetMap contributors'
+                        }).addTo(this.serviceAreaMap);
+                    }
+                    if (this.serviceAreaLayers) this.serviceAreaLayers.clearLayers();
+                    this.serviceAreaLayers = window.L.layerGroup().addTo(this.serviceAreaMap);
+                    const coverageOutline = [
+                        [39.20, -84.57], [39.22, -84.03], [39.08, -83.98],
+                        [38.80, -84.02], [38.80, -84.30], [38.94, -84.57]
+                    ];
+                    window.L.polygon(coverageOutline, {
+                        color: '#4f46e5', weight: 3, fillColor: '#6366f1', fillOpacity: 0.14
+                    }).bindPopup('Pet Care by Steven primary coverage area').addTo(this.serviceAreaLayers);
+                    const areaPoints = {
+                        'Amelia': [39.028, -84.217], 'Batavia': [39.078, -84.176],
+                        'Bethel': [38.963, -84.081], 'Felicity': [38.827, -84.099],
+                        'New Richmond': [38.949, -84.279], 'Williamsburg': [39.053, -84.052],
+                        'Cincinnati & Suburbs': [39.103, -84.512]
+                    };
+                    this.serviceAreas.forEach(area => {
+                        const latLng = areaPoints[area.city];
+                        if (latLng) window.L.circleMarker(latLng, { radius: 6, color: '#059669', fillColor: '#10b981', fillOpacity: 1, weight: 2 })
+                            .bindPopup(`<strong>${area.city}</strong><br>Primary coverage area`).addTo(this.serviceAreaLayers);
+                    });
+                    setTimeout(() => this.serviceAreaMap.invalidateSize(), 100);
                 },
 
                 initTrailMap() {
