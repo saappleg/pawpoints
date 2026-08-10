@@ -113,8 +113,16 @@
         .trail-submission-modal { z-index: 2000; }
         .trail-submission-dialog { max-height: calc(100vh - 2rem); overflow-y: auto; margin: 1rem 0; }
         .app-modal { z-index: 2000; }
-        .profile-modal { z-index: 2000; overflow-y: auto; align-items: flex-start; }
-        .profile-modal-dialog { max-height: none; margin: 1rem auto; }
+        .profile-modal { z-index: 2000; pointer-events: none; }
+        .profile-modal-dialog {
+            pointer-events: auto;
+            position: fixed;
+            top: calc(var(--top-bar-height) + 4.75rem);
+            right: 1rem;
+            max-height: calc(100dvh - 6rem);
+            overflow-y: auto;
+            margin: 0;
+        }
         .facebook-review-button { background: #1877f2; }
         .facebook-review-button:hover { background: #166fe5; }
         .reviews-grid { align-items: start; }
@@ -169,6 +177,7 @@
 
         .header-actions { min-width: 0; }
         .social-proof-toast { z-index: 1300; }
+        .install-prompt { z-index: 1300; right: 1rem; bottom: 6rem; width: min(22rem, calc(100vw - 2rem)); }
 
         @media (max-width: 767px) {
             .site-header-content {
@@ -196,6 +205,14 @@
                 left: auto;
                 max-width: min(20rem, calc(100vw - 2rem));
                 padding: 0.75rem;
+            }
+            .profile-modal-dialog {
+                top: 11rem;
+                right: 0.75rem;
+                left: 0.75rem;
+                width: auto;
+                max-height: calc(100dvh - 12rem);
+                padding: 1.25rem;
             }
         }
 
@@ -290,22 +307,6 @@
                 </nav>
 
                 <div class="header-actions flex items-center gap-2">
-                    <template x-if="user && isAdmin">
-                        <button 
-                            @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" 
-                            aria-label="Toggle Admin Mode"
-                            :class="adminModeActive ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600'"
-                            class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition flex items-center gap-1.5 shadow-sm">
-                            <span class="hidden md:inline" x-text="adminModeActive ? '👑 Admin Mode: ON' : '👁️ Client View (Admin OFF)'"></span>
-                            <span class="md:hidden" x-text="adminModeActive ? '👑' : '👁️'"></span>
-                        </button>
-                    </template>
-
-                    <button @click="installPwa()" aria-label="Install App" class="text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                        <span>📱</span>
-                        <span class="hidden sm:inline">Install App</span>
-                    </button>
-
                     <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" aria-label="Book Service" target="_blank" rel="noopener noreferrer" class="text-xs bg-brand-600 text-white hover:bg-brand-700 font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                         <span>🐕</span>
                         <span class="hidden sm:inline">Book Service</span>
@@ -319,10 +320,7 @@
                     <template x-if="user">
                         <div class="profile-actions flex items-center gap-2">
                             <button x-show="isVerified" @click="triggerViewTransition(() => { showProfileModal = true })" aria-label="Account Profile" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
-                            <span>👤</span><span class="hidden md:inline">Profile</span>
-                            </button>
-                            <button @click="logout()" aria-label="Log Out" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-slate-200 px-3 py-2 rounded-lg font-bold transition">
-                                <span>↪</span><span class="hidden md:inline"> Log Out</span>
+                                <span>👤</span><span class="hidden md:inline">Profile</span>
                             </button>
                         </div>
                     </template>
@@ -1615,7 +1613,7 @@
         </div>
 
         <!-- ACCOUNT PROFILE MODAL -->
-        <div x-show="showProfileModal" x-transition x-cloak class="profile-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
+        <div x-show="showProfileModal" x-transition x-cloak class="profile-modal fixed inset-0" role="dialog" aria-modal="false" aria-labelledby="modal-profile-title">
             <div @click.away="showProfileModal = false" class="profile-modal-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-5 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
@@ -1668,6 +1666,15 @@
                         </button>
                     </div>
 
+                    <div x-show="isAdmin" x-cloak class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 space-y-3">
+                        <div>
+                            <p class="font-bold text-amber-950 dark:text-amber-100">👑 Admin controls</p>
+                            <p class="text-[11px] text-amber-800 dark:text-amber-200 mt-1">Keep client view on for normal browsing, then switch it on when you need management tools.</p>
+                        </div>
+                        <button type="button" @click="triggerViewTransition(() => { adminModeActive = !adminModeActive })" :class="adminModeActive ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-white dark:bg-gray-800 text-amber-900 dark:text-amber-100 border border-amber-300 dark:border-amber-700'" class="w-full py-3 text-sm font-bold rounded-xl transition" x-text="adminModeActive ? '👑 Admin Mode: On' : '👁️ Turn Admin Mode On'"></button>
+                        <button x-show="adminModeActive" type="button" @click="showProfileModal = false; openAdminModal('points')" class="w-full py-3 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-bold rounded-xl transition">Open Admin Workspace</button>
+                    </div>
+
                     <p x-show="profileError" x-text="profileError" class="text-xs text-red-500 font-bold"></p>
                     <p x-show="profileSuccess" x-text="profileSuccess" class="text-xs text-emerald-600 font-bold"></p>
 
@@ -1675,6 +1682,7 @@
                         <button type="button" @click="showProfileModal = false" class="flex-1 py-3 bg-gray-200 dark:bg-gray-800 text-sm font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">Cancel</button>
                         <button type="submit" class="flex-1 py-3 bg-brand-600 text-white text-sm font-bold rounded-2xl hover:bg-brand-700 transition">Save Profile</button>
                     </div>
+                    <button type="button" @click="logout()" class="w-full py-2 text-xs font-bold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition">↪ Log out of this account</button>
                 </form>
             </div>
         </div>
@@ -1952,11 +1960,27 @@
                     <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 1:</span> Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow pointing up).</p>
                     <p class="text-xs text-gray-700 dark:text-gray-200"><span class="font-bold text-brand-600 dark:text-brand-400">Step 2:</span> Scroll down and tap <strong>Add to Home Screen</strong>.</p>
                 </div>
-                <button @click="showIOSInstallModal = false" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
+                <button @click="showIOSInstallModal = false; dismissInstallPrompt()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-2xl transition shadow-md">
                     Got it!
                 </button>
             </div>
         </div>
+
+        <!-- LIGHTWEIGHT PWA INSTALL PROMPT (REPLACES HEADER BUTTON) -->
+        <aside x-show="showInstallBanner && !showToast" x-transition x-cloak class="install-prompt fixed rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-[#111827] p-4 shadow-2xl" aria-label="Install app prompt">
+            <div class="flex gap-3">
+                <div class="shrink-0 rounded-xl bg-indigo-100 dark:bg-indigo-950/70 p-2 text-xl">📱</div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-extrabold text-gray-900 dark:text-white">Add Pet Care by Steven</p>
+                    <p class="mt-1 text-[11px] text-gray-600 dark:text-gray-300">Install the app for faster access from your home screen.</p>
+                    <div class="mt-3 flex gap-2">
+                        <button @click="installPwa()" class="flex-1 rounded-xl bg-brand-600 px-3 py-2 text-xs font-bold text-white hover:bg-brand-700">Install app</button>
+                        <button @click="dismissInstallPrompt()" class="rounded-xl border border-gray-200 dark:border-gray-700 px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">Not now</button>
+                    </div>
+                </div>
+                <button @click="dismissInstallPrompt()" aria-label="Dismiss install prompt" class="self-start text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
+            </div>
+        </aside>
 
         <!-- FLOATING RANDOMIZED SOCIAL PROOF TOAST -->
         <div 
@@ -2367,6 +2391,9 @@
 
                 async init() {
                     this.scheduleNextToast();
+                    if (this.shouldShowInstallPrompt()) {
+                        setTimeout(() => { this.showInstallBanner = true; }, 8000);
+                    }
                     await this.loadServiceAreasFromFirestore();
                     await this.loadApprovedReviews();
                     await this.loadGalleryPhotosFromFirestore();
@@ -2400,7 +2427,7 @@
                     });
 
                     window.addEventListener('pwa-install-ready', () => {
-                        this.showInstallBanner = true;
+                        if (this.shouldShowInstallPrompt()) this.showInstallBanner = true;
                     });
 
                     db.collection('broadcasts')
@@ -2894,13 +2921,24 @@
                     if (deferredPrompt) {
                         deferredPrompt.prompt();
                         const { outcome } = await deferredPrompt.userChoice;
-                        if (outcome === 'accepted') {
-                            this.showInstallBanner = false;
-                        }
+                        this.showInstallBanner = false;
+                        if (outcome !== 'accepted') this.dismissInstallPrompt();
                         deferredPrompt = null;
                     } else {
+                        this.showInstallBanner = false;
                         this.showIOSInstallModal = true;
                     }
+                },
+
+                shouldShowInstallPrompt() {
+                    const dismissedAt = Number(localStorage.getItem('pwaInstallPromptDismissedAt') || 0);
+                    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                    return !isStandalone && (!dismissedAt || Date.now() - dismissedAt > 30 * 24 * 60 * 60 * 1000);
+                },
+
+                dismissInstallPrompt() {
+                    this.showInstallBanner = false;
+                    localStorage.setItem('pwaInstallPromptDismissedAt', String(Date.now()));
                 },
 
                 async loadServiceAreasFromFirestore() {
