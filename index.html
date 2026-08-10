@@ -1755,7 +1755,7 @@
                         <label class="block font-bold text-white mb-1">Visit notifications</label>
                         <p class="text-[11px] text-slate-200 mb-3">Enable alerts for service updates and Paw Points activity on this device.</p>
                         <button type="button" @click="enablePushNotifications()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl border border-indigo-400 transition flex items-center justify-center gap-2">
-                            <span x-text="pushEnabled ? '🔔 Push Notifications Enabled' : '🔕 Enable Push Notifications'"></span>
+                            <span x-text="pushEnabled ? '🔔 Personal updates enabled' : '🔕 Enable personal updates'"></span>
                         </button>
                     </div>
 
@@ -2569,7 +2569,8 @@
                                     this.openAdminModal('points');
                                 }
 
-                                if (this.userData.fcmToken) {
+                                // A legacy Firebase token is not evidence of a OneSignal subscription.
+                                if (!this.oneSignalConfigured && this.userData.fcmToken) {
                                     this.pushEnabled = true;
                                 }
                             }
@@ -2612,16 +2613,17 @@
                     if (!this.user) return;
                     if (this.oneSignalConfigured) {
                         try {
-                            window.OneSignalDeferred.push(async (OneSignal) => {
+                            const isSubscribed = await this.withOneSignal(async (OneSignal) => {
                                 await OneSignal.login(this.user.uid);
                                 if (!OneSignal.User.PushSubscription.optedIn) {
                                     await OneSignal.Slidedown.promptPush({ force: true });
                                 }
-                                this.pushEnabled = Boolean(OneSignal.User.PushSubscription.optedIn);
-                                alert(this.pushEnabled
-                                    ? 'Personal push updates are enabled on this device!'
-                                    : 'Notifications were not enabled. You can try again whenever you are ready.');
+                                return Boolean(OneSignal.User.PushSubscription.optedIn);
                             });
+                            this.pushEnabled = isSubscribed;
+                            alert(this.pushEnabled
+                                ? 'Personal push updates are enabled on this device!'
+                                : 'Notifications were not enabled. You can try again whenever you are ready.');
                         } catch (err) {
                             console.error('OneSignal setup error:', err);
                             alert('Unable to enable notifications right now. Please try again shortly.');
@@ -2657,8 +2659,8 @@
 
                 async identifyOneSignalUser() {
                     if (!this.user || !this.oneSignalConfigured) return;
-                    window.OneSignalDeferred.push(async (OneSignal) => {
-                        try {
+                    try {
+                        const isSubscribed = await this.withOneSignal(async (OneSignal) => {
                             await OneSignal.login(this.user.uid);
                             const firstName = (this.userData.name || this.user.displayName || 'Pet Parent').trim().split(/\s+/)[0];
                             await OneSignal.User.addTags({
@@ -2666,10 +2668,25 @@
                                 account_type: this.isAdmin ? 'admin' : 'client',
                                 paw_points: String(this.userData.points || 0)
                             });
-                            this.pushEnabled = Boolean(OneSignal.User.PushSubscription.optedIn);
-                        } catch (err) {
-                            console.warn('OneSignal user identification failed:', err);
-                        }
+                            return Boolean(OneSignal.User.PushSubscription.optedIn);
+                        });
+                        this.pushEnabled = isSubscribed;
+                    } catch (err) {
+                        console.warn('OneSignal user identification failed:', err);
+                        this.pushEnabled = false;
+                    }
+                },
+
+                async withOneSignal(callback) {
+                    if (!this.oneSignalConfigured) return false;
+                    return new Promise((resolve, reject) => {
+                        window.OneSignalDeferred.push(async (OneSignal) => {
+                            try {
+                                resolve(await callback(OneSignal));
+                            } catch (err) {
+                                reject(err);
+                            }
+                        });
                     });
                 },
 
