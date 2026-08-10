@@ -590,7 +590,7 @@
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Not ready to book yet?</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Request a quick personalized care plan</h2>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
-                        <p class="text-xs text-brand-700 dark:text-brand-300 font-semibold pt-1">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
+                        <p class="text-xs text-brand-700 dark:text-brand-300 font-semibold pt-2 pb-3">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
                     </div>
                     <div class="care-plan-prep max-w-3xl mx-auto mb-5 border rounded-2xl p-4">
                         <p class="text-xs font-bold">Helpful to have ready</p>
@@ -615,7 +615,7 @@
                             <p class="text-[11px] text-emerald-800 dark:text-emerald-300">For a pet-care emergency, please contact Steven directly.</p>
                         </div>
                         <p x-show="carePlanStatus.message && !carePlanStatus.success" x-text="carePlanStatus.message" class="md:col-span-2 text-sm font-semibold text-red-600 dark:text-red-400" aria-live="polite"></p>
-                        <button type="submit" :disabled="carePlanStatus.submitting" class="bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
+                        <button type="submit" :disabled="carePlanStatus.submitting" class="h-fit self-center bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold px-6 py-4 rounded-2xl transition shadow-md">
                             <span x-text="carePlanStatus.submitting ? 'Sending…' : 'Send Care Plan Request'"></span>
                         </button>
                         <p class="md:col-span-2 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">For pet-care emergencies, availability is usually 24/7. Non-emergency messages are generally answered between 7:00 AM and 12:00 AM EST; please allow time for a response outside those hours.</p>
