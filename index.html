@@ -122,11 +122,37 @@
                 }
             });
         });
+        window.loadOneSignalSdk = function () {
+            if (window.__oneSignalSdkPromise) return window.__oneSignalSdkPromise;
+            window.__oneSignalSdkPromise = new Promise((resolve, reject) => {
+                const existing = document.getElementById('onesignal-sdk');
+                if (existing) {
+                    existing.addEventListener('load', resolve, { once: true });
+                    existing.addEventListener('error', () => reject(new Error('OneSignal SDK failed to load.')), { once: true });
+                    return;
+                }
+                const script = document.createElement('script');
+                script.id = 'onesignal-sdk';
+                script.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+                script.async = true;
+                script.addEventListener('load', resolve, { once: true });
+                script.addEventListener('error', () => reject(new Error('OneSignal SDK failed to load.')), { once: true });
+                document.head.appendChild(script);
+            }).catch((error) => {
+                window.__oneSignalSdkPromise = null;
+                throw error;
+            });
+            return window.__oneSignalSdkPromise;
+        };
+        // Existing subscribers still initialize automatically. New visitors load the
+        // third-party SDK only after signing in or explicitly enabling notifications.
+        if ('Notification' in window && Notification.permission === 'granted') {
+            window.loadOneSignalSdk().catch((error) => console.warn(error.message));
+        }
     </script>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
     <!-- Versioned application bundle; Alpine starts only after pawApp is registered. -->
-    <script defer src="assets/app.85be4f0a900b.min.js"></script>
+    <script defer src="assets/app.07895ba2544a.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
@@ -476,7 +502,7 @@
                         </div>
                     </template>
                     <template x-if="!user">
-                        <button @click="currentView = 'loyalty'; authMode = 'login'; authError = ''; authSuccess = ''" aria-label="Sign in or create a client account" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                        <button @click="currentView = 'loyalty'; authMode = 'login'; authError = ''; authSuccess = ''" aria-label="Profile: sign in or create a client account" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
                             <span aria-hidden="true">👤</span><span>Profile</span>
                         </button>
                     </template>
@@ -513,7 +539,7 @@
                                 Welcome to Pet Care by Steven! We provide reliable, experienced, and loving pet sitting and dog walking services tailored to your pet's exact schedule and routine.
                             </p>
                             <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                                <a href="#care-plan" @click="trackEvent('care_plan_cta_click', { placement: 'hero' })" aria-label="Request a personalized care plan" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
+                                <a href="#care-plan" @click="trackEvent('care_plan_cta_click', { placement: 'hero' })" aria-label="Request a Care Plan" class="w-full sm:w-auto bg-white/80 hover:bg-white text-indigo-950 px-8 py-4 rounded-2xl font-bold text-base shadow-md transition text-center flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2">
                                     <span>📋</span>
                                     <span>Request a Care Plan</span>
                                 </a>
@@ -544,7 +570,7 @@
                             Prefer to meet before booking? Schedule a free 30-minute in-home introduction to review your pet’s routine, care needs, and home notes.
                         </p>
                     </div>
-                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book a free Meet and Greet on WhatsApp" class="meet-greet-action w-full md:w-auto shrink-0 text-xs font-black px-8 py-4 rounded-2xl transition text-center flex items-center justify-center gap-2">
+                    <a href="https://wa.me/15133025418?text=Hi%20Steven%2C%20I%27d%20like%20to%20book%20a%20free%20Meet%20%26%20Greet%20for%20my%20pet." @click="trackEvent('whatsapp_click', { placement: 'meet_and_greet' })" target="_blank" rel="noopener noreferrer" aria-label="Book on WhatsApp for a free Meet and Greet" class="meet-greet-action w-full md:w-auto shrink-0 text-xs font-black px-8 py-4 rounded-2xl transition text-center flex items-center justify-center gap-2">
                         <span>☕ Book on WhatsApp</span>
                     </a>
                 </section>
@@ -630,7 +656,7 @@
                         <span class="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Not ready to book yet?</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Request a quick personalized care plan</h2>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Tell us a little about your pets and preferred timeline. We’ll follow up with options.</p>
-                        <p class="text-xs text-brand-700 dark:text-brand-300 font-semibold pt-2 pb-3">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
+                        <p class="text-xs text-brand-700 dark:text-indigo-300 font-semibold pt-2 pb-3">Non-emergency requests receive a reply within one business day—usually much sooner.</p>
                     </div>
                     <div class="care-plan-prep max-w-3xl mx-auto mb-5 border rounded-2xl p-4">
                         <p class="text-xs font-bold">Helpful to have ready</p>
@@ -669,7 +695,7 @@
                             <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">A smoother first visit starts here</h2>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Keep this short checklist handy before your Meet &amp; Greet or first service.</p>
                         </div>
-                        <button @click="trackEvent('new_client_checklist_print'); printNewClientChecklist()" class="new-client-print inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-brand-500 px-3 text-[11px] font-bold text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-950/30 transition">🖨️ Print checklist</button>
+                        <button @click="trackEvent('new_client_checklist_print'); printNewClientChecklist()" class="new-client-print inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-brand-500 px-3 text-[11px] font-bold text-brand-700 dark:text-indigo-300 hover:bg-brand-50 dark:hover:bg-brand-950/30 transition">🖨️ Print checklist</button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div class="rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-gray-800 p-5 space-y-3"><h3 class="font-bold text-gray-900 dark:text-white">Your pet’s routine</h3><ul class="space-y-2 text-xs text-gray-600 dark:text-gray-300"><li>✓ Feeding amounts and timing</li><li>✓ Medication instructions and supplies</li><li>✓ Walk, potty, play, and sleep routine</li><li>✓ Comfort items, triggers, and favorite treats</li></ul></div>
@@ -938,7 +964,7 @@
                 <section class="text-center py-12 bg-indigo-50 dark:bg-[#111827] rounded-3xl border border-indigo-100 dark:border-gray-800 p-8 shadow-xl space-y-4">
                     <h2 class="font-bold text-xl text-gray-900 dark:text-white">Ready to track your points or add a pet?</h2>
                     <p class="text-xs text-indigo-700 dark:text-indigo-300 mt-1.5 font-medium max-w-md mx-auto">Access your client account to view coupons, referral links, and pet notes.</p>
-                    <button @click="currentView = 'loyalty'" aria-label="Open Paw Points Dashboard" class="mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-xs transition shadow-lg">
+                    <button @click="currentView = 'loyalty'" aria-label="Open Paw Points Client Dashboard" class="mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-2xl text-xs transition shadow-lg">
                         Open Paw Points Client Dashboard
                     </button>
                 </section>

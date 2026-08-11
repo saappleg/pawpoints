@@ -709,6 +709,11 @@ function pawApp() {
                         reject(err);
                     }
                 });
+                if (typeof window.loadOneSignalSdk !== 'function') {
+                    reject(new Error('OneSignal loader is unavailable.'));
+                    return;
+                }
+                window.loadOneSignalSdk().catch(reject);
             });
         },
 
