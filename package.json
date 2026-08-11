@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "build": "npm run build:css && npm run build:js",
-    "build:css": "tailwindcss -i ./input.css -o ./assets/styles.v3.min.css --minify",
+    "build:css": "tailwindcss -i ./input.css -o ./assets/styles.v4.min.css --minify",
     "build:js": "esbuild ./src/app.js --bundle --minify --target=es2020 --outfile=./assets/app.v3.min.js",
-    "watch": "tailwindcss -i ./input.css -o ./assets/styles.v3.min.css --watch"
+    "watch": "tailwindcss -i ./input.css -o ./assets/styles.v4.min.css --watch"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",

@@ -84,7 +84,7 @@
     <meta name="theme-color" content="#4f46e5">
 
     <!-- Compiled Local Tailwind CSS Output -->
-    <link rel="stylesheet" href="assets/styles.v3.min.css">
+    <link rel="stylesheet" href="assets/styles.v4.min.css">
 
     <!-- OneSignal uses a separate, narrow-scope worker so it does not conflict with this PWA's offline worker. -->
     <script>
@@ -1115,8 +1115,8 @@
                                 <p class="text-[11px] text-gray-500 dark:text-slate-400 italic" x-text="tierProgress.description"></p>
                             </div>
 
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 p-4">
-                                <div><p class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Next best step</p><p class="mt-1 text-xs font-semibold text-gray-800 dark:text-gray-100">See which Paw Points rewards are ready to claim.</p></div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl bg-brand-50 dark:bg-[#070d19] border border-brand-200 dark:border-brand-700/80 p-4 dark:shadow-inner">
+                                <div><p class="text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-indigo-300">Next best step</p><p class="mt-1 text-xs font-semibold text-gray-800 dark:text-white">See which Paw Points rewards are ready to claim.</p></div>
                                 <button @click="$nextTick(() => document.getElementById('available-rewards')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))" class="shrink-0 rounded-xl bg-brand-600 hover:bg-brand-700 px-4 py-2.5 text-xs font-bold text-white transition">View rewards</button>
                             </div>
                         </div>
