@@ -2175,7 +2175,7 @@
 
                         <div class="space-y-4 rounded-2xl border border-slate-600 bg-slate-900 p-4 sm:p-5 text-white">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div><label class="block font-bold mb-1">Audience</label><select x-model="notificationForm.audience" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="all">All subscribed clients</option><option value="client">One client</option></select></div>
+                                <div><label class="block font-bold mb-1">Audience</label><select x-model="notificationForm.audience" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="all">All push-enabled devices</option><option value="client">One client</option></select></div>
                                 <div x-show="notificationForm.audience === 'client'"><label class="block font-bold mb-1">Client</label><select x-model="notificationForm.clientUid" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="">Choose a client</option><template x-for="c in clientList" :key="c.id"><option :value="c.id" x-text="c.name || c.email || c.id"></option></template></select></div>
                             </div>
                             <div><label class="block font-bold mb-1">Title <span class="font-normal text-gray-400" x-text="`${notificationForm.title.length}/80`"></span></label><input type="text" x-model="notificationForm.title" maxlength="80" placeholder="A useful update for pet parents" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"></div>
@@ -2201,6 +2201,7 @@
                                 <div class="flex gap-3"><div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-indigo-600 text-lg"><img x-show="notificationForm.iconUrl" :src="notificationForm.iconUrl" alt="" class="h-full w-full object-cover"><span x-show="!notificationForm.iconUrl">🐾</span></div><div class="min-w-0"><p class="font-extrabold" x-text="notificationForm.title || 'Pet Care by Steven'"></p><p class="mt-0.5 text-[11px] text-gray-600 dark:text-gray-300" x-text="notificationForm.body || 'Your message preview appears here.'"></p><div x-show="notificationForm.buttons.length" class="mt-2 flex gap-2"><template x-for="button in notificationForm.buttons"><span class="rounded-lg bg-white px-2 py-1 font-bold text-indigo-700 dark:bg-gray-700 dark:text-indigo-200" x-text="button.text || 'Action'"></span></template></div></div></div>
                             </div>
 
+                            <div class="rounded-xl border border-amber-300/30 bg-amber-400/10 p-3 text-[11px] leading-relaxed text-amber-100"><strong>Push eligibility:</strong> A PawPoints account receives this only after that person signs in on a device and selects <strong>Enable personal updates</strong>. Creating an account alone cannot grant browser notification permission.</div>
                             <button type="button" @click="sendRemoteNotification()" :disabled="notificationSending" class="w-full rounded-2xl bg-indigo-600 py-3 font-extrabold text-white hover:bg-indigo-700 disabled:opacity-50" x-text="notificationSending ? 'Sending…' : (notificationForm.sendAt ? 'Schedule rich notification' : 'Send rich notification')"></button>
                         </div>
                     </div>
@@ -3744,6 +3745,10 @@
                     try {
                         const payload = { ...form, sendAt: form.sendAt ? new Date(form.sendAt).toISOString() : '' };
                         const result = await this.notificationRequest('/v1/notifications/send', payload);
+                        if (result.noRecipients) {
+                            alert('No push-enabled devices are available yet. Ask clients to sign in and select “Enable personal updates,” then retry. Your notification has been kept in the composer.');
+                            return;
+                        }
                         this.resetNotificationForm();
                         alert(result.scheduledFor
                             ? `Rich notification scheduled for ${new Date(result.scheduledFor).toLocaleString()}.`

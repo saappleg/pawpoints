@@ -154,6 +154,7 @@ async function requireAdmin(request, env) {
 async function sendOneSignal(env, { title, body, url, externalIds, data = {}, options = {} }) {
   const payload = {
     app_id: env.ONESIGNAL_APP_ID,
+    target_channel: 'push',
     headings: { en: title },
     contents: { en: body },
     url: cleanUrl(url || '/?view=home'),
@@ -171,7 +172,6 @@ async function sendOneSignal(env, { title, body, url, externalIds, data = {}, op
 
   if (externalIds?.length) {
     payload.include_aliases = { external_id: externalIds };
-    payload.target_channel = 'push';
   } else {
     // "Subscribed Users" is OneSignal's built-in segment for an all-client push.
     payload.included_segments = ['Subscribed Users'];
@@ -186,6 +186,10 @@ async function sendOneSignal(env, { title, body, url, externalIds, data = {}, op
     body: JSON.stringify(payload)
   });
   const result = await response.json();
+  const noRecipients = response.ok && !result.id;
+  if (noRecipients) {
+    return { id: null, recipients: 0, noRecipients: true };
+  }
   if (!response.ok || result.errors) {
     console.error('OneSignal send failed', result);
     throw new Error(result.errors?.[0] || result.errors || 'OneSignal could not send the notification.');
@@ -249,7 +253,13 @@ async function sendImmediate(request, env) {
     options
   });
   await audit(env, { actorUid: admin.uid, audience, title: message.title, oneSignalId: result.id });
-  return json({ ok: true, id: result.id, recipients: result.recipients || 0, scheduledFor: options.sendAfter || null });
+  return json({
+    ok: true,
+    id: result.id,
+    recipients: result.recipients || 0,
+    noRecipients: Boolean(result.noRecipients),
+    scheduledFor: options.sendAfter || null
+  });
 }
 
 async function scheduleReminder(request, env) {
