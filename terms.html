@@ -3,38 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - Pet Care by Steven</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Terms of Service | Pet Care by Steven</title>
+    <meta name="description" content="Terms governing the Pet Care by Steven website, client portal, PawPoints rewards, bookings, cancellations, and community features.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://petcarebysteven.me/terms.html">
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="assets/styles.v5.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        const themePreference = localStorage.getItem('themePreference') || 'system';
+        if (themePreference === 'dark' || (themePreference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+    </script>
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-gray-50 text-gray-800 p-6 md:p-12">
-    <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-        <h1 class="text-2xl font-bold border-b pb-4">Terms of Service</h1>
-        <p class="text-xs text-gray-500">Last Updated: July 2026</p>
+<body class="min-h-screen bg-slate-50 text-slate-800 dark:bg-[#070b13] dark:text-slate-200">
+    <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-[#0b1220]/95">
+        <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3" aria-label="Legal page navigation">
+            <a href="index.html" class="flex items-center gap-3 font-extrabold text-slate-950 dark:text-white">
+                <img src="android-chrome-192x192.webp" alt="" width="42" height="42" class="rounded-full shadow-sm">
+                <span>Pet Care by Steven</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" type="button" class="rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700" aria-label="Toggle dark mode">Theme</button>
+                <a href="index.html" class="rounded-xl bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700">Portal</a>
+            </div>
+        </nav>
+    </header>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">1. Acceptance of Terms</h2>
-            <p class="text-sm leading-relaxed">
-                By accessing or registering an account on the <strong>Pet Care by Steven</strong> portal, you agree to comply with these terms.
-            </p>
-        </section>
+    <main class="mx-auto w-full max-w-4xl px-4 py-8 md:py-12">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/40 dark:border-slate-800 dark:bg-[#111827] dark:shadow-none md:p-10">
+            <header class="border-b border-slate-200 pb-6 dark:border-slate-800">
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-brand-600 dark:text-indigo-300">Website and client portal</p>
+                <h1 class="mt-2 text-3xl font-black text-slate-950 dark:text-white md:text-4xl">Terms of Service</h1>
+                <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Effective and last updated August 11, 2026</p>
+                <p class="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">These terms apply to the Pet Care by Steven website, client portal, PawPoints program, community features, and related electronic communications. Separate confirmed booking details or written service agreements control if they conflict with these general website terms.</p>
+            </header>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">2. Loyalty Program & Rewards</h2>
-            <p class="text-sm leading-relaxed">
-                Paw Points and promotional coupons earned through our client portal carry no monetary cash value and may only be redeemed for discounts on pet care and walking services.
-            </p>
-        </section>
+            <div class="mt-8 space-y-9 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">1. Acceptance and eligibility</h2>
+                    <p class="mt-3">By using the site or creating an account, you agree to these terms and the <a href="privacy.html" class="font-bold text-brand-600 underline dark:text-indigo-300">Privacy Policy</a>. You must provide accurate information and be legally able to arrange the requested services. If you do not agree, do not create an account or use restricted portal features.</p>
+                </section>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">3. Account Responsibility</h2>
-            <p class="text-sm leading-relaxed">
-                Users are responsible for maintaining accurate contact details and pet care instructions for sitting visits.
-            </p>
-        </section>
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">2. Requests, bookings, pricing, and availability</h2>
+                    <ul class="mt-3 list-disc space-y-2 pl-5">
+                        <li>A care-plan request, quote estimate, portal message, or submitted form is not a confirmed reservation.</li>
+                        <li>A booking is confirmed only after dates, services, pricing, access arrangements, and acceptance are communicated through the designated booking process or directly by Pet Care by Steven.</li>
+                        <li>Availability, service areas, rates, estimated totals, promotions, and displayed features may change. Any confirmed written booking terms control for that reservation.</li>
+                        <li>Third-party payment or booking platforms may impose their own terms and fees.</li>
+                    </ul>
+                </section>
 
-        <div class="pt-6 border-t text-xs">
-            <a href="index.html" class="text-indigo-600 font-bold hover:underline">← Back to Pet Care Portal</a>
-        </div>
-    </div>
+                <section class="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-800 dark:bg-amber-950/30">
+                    <h2 class="text-xl font-extrabold text-amber-950 dark:text-amber-100">3. Cancellation policy</h2>
+                    <p class="mt-3 text-amber-900 dark:text-amber-100">Unless different terms are confirmed in writing, cancellations must be made at least <strong>three days before</strong> the scheduled service to avoid a cancellation charge. Cancellations within three days may be billed at <strong>50% of the scheduled reservation total</strong>. Emergencies and exceptional circumstances may be considered individually but are not automatically exempt.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">4. Client responsibilities and pet safety</h2>
+                    <p class="mt-3">You are responsible for providing current contact information, truthful pet behavior and health information, veterinarian and emergency contacts, medication instructions, safe equipment, and reliable access instructions. You must promptly disclose aggression, bite history, escape risk, contagious illness, hazards, cameras in service areas, or any condition that could affect safe care.</p>
+                    <p class="mt-3">Pet Care by Steven may shorten, modify, relocate, or decline an activity when weather, unsafe conditions, pet behavior, illness, inaccessible property, or another safety concern makes the planned service unreasonable. Outdoor walks may be converted to shorter potty breaks and indoor enrichment during dangerous heat, storms, ice, or similar conditions.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">5. Emergency authorization</h2>
+                    <p class="mt-3">Portal emergency forms and typed signatures are intended to document your instructions and authorization. In an urgent situation, reasonable attempts will be made to contact you or your emergency contact. If you cannot be reached, care may be sought from the veterinarian listed in your profile or a reasonably available emergency provider, subject to the authorization and financial cap you supplied.</p>
+                    <p class="mt-3">You remain responsible for veterinary, transportation, and related third-party charges. The portal is not a veterinary service and must not be used instead of contacting a veterinarian or emergency clinic.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">6. Accounts and home-access information</h2>
+                    <p class="mt-3">You are responsible for protecting your password and device access, signing out of shared devices, and notifying support of suspected unauthorized use. Do not share another client’s information. Home entry, alarm, lockbox, and medical details should be limited to what is reasonably needed for care and kept current.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">7. PawPoints, status, referrals, and coupons</h2>
+                    <ul class="mt-3 list-disc space-y-2 pl-5">
+                        <li>PawPoints, status levels, referral credits, and coupons are promotional benefits with no cash value and are not transferable unless expressly approved.</li>
+                        <li>Points may be redeemable without counting toward annual status. Eligible paid-visit points and status calculations are identified in the portal.</li>
+                        <li>Redeeming points creates a coupon; the coupon is applied only after Pet Care by Steven validates it for an eligible booking and marks it used.</li>
+                        <li>Referral awards require review. Self-referrals, duplicate accounts, manipulated transactions, or other abuse may be rejected or reversed.</li>
+                        <li>Errors may be corrected, including mistaken balances, duplicate awards, invalid coupons, or unauthorized changes. Program rules, reward values, and eligibility may be changed or discontinued prospectively.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">8. Reviews, trails, photos, and other submissions</h2>
+                    <p class="mt-3">You retain ownership of content you submit. By submitting content for public display, you grant Pet Care by Steven a non-exclusive, royalty-free permission to host, reproduce, format, and display it in connection with the site and business. You represent that the submission is accurate to the best of your knowledge, does not violate another person’s rights, and does not expose private access, medical, or contact information.</p>
+                    <p class="mt-3">Submissions may be reviewed, edited for formatting, declined, or removed. Trail information is community guidance, not a guarantee of access, safety, conditions, or rule accuracy; check current official park information before visiting.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">9. Optional notifications and third-party services</h2>
+                    <p class="mt-3">Push notifications are optional and may be delayed, blocked, grouped, or formatted differently by OneSignal, the browser, or the operating system. Do not rely on push notifications for emergencies or time-critical care changes.</p>
+                    <p class="mt-3">The site links to or depends on third-party services such as Firebase, OneSignal, Cloudflare, Walkies, WhatsApp, Google Maps, OpenStreetMap, FormSubmit, Make, and payment platforms. Those services operate under their own terms. Pet Care by Steven is not responsible for an external service’s availability, content, security, or independent actions.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">10. Acceptable use</h2>
+                    <p class="mt-3">You may not attempt to bypass authorization, access another account, alter points or coupons improperly, scrape private data, interfere with the site or Worker, upload malicious material, impersonate another person, abuse notification tools, or use the service unlawfully. Access may be limited or terminated to protect clients, pets, the business, or the platform.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">11. Disclaimers and limits</h2>
+                    <p class="mt-3">The website and portal are provided on an “as available” basis. While reasonable efforts are made to keep information accurate and systems available, uninterrupted operation, error-free data, specific notification delivery, park conditions, or third-party availability cannot be guaranteed.</p>
+                    <p class="mt-3">To the fullest extent permitted by applicable law, Pet Care by Steven is not liable for indirect, incidental, special, consequential, or punitive damages arising from website use, third-party services, missed notifications, or community-submitted information. Nothing in these terms excludes liability that cannot legally be excluded.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">12. Changes, governing law, and contact</h2>
+                    <p class="mt-3">These terms may be updated by posting a revised effective date. Continued use after an update means you accept the revised terms. Ohio law governs these terms, without regard to conflict-of-law principles, and disputes will be handled in a court with proper jurisdiction where the business operates unless applicable law requires otherwise.</p>
+                    <p class="mt-3">Questions may be sent to <a href="mailto:support@petcarebysteven.me" class="font-bold text-brand-600 underline dark:text-indigo-300">support@petcarebysteven.me</a>.</p>
+                </section>
+            </div>
+
+            <footer class="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                <a href="index.html" class="font-bold text-brand-600 hover:underline dark:text-indigo-300">← Back to the portal</a>
+                <div class="flex gap-4"><a href="privacy.html" class="hover:underline">Privacy Policy</a><a href="mailto:support@petcarebysteven.me" class="hover:underline">Contact</a></div>
+            </footer>
+        </article>
+    </main>
+
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const useDark = !document.documentElement.classList.contains('dark');
+            document.documentElement.classList.toggle('dark', useDark);
+            localStorage.setItem('themePreference', useDark ? 'dark' : 'light');
+        });
+    </script>
 </body>
 </html>

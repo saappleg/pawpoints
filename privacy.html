@@ -3,62 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - Pet Care by Steven</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Privacy Policy | Pet Care by Steven</title>
+    <meta name="description" content="Learn how Pet Care by Steven collects, uses, protects, and shares information in the pet-care portal and PawPoints program.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://petcarebysteven.me/privacy.html">
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="assets/styles.v5.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        const themePreference = localStorage.getItem('themePreference') || 'system';
+        if (themePreference === 'dark' || (themePreference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+    </script>
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-gray-50 text-gray-800 p-6 md:p-12">
-    <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-        <h1 class="text-2xl font-bold border-b pb-4">Privacy Policy</h1>
-        <p class="text-xs text-gray-500">Last Updated: August 2026</p>
+<body class="min-h-screen bg-slate-50 text-slate-800 dark:bg-[#070b13] dark:text-slate-200">
+    <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-[#0b1220]/95">
+        <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3" aria-label="Legal page navigation">
+            <a href="index.html" class="flex items-center gap-3 font-extrabold text-slate-950 dark:text-white">
+                <img src="android-chrome-192x192.webp" alt="" width="42" height="42" class="rounded-full shadow-sm">
+                <span>Pet Care by Steven</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" type="button" class="rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700" aria-label="Toggle dark mode">Theme</button>
+                <a href="index.html" class="rounded-xl bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700">Portal</a>
+            </div>
+        </nav>
+    </header>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">1. Information We Collect</h2>
-            <p class="text-sm leading-relaxed">
-                When you create an account on <strong>Pet Care by Steven</strong> or log in using Google Sign-In, we collect basic profile details including your name, email address, profile picture (if provided), and phone number/address details you voluntarily add for pet sitting services.
-            </p>
-        </section>
+    <main class="mx-auto w-full max-w-4xl px-4 py-8 md:py-12">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/40 dark:border-slate-800 dark:bg-[#111827] dark:shadow-none md:p-10">
+            <header class="border-b border-slate-200 pb-6 dark:border-slate-800">
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-brand-600 dark:text-indigo-300">Your information</p>
+                <h1 class="mt-2 text-3xl font-black text-slate-950 dark:text-white md:text-4xl">Privacy Policy</h1>
+                <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Effective and last updated August 11, 2026</p>
+                <p class="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">This policy explains how Pet Care by Steven handles information when you browse the website, request care, create an account, use PawPoints, contribute to the trail guide, or enable notifications.</p>
+            </header>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">2. How We Use Google User Data</h2>
-            <p class="text-sm leading-relaxed">
-                Our application uses Google OAuth 2.0 to authenticate your identity and facilitate seamless account log-in. We only access basic profile information (<code class="bg-gray-100 px-1 py-0.5 rounded text-xs">openid</code>, <code class="bg-gray-100 px-1 py-0.5 rounded text-xs">profile</code>, <code class="bg-gray-100 px-1 py-0.5 rounded text-xs">email</code>). 
-            </p>
-            <p class="text-sm leading-relaxed">
-                We do <strong>not</strong> sell, rent, or transfer your Google user data to third parties, advertising networks, or external brokers under any circumstances.
-            </p>
-        </section>
+            <div class="mt-8 space-y-9 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">1. Information we collect</h2>
+                    <div class="mt-3 grid gap-3 md:grid-cols-2">
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-[#0b1220]"><h3 class="font-bold text-slate-900 dark:text-white">Account and contact details</h3><p class="mt-1">Name, email address, authentication identifier, optional profile photo, phone number, service address, referral information, and account-verification status.</p></div>
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-[#0b1220]"><h3 class="font-bold text-slate-900 dark:text-white">Pet and care information</h3><p class="mt-1">Pet names, breeds, birthdays, photos, routines, medication notes, veterinarian details, emergency contacts, insurance information, and signed emergency authorization.</p></div>
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-[#0b1220]"><h3 class="font-bold text-slate-900 dark:text-white">Home-access instructions</h3><p class="mt-1">Information you choose to provide for service delivery, such as parking, entry, alarm, keypad, lockbox, mail, trash, plant-care, and household notes.</p></div>
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-[#0b1220]"><h3 class="font-bold text-slate-900 dark:text-white">Portal activity</h3><p class="mt-1">PawPoints balances, qualifying status, coupons, referrals, reviews, trail submissions, notification preferences, scheduled reminders, and administrative audit information.</p></div>
+                    </div>
+                    <p class="mt-3">Care-plan requests include the name, email, phone number, referral source, and care details entered in the request form. Service providers may also process IP address, browser, device, security-token, and request-log information needed to deliver and protect their services.</p>
+                </section>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">3. Data Storage & Security</h2>
-            <p class="text-sm leading-relaxed">
-                Your account information and pet details are securely managed using Firebase Authentication and Google Cloud Firestore database infrastructure with encrypted data transmission.
-            </p>
-        </section>
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">2. How we use information</h2>
+                    <ul class="mt-3 list-disc space-y-2 pl-5">
+                        <li>Authenticate accounts and maintain client profiles.</li>
+                        <li>Respond to care requests, plan visits, follow care instructions, and contact clients about services.</li>
+                        <li>Operate PawPoints, referrals, coupons, status levels, reviews, and the community trail guide.</li>
+                        <li>Deliver optional personal updates, reminders, and administrative announcements.</li>
+                        <li>Protect accounts, prevent abuse, troubleshoot problems, maintain records, and comply with legal obligations.</li>
+                    </ul>
+                    <p class="mt-3"><strong class="text-slate-900 dark:text-white">No sale or advertising use:</strong> Pet Care by Steven does not sell or rent personal information and does not use client profiles for third-party behavioral advertising.</p>
+                </section>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">4. Care Plan Requests</h2>
-            <p class="text-sm leading-relaxed">
-                When you submit a personalized care-plan request, the name, email address, phone number, referral source, and care details you provide are sent to Pet Care by Steven through FormSubmit, our form-delivery provider. This information is used only to respond to your request and arrange pet care services.
-            </p>
-        </section>
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">3. Google sign-in and Firebase</h2>
+                    <p class="mt-3">Google sign-in requests only the basic <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-slate-800">openid</code>, <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-slate-800">profile</code>, and <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-slate-800">email</code> scopes. Firebase Authentication handles sign-in credentials; Cloud Firestore stores portal records; and Firebase App Check helps detect unauthorized traffic. Pet Care by Steven does not receive your Google password.</p>
+                    <p class="mt-3">Google user data is used only to provide and secure the requested account features. It is not transferred to data brokers, advertising networks, or unrelated third parties. Read Google’s <a href="https://firebase.google.com/support/privacy/" target="_blank" rel="noopener noreferrer" class="font-bold text-brand-600 underline dark:text-indigo-300">Firebase privacy and security information</a>.</p>
+                </section>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">5. Contact & Data Deletion</h2>
-            <p class="text-sm leading-relaxed">
-                If you wish to request account deletion or have questions regarding your data privacy, please contact us at <a href="mailto:support@petcarebysteven.me" class="text-indigo-600 underline">support@petcarebysteven.me</a>.
-            </p>
-        </section>
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">4. Notifications and browser permissions</h2>
+                    <p class="mt-3">Push notifications are optional and require browser permission. If enabled, OneSignal may process a push-subscription identifier, an account-linked external identifier, device/browser information, notification status, and tags such as client role or PawPoints balance so the correct update can be delivered. Notification content may appear on a locked screen according to your device settings.</p>
+                    <p class="mt-3">You can disable notifications in your browser or device settings at any time. Learn more from <a href="https://documentation.onesignal.com/docs/en/handling-personal-data" target="_blank" rel="noopener noreferrer" class="font-bold text-brand-600 underline dark:text-indigo-300">OneSignal’s personal-data documentation</a>.</p>
+                </section>
 
-        <section class="space-y-2">
-            <h2 class="font-bold text-base">6. Anonymous Usage Analytics</h2>
-            <p class="text-sm leading-relaxed">
-                We use Firebase Analytics to understand aggregated website activity, such as which pages and features are used. Firebase may process basic browser and device information to provide these reports. This helps us improve the website; we do not sell your personal information or use these reports for advertising.
-            </p>
-        </section>
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">5. Service providers and external destinations</h2>
+                    <div class="mt-3 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <div class="grid gap-1 border-b border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">Google Firebase</strong><span>Authentication, database storage, email verification, password reset, and App Check.</span></div>
+                        <div class="grid gap-1 border-b border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">OneSignal</strong><span>Optional web-push subscriptions and notification delivery.</span></div>
+                        <div class="grid gap-1 border-b border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">Cloudflare</strong><span>DNS/CDN protection and the notification Worker/D1 database.</span></div>
+                        <div class="grid gap-1 border-b border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">GitHub Pages</strong><span>Static website hosting and associated request logs.</span></div>
+                        <div class="grid gap-1 border-b border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">FormSubmit</strong><span>Delivery of care-plan requests to the support inbox.</span></div>
+                        <div class="grid gap-1 border-b border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">Make</strong><span>Account-created workflow notifications containing basic signup and referral details.</span></div>
+                        <div class="grid gap-1 p-4 md:grid-cols-[11rem_1fr]"><strong class="text-slate-900 dark:text-white">OpenStreetMap</strong><span>Map tiles and location searches entered in the community trail tool.</span></div>
+                    </div>
+                    <p class="mt-3">The portal also links to Walkies, WhatsApp, Google Maps, payment platforms, and other external sites. Information you provide after following an external link is governed by that service’s policy.</p>
+                </section>
 
-        <div class="pt-6 border-t text-xs">
-            <a href="index.html" class="text-indigo-600 font-bold hover:underline">← Back to Pet Care Portal</a>
-        </div>
-    </div>
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">6. Browser storage, offline data, and analytics</h2>
+                    <p class="mt-3">The site uses local browser storage for preferences and limited feature state, including theme choice, install-prompt dismissal, and certain one-time bonus indicators. A service worker caches public website files for faster loading and offline access. Clearing site data in your browser removes these local items and the offline cache.</p>
+                    <p class="mt-3"><strong class="text-slate-900 dark:text-white">As of this policy date, Firebase Analytics is not loaded by this website.</strong> Infrastructure providers may still create operational, security, and delivery logs as described in their own policies.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">7. Public contributions</h2>
+                    <p class="mt-3">Approved reviews, trail names, trail descriptions, locations, and selected gallery content may be displayed publicly. Do not submit private home-access information, personal contact information, or another person’s image in a public contribution without permission.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">8. Retention, security, and your choices</h2>
+                    <p class="mt-3">Information is kept while an account is active and as reasonably needed to provide services, maintain transaction and safety records, resolve disputes, prevent abuse, or meet legal obligations. Reasonable safeguards include HTTPS, Firebase access rules, App Check, restricted administrator access, and provider encryption; however, no online system can guarantee absolute security.</p>
+                    <p class="mt-3">You may edit available profile fields in the portal, disable push notifications in your device settings, or request access, correction, or account deletion by emailing <a href="mailto:support@petcarebysteven.me" class="font-bold text-brand-600 underline dark:text-indigo-300">support@petcarebysteven.me</a>. Some records may be retained when reasonably required for legal, safety, fraud-prevention, or business-record purposes.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">9. Children and policy changes</h2>
+                    <p class="mt-3">The portal is intended for clients who can arrange pet-care services and is not directed to children under 13. Pet Care by Steven does not knowingly create accounts for children under 13. Material policy updates will be posted here with a revised effective date.</p>
+                </section>
+            </div>
+
+            <footer class="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                <a href="index.html" class="font-bold text-brand-600 hover:underline dark:text-indigo-300">← Back to the portal</a>
+                <div class="flex gap-4"><a href="terms.html" class="hover:underline">Terms of Service</a><a href="mailto:support@petcarebysteven.me" class="hover:underline">Privacy questions</a></div>
+            </footer>
+        </article>
+    </main>
+
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const useDark = !document.documentElement.classList.contains('dark');
+            document.documentElement.classList.toggle('dark', useDark);
+            localStorage.setItem('themePreference', useDark ? 'dark' : 'light');
+        });
+    </script>
 </body>
 </html>

@@ -1,81 +1,164 @@
 <!DOCTYPE html>
-<html lang="en" x-data="pawApp()" :class="{ 'dark': darkMode }">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cincinnati Dog Walking & Trail Guide | Pet Care by Steven</title>
-    <meta name="description" content="Discover the best dog-friendly walking trails, parks, and exercise routes in Cincinnati, Ohio, including Mount Airy Forest and Doris Day Dog Park.">
+    <title>Dog Walking in Cincinnati, OH: Parks, Trails & Local Care</title>
+    <meta name="description" content="A practical Cincinnati dog-walking guide covering Mt. Airy Forest, Otto Armleder Dog Park, Ault Park, leash rules, trail safety, and professional pet-care options.">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://petcarebysteven.me/cincinnati-dog-walking.html">
-
-    <!-- Tailwind CSS Output -->
-    <link rel="stylesheet" href="assets/styles.v4.min.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Dog Walking in Cincinnati: Parks, Trails & Local Care">
+    <meta property="og:description" content="Dog-friendly Cincinnati routes, current park guidance, safety tips, and local walking support from Pet Care by Steven.">
+    <meta property="og:url" content="https://petcarebysteven.me/cincinnati-dog-walking.html">
+    <meta property="og:image" content="https://petcarebysteven.me/android-chrome-512x512.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="assets/styles.v5.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark');
-        }
+        const themePreference = localStorage.getItem('themePreference') || 'system';
+        if (themePreference === 'dark' || (themePreference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
     </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <style>
-        [x-cloak] { display: none !important; }
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Dog Walking in Cincinnati, Ohio: Parks, Trails and Local Care",
+      "dateModified": "2026-08-11",
+      "author": { "@type": "Organization", "name": "Pet Care by Steven", "url": "https://petcarebysteven.me/" },
+      "publisher": { "@type": "Organization", "name": "Pet Care by Steven", "logo": { "@type": "ImageObject", "url": "https://petcarebysteven.me/android-chrome-512x512.png" } },
+      "mainEntityOfPage": "https://petcarebysteven.me/cincinnati-dog-walking.html",
+      "about": ["Dog walking", "Cincinnati parks", "Pet sitting"]
+    }
+    </script>
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col">
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-3">
-                <img src="android-chrome-192x192.webp" alt="Pet Care by Steven Logo" width="48" height="48" class="rounded-full shadow-sm">
-                <span class="font-bold text-lg text-gray-900 dark:text-white">Pet Care by Steven</span>
+<body class="min-h-screen bg-slate-50 text-slate-800 dark:bg-[#070b13] dark:text-slate-200">
+    <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-[#0b1220]/95">
+        <nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3" aria-label="Main navigation">
+            <a href="index.html" class="flex items-center gap-3 font-extrabold text-slate-950 dark:text-white">
+                <img src="android-chrome-192x192.webp" alt="" width="44" height="44" class="rounded-full shadow-sm">
+                <span>Pet Care by Steven</span>
             </a>
-            <a href="index.html" class="text-xs bg-brand-600 text-white font-bold px-4 py-2 rounded-xl">← Back to Portal</a>
-        </div>
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" type="button" class="rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700" aria-label="Toggle dark mode">Theme</button>
+                <a href="index.html#care-plan" class="rounded-xl bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700">Request care</a>
+            </div>
+        </nav>
     </header>
 
-    <main class="max-w-4xl w-full mx-auto p-4 md:p-8 flex-grow space-y-8 my-6">
-        <article class="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-3xl p-8 md:p-12 shadow-xl space-y-6">
-            <header class="space-y-3">
-                <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-[11px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">Local Guide</span>
-                <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white leading-tight">The Ultimate Guide to Cincinnati Dog Walking & Trail Adventures</h1>
-                <p class="text-xs text-gray-500">Published by Pet Care by Steven • Serving Cincinnati, Amelia, Batavia, and Surrounding Areas</p>
-            </header>
-
-            <div class="space-y-6 text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                <p>
-                    Cincinnati is an incredible city for dogs and pet owners, offering everything from neighborhood strolls to expansive urban forests. As a professional local pet sitter and dog walker, keeping dogs active, stimulated, and safely exercised is our top priority. Here is a breakdown of our favorite local spots to explore with your furry family members.
-                </p>
-
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white pt-4">1. Mount Airy Forest & Doris Day Dog Park</h2>
-                <p>
-                    Spanning nearly 1,500 acres, <strong>Mount Airy Forest</strong> is the largest park in the Cincinnati Parks system. It offers miles of shaded hiking trails, wooded valleys, and scenic vistas. 
-                </p>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li><strong>Leashed Trail Walks:</strong> Perfect for structured, high-endurance dog walking. The trails feature natural soil paths with wonderful seasonal foliage. *(Note: Dogs are welcome on all standard park trails on a leash, though they are restricted inside the dedicated Mt. Airy Arboretum to protect rare plant collections).*</li>
-                    <li><strong>Doris Day Dog Park:</strong> Located right within the complex at 2970 Westwood Northern Blvd, this fully fenced, enclosed dog park gives friendly dogs a secure place to run off-leash and socialize.</li>
-                </ul>
-
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white pt-4">2. Professional Pups Need Reliable Routines</h2>
-                <p>
-                    Whether your dog loves exploring local woodland trails or needs a structured mid-day neighborhood walk while you are at work, consistency is key. Professional dog walking ensures your pets burn physical energy, maintain healthy weights, and experience mental enrichment throughout the day.
-                </p>
-
-                <div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 p-6 rounded-2xl space-y-3">
-                    <h3 class="font-bold text-sm text-indigo-950 dark:text-indigo-100">Looking for a Reliable Local Dog Walker in Cincinnati?</h3>
-                    <p class="text-xs text-gray-600 dark:text-gray-300">
-                        Pet Care by Steven provides structured neighborhood walks, fresh water refills, real-time photo visit updates, and a built-in <a href="index.html" class="text-brand-600 font-bold underline">Paw Points loyalty rewards program</a>.
-                    </p>
-                    <a href="index.html" class="inline-block bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-md">
-                        Book a Walk or Sitting Visit Today
-                    </a>
+    <main>
+        <section class="border-b border-slate-200 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 dark:border-slate-800 dark:from-indigo-950/40 dark:via-[#0b1220] dark:to-emerald-950/20">
+            <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-[1fr_20rem] md:items-center md:py-16">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.22em] text-brand-600 dark:text-indigo-300">Greater Cincinnati dog guide</p>
+                    <h1 class="mt-3 max-w-3xl text-4xl font-black leading-tight text-slate-950 dark:text-white md:text-5xl">Dog walking in Cincinnati: local parks, practical safety, and dependable care</h1>
+                    <p class="mt-5 max-w-3xl text-base leading-8 text-slate-600 dark:text-slate-300">Three useful places for different kinds of walks—wooded enrichment, open paved mileage, or a neighborhood-style park—plus current leash guidance and a checklist for safer outings.</p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <a href="index.html#care-plan" class="rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-brand-700">Request a care plan</a>
+                        <a href="index.html?view=guide" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800">Open community trails</a>
+                    </div>
                 </div>
+                <aside class="rounded-3xl border border-indigo-200 bg-white/80 p-6 shadow-xl dark:border-indigo-800 dark:bg-[#111827]">
+                    <p class="text-xs font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-300">Local walking support</p>
+                    <ul class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <li>✓ Structured neighborhood walks</li>
+                        <li>✓ Fresh water and routine notes</li>
+                        <li>✓ Photo visit updates</li>
+                        <li>✓ PawPoints on eligible care</li>
+                    </ul>
+                    <p class="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">Service availability varies by address, schedule, pet needs, and travel distance.</p>
+                </aside>
             </div>
+        </section>
+
+        <article class="mx-auto max-w-6xl space-y-12 px-4 py-12">
+            <section aria-labelledby="places-heading">
+                <div class="max-w-3xl">
+                    <p class="text-xs font-black uppercase tracking-widest text-brand-600 dark:text-indigo-300">Choose the right outing</p>
+                    <h2 id="places-heading" class="mt-2 text-3xl font-black text-slate-950 dark:text-white">Three Cincinnati options for different dogs</h2>
+                    <p class="mt-3 leading-7 text-slate-600 dark:text-slate-300">Check the official park page before leaving; maintenance, weather, trail work, and seasonal conditions can change access.</p>
+                </div>
+
+                <div class="mt-7 grid gap-5 lg:grid-cols-3">
+                    <section class="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-[#111827]">
+                        <span class="w-fit rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">Wooded trails</span>
+                        <h3 class="mt-4 text-xl font-extrabold text-slate-950 dark:text-white">Mt. Airy Forest</h3>
+                        <p class="mt-3 flex-grow text-sm leading-7 text-slate-600 dark:text-slate-300">Cincinnati Parks lists Mt. Airy as its largest park at 1,459 acres, with miles of hiking trails, paved walkways, and leashed dogs welcome. The enclosed Doris Day Dog Park is located at 2970 Westwood Northern Boulevard.</p>
+                        <div class="mt-4 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600 dark:bg-[#0b1220] dark:text-slate-300"><strong>Best for:</strong> sniff-heavy enrichment and shaded terrain. Confirm current trail closures and dog-park maintenance before visiting.</div>
+                        <a href="https://www.cincinnati-oh.gov/cincyparks/visit-a-park/find-a-parkfacility/mt-airy-forest/" target="_blank" rel="noopener noreferrer" class="mt-5 text-sm font-bold text-brand-600 hover:underline dark:text-indigo-300">Official Mt. Airy information ↗</a>
+                    </section>
+
+                    <section class="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-[#111827]">
+                        <span class="w-fit rounded-full bg-blue-100 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-blue-800 dark:bg-blue-950/60 dark:text-blue-300">Open mileage</span>
+                        <h3 class="mt-4 text-xl font-extrabold text-slate-950 dark:text-white">Otto Armleder Memorial Park</h3>
+                        <p class="mt-3 flex-grow text-sm leading-7 text-slate-600 dark:text-slate-300">Great Parks lists a 2.9-mile easy shared-use trail, a 1.2-mile connector toward Lunken, open green space, and a spacious dog park. The 10-acre off-leash area includes separate large- and small-dog sections.</p>
+                        <div class="mt-4 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600 dark:bg-[#0b1220] dark:text-slate-300"><strong>Best for:</strong> steady paved walking and dogs that prefer open sightlines. Watch for bikes and other shared-use traffic.</div>
+                        <a href="https://www.greatparks.org/parks/otto-armleder-memorial-park/armleder-dog-park" target="_blank" rel="noopener noreferrer" class="mt-5 text-sm font-bold text-brand-600 hover:underline dark:text-indigo-300">Official Armleder information ↗</a>
+                    </section>
+
+                    <section class="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-[#111827]">
+                        <span class="w-fit rounded-full bg-amber-100 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">Mixed surfaces</span>
+                        <h3 class="mt-4 text-xl font-extrabold text-slate-950 dark:text-white">Ault Park</h3>
+                        <p class="mt-3 flex-grow text-sm leading-7 text-slate-600 dark:text-slate-300">Cincinnati Parks welcomes leashed dogs and lists paved walkways plus hiking trails with steps, bridges, and stream crossings. The varied surfaces make it easy to adjust a route to a dog’s energy and mobility.</p>
+                        <div class="mt-4 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600 dark:bg-[#0b1220] dark:text-slate-300"><strong>Best for:</strong> flexible routes that combine a calmer paved walk with short natural-trail sections.</div>
+                        <a href="https://www.cincinnati-oh.gov/cincyparks/visit-a-park/find-a-parkfacility/ault-park/" target="_blank" rel="noopener noreferrer" class="mt-5 text-sm font-bold text-brand-600 hover:underline dark:text-indigo-300">Official Ault Park information ↗</a>
+                    </section>
+                </div>
+            </section>
+
+            <section class="grid gap-6 lg:grid-cols-2">
+                <div class="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-[#111827] md:p-8">
+                    <h2 class="text-2xl font-black text-slate-950 dark:text-white">Cincinnati leash basics</h2>
+                    <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">Cincinnati Park Board rules require dogs to be held by a leash in city parks except inside a designated enclosed dog park. Dogs must be leashed while entering and exiting a dog park, remain under the handler’s control, and be removed at the first sign of aggression.</p>
+                    <a href="https://www.cincinnati-oh.gov/cincyparks/visit-a-park/park-board-rules/" target="_blank" rel="noopener noreferrer" class="mt-5 inline-block text-sm font-bold text-brand-600 hover:underline dark:text-indigo-300">Read current Cincinnati Park Board rules ↗</a>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-[#111827] md:p-8">
+                    <h2 class="text-2xl font-black text-slate-950 dark:text-white">Before every walk</h2>
+                    <ul class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <li class="flex gap-3"><span aria-hidden="true">🌡️</span><span>Check pavement temperature, heat index, storms, ice, and air quality.</span></li>
+                        <li class="flex gap-3"><span aria-hidden="true">🦮</span><span>Inspect collar or harness fit, identification, leash, and waste bags.</span></li>
+                        <li class="flex gap-3"><span aria-hidden="true">💧</span><span>Bring water and shorten the route for heat, age, illness, or low stamina.</span></li>
+                        <li class="flex gap-3"><span aria-hidden="true">🐾</span><span>Give other dogs space; an on-leash greeting is not automatically safe or welcome.</span></li>
+                        <li class="flex gap-3"><span aria-hidden="true">📍</span><span>Confirm current hours, closures, and posted rules at the park entrance.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="overflow-hidden rounded-3xl border border-indigo-200 bg-indigo-50 dark:border-indigo-800 dark:bg-indigo-950/30">
+                <div class="grid gap-6 p-7 md:grid-cols-[1fr_auto] md:items-center md:p-10">
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-300">A consistent routine when you are busy</p>
+                        <h2 class="mt-2 text-3xl font-black text-indigo-950 dark:text-white">Need a reliable dog walker or in-home pet sitter?</h2>
+                        <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-700 dark:text-slate-300">Share your pet’s routine, address, preferred schedule, and care needs. Steven will review availability and follow up with appropriate options. Submitting a request does not create a confirmed booking.</p>
+                    </div>
+                    <div class="flex flex-col gap-3 sm:flex-row md:flex-col">
+                        <a href="index.html#care-plan" class="rounded-xl bg-brand-600 px-6 py-3 text-center text-sm font-bold text-white hover:bg-brand-700">Request a care plan</a>
+                        <a href="https://www.personalwalkies.com/company/gvyNdU6CsuV02d5LPZa1" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-indigo-300 bg-white px-6 py-3 text-center text-sm font-bold text-indigo-800 hover:bg-indigo-100 dark:border-indigo-700 dark:bg-slate-900 dark:text-indigo-200 dark:hover:bg-slate-800">Visit booking portal</a>
+                    </div>
+                </div>
+            </section>
+
+            <p class="text-xs leading-6 text-slate-500 dark:text-slate-400">Park facts and links reviewed August 11, 2026. This guide is informational and is not affiliated with Cincinnati Parks or Great Parks. Always follow current posted rules and official closure notices.</p>
         </article>
     </main>
 
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12 py-6 text-center text-xs text-gray-500">
-        <p>© 2026 Pet Care by Steven. All rights reserved. | <a href="index.html" class="underline">Home Portal</a></p>
+    <footer class="border-t border-slate-200 bg-white py-8 dark:border-slate-800 dark:bg-[#0b1220]">
+        <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 text-xs text-slate-500 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <p>© 2026 Pet Care by Steven.</p>
+            <div class="flex flex-wrap gap-4"><a href="index.html" class="hover:underline">Home</a><a href="privacy.html" class="hover:underline">Privacy</a><a href="terms.html" class="hover:underline">Terms</a><a href="mailto:support@petcarebysteven.me" class="hover:underline">Contact</a></div>
+        </div>
     </footer>
+
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const useDark = !document.documentElement.classList.contains('dark');
+            document.documentElement.classList.toggle('dark', useDark);
+            localStorage.setItem('themePreference', useDark ? 'dark' : 'light');
+        });
+    </script>
 </body>
 </html>
