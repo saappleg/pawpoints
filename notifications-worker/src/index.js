@@ -290,6 +290,68 @@ async function cancelReminder(request, env) {
   return json({ ok: true });
 }
 
+function templatePayload(value) {
+  const message = notificationFields(value || {});
+  const options = notificationOptions({ ...(value || {}), sendAt: '' });
+  return {
+    title: message.title,
+    body: message.body,
+    url: message.url,
+    imageUrl: options.imageUrl,
+    iconUrl: options.iconUrl,
+    priority: options.priority,
+    ttlHours: Math.round(options.ttl / 3600),
+    collapseId: options.collapseId,
+    buttons: options.buttons,
+    customData: JSON.stringify(cleanCustomData(value?.customData)),
+    notificationType: cleanText(value?.notificationType, 40) || 'admin_message'
+  };
+}
+
+async function listNotificationTemplates(request, env) {
+  await requireAdmin(request, env);
+  const result = await env.DB.prepare(
+    'SELECT id, name, payload_json, created_at, updated_at FROM notification_templates ORDER BY name COLLATE NOCASE ASC LIMIT 100'
+  ).all();
+  const templates = (result.results || []).map(row => ({
+    id: row.id,
+    name: row.name,
+    payload: JSON.parse(row.payload_json),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  }));
+  return json({ ok: true, templates });
+}
+
+async function saveNotificationTemplate(request, env) {
+  const admin = await requireAdmin(request, env);
+  const body = await readJson(request);
+  const name = cleanText(body.name, 60);
+  if (!name) throw new Error('Enter a template name.');
+  const payload = templatePayload(body.template);
+  const id = cleanText(body.id, 64) || crypto.randomUUID();
+  const now = new Date().toISOString();
+  await env.DB.prepare(
+    `INSERT INTO notification_templates (id, name, payload_json, created_by, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET name = excluded.name, payload_json = excluded.payload_json,
+       updated_at = excluded.updated_at WHERE created_by = excluded.created_by`
+  ).bind(id, name, JSON.stringify(payload), admin.uid, now, now).run();
+  return json({ ok: true, id, name, payload }, body.id ? 200 : 201);
+}
+
+async function deleteNotificationTemplate(request, env) {
+  const admin = await requireAdmin(request, env);
+  const body = await readJson(request);
+  const id = cleanText(body.id, 64);
+  if (!id) throw new Error('A template ID is required.');
+  const result = await env.DB.prepare(
+    'DELETE FROM notification_templates WHERE id = ? AND created_by = ?'
+  ).bind(id, admin.uid).run();
+  if (!result.meta?.changes) throw new Error('That template was not found.');
+  return json({ ok: true });
+}
+
 async function sendSelfReward(request, env) {
   const user = await firebaseUser(request);
   const body = await readJson(request);
@@ -366,6 +428,9 @@ export default {
       if (pathname === '/v1/reminders') return await scheduleReminder(request, env);
       if (pathname === '/v1/reminders/list') return await listReminders(request, env);
       if (pathname === '/v1/reminders/cancel') return await cancelReminder(request, env);
+      if (pathname === '/v1/notification-templates/list') return await listNotificationTemplates(request, env);
+      if (pathname === '/v1/notification-templates/save') return await saveNotificationTemplate(request, env);
+      if (pathname === '/v1/notification-templates/delete') return await deleteNotificationTemplate(request, env);
       if (pathname === '/v1/notifications/point-update') return await sendPointUpdate(request, env);
       if (pathname === '/v1/notifications/self-reward') return await sendSelfReward(request, env);
       return json({ error: 'Not found.' }, 404);

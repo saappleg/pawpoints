@@ -31,6 +31,8 @@ The website admin panel includes a rich notification composer backed by `POST /v
 - immediate delivery or a future OneSignal `send_after` time;
 - all subscribed users or one client identified by Firebase/OneSignal external ID.
 
+Admins can also save, load, update, and delete reusable notification designs. These templates are stored in the `notification_templates` D1 table, remain available across devices, and never store a selected recipient or scheduled send time.
+
 OneSignal and the receiving browser decide which rich fields are displayed. Chrome supports web action buttons and large images; Firefox and Safari expose fewer visual controls. The API validates every advanced field before forwarding it, and the OneSignal API key remains server-side.
 
 ## Security model

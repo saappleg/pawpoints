@@ -142,6 +142,20 @@
     <style>
         [x-cloak] { display: none !important; }
 
+        .notification-studio label,
+        .notification-studio summary { color: #f8fafc !important; }
+        .notification-studio input,
+        .notification-studio select,
+        .notification-studio textarea {
+            background-color: #1e293b !important;
+            border-color: #64748b !important;
+            color: #ffffff !important;
+            font-size: 0.8125rem;
+        }
+        .notification-studio input::placeholder,
+        .notification-studio textarea::placeholder { color: #cbd5e1 !important; opacity: 1; }
+        .notification-studio option { background: #1e293b; color: #ffffff; }
+
         #trail-map, #trail-picker-map { height: 340px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
         #trail-picker-map { height: 240px; }
         #service-area-map { height: 300px; border-radius: 1rem; position: relative; z-index: 0; isolation: isolate; }
@@ -1908,7 +1922,7 @@
 
         <!-- ADMIN PANEL MODAL -->
         <div x-show="showAdminModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
-            <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
+            <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-3xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
                         <h2 id="modal-admin-title" class="font-black text-lg text-gray-900 dark:text-white">👑 Admin Workspace</h2>
@@ -1925,7 +1939,7 @@
                     <button @click="adminTab = 'reviews'; fetchPendingReviews()" :class="adminTab === 'reviews' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Reviews</button>
                     <button @click="adminTab = 'photos'" :class="adminTab === 'photos' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">Photos</button>
                     <button @click="adminTab = 'faq'" :class="adminTab === 'faq' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">FAQ</button>
-                    <button @click="adminTab = 'broadcast'; fetchClientsList(); fetchScheduledReminders()" :class="adminTab === 'broadcast' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">🔔 Notifications</button>
+                    <button @click="adminTab = 'broadcast'; fetchClientsList(); fetchScheduledReminders(); fetchSavedNotificationTemplates()" :class="adminTab === 'broadcast' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">🔔 Notifications</button>
                     <button @click="adminTab = 'badge'; $nextTick(() => generateAdminBadge())" :class="adminTab === 'badge' ? 'bg-brand-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">🖨️ QR Badge</button>
                     <button @click="adminTab = 'export'; fetchClientsList()" :class="adminTab === 'export' ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-xl transition shrink-0">📤 Export</button>
                 </div>
@@ -2138,7 +2152,7 @@
 
                 <!-- TAB 6: ONESIGNAL PUSH AND IN-APP ANNOUNCEMENTS -->
                 <div x-show="adminTab === 'broadcast'" class="space-y-4 text-xs" x-cloak>
-                    <div class="bg-indigo-950 border border-indigo-400/40 rounded-2xl p-4 space-y-4 text-slate-100">
+                    <div class="notification-studio bg-indigo-950 border border-indigo-300/60 rounded-2xl p-4 sm:p-5 space-y-4 text-slate-100">
                         <div class="flex items-start justify-between gap-3">
                             <div><p class="font-extrabold text-indigo-100">🔔 PawPoints Notification Studio</p><p class="text-[11px] text-slate-300 mt-1">Build rich, interactive OneSignal pushes without leaving your admin workspace.</p></div>
                             <a href="https://dashboard.onesignal.com/" target="_blank" rel="noopener noreferrer" class="shrink-0 text-[10px] font-bold text-indigo-200 hover:text-white">Reports ↗</a>
@@ -2150,7 +2164,16 @@
                             <button type="button" @click="applyNotificationTemplate('weather')" class="rounded-xl border border-indigo-400/30 bg-white/5 p-2 hover:bg-white/10">⚠️ Urgent</button>
                         </div>
 
-                        <div class="space-y-3 rounded-2xl bg-white p-4 text-gray-800 dark:bg-gray-900 dark:text-slate-100">
+                        <div class="rounded-2xl border border-indigo-300/40 bg-slate-900 p-3 sm:p-4 space-y-3">
+                            <div class="flex items-center justify-between gap-3"><div><p class="font-extrabold text-white">Saved templates</p><p class="mt-0.5 text-[11px] text-slate-300">Reuse your own notification designs on any device.</p></div><span class="rounded-full bg-indigo-500/20 px-2 py-1 text-[10px] font-bold text-indigo-200" x-text="savedNotificationTemplates.length"></span></div>
+                            <div x-show="savedNotificationTemplates.length" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <template x-for="template in savedNotificationTemplates" :key="template.id"><div class="flex items-center gap-2 rounded-xl border border-slate-600 bg-slate-800 p-2"><button type="button" @click="loadSavedNotificationTemplate(template)" class="min-w-0 flex-1 text-left"><span class="block truncate font-bold text-white" x-text="template.name"></span><span class="block truncate text-[10px] text-slate-300" x-text="template.payload.title"></span></button><button type="button" @click="deleteSavedNotificationTemplate(template)" class="rounded-lg px-2 py-1 font-bold text-red-300 hover:bg-red-500/15" aria-label="Delete saved template">Delete</button></div></template>
+                            </div>
+                            <p x-show="!savedNotificationTemplates.length" class="rounded-xl bg-slate-800 p-3 text-center text-slate-300">No custom templates saved yet.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2"><input type="text" x-model="notificationTemplateName" maxlength="60" placeholder="Template name, e.g. Friday visit update"><button type="button" @click="saveCurrentNotificationTemplate()" :disabled="notificationTemplateSaving" class="rounded-xl bg-emerald-600 px-4 py-2.5 font-extrabold text-white hover:bg-emerald-700 disabled:opacity-50" x-text="notificationTemplateSaving ? 'Saving…' : (selectedNotificationTemplateId ? 'Update template' : 'Save current design')"></button></div>
+                        </div>
+
+                        <div class="space-y-4 rounded-2xl border border-slate-600 bg-slate-900 p-4 sm:p-5 text-white">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div><label class="block font-bold mb-1">Audience</label><select x-model="notificationForm.audience" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="all">All subscribed clients</option><option value="client">One client</option></select></div>
                                 <div x-show="notificationForm.audience === 'client'"><label class="block font-bold mb-1">Client</label><select x-model="notificationForm.clientUid" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="">Choose a client</option><template x-for="c in clientList" :key="c.id"><option :value="c.id" x-text="c.name || c.email || c.id"></option></template></select></div>
@@ -2629,6 +2652,10 @@
                     collapseId: '', sendAt: '', buttons: [], customData: '', notificationType: 'admin_message'
                 },
                 notificationSending: false,
+                notificationTemplateName: '',
+                notificationTemplateSaving: false,
+                selectedNotificationTemplateId: '',
+                savedNotificationTemplates: [],
                 reminderForm: { clientUid: '', sendAt: '', title: 'Pet Care by Steven reminder', body: '', url: '/?view=home' },
                 scheduledReminders: [],
                 inAppAnnouncementForm: { title: '', body: '' },
@@ -3734,6 +3761,8 @@
                         imageUrl: '', iconUrl: '', priority: 'normal', ttlHours: 72,
                         collapseId: '', sendAt: '', buttons: [], customData: '', notificationType: 'admin_message'
                     };
+                    this.notificationTemplateName = '';
+                    this.selectedNotificationTemplateId = '';
                 },
 
                 addNotificationButton() {
@@ -3766,6 +3795,67 @@
                     const selected = templates[template];
                     if (!selected) return;
                     Object.assign(this.notificationForm, selected, { buttons: selected.buttons.map(button => ({ ...button })) });
+                    this.notificationTemplateName = '';
+                    this.selectedNotificationTemplateId = '';
+                },
+
+                async fetchSavedNotificationTemplates() {
+                    if (!this.notificationServiceConfigured || !this.user) return;
+                    try {
+                        const result = await this.notificationRequest('/v1/notification-templates/list', {});
+                        this.savedNotificationTemplates = result.templates || [];
+                    } catch (err) {
+                        console.warn('Unable to load notification templates:', err.message);
+                    }
+                },
+
+                loadSavedNotificationTemplate(template) {
+                    if (!template?.payload) return;
+                    const payload = template.payload;
+                    Object.assign(this.notificationForm, payload, {
+                        buttons: Array.isArray(payload.buttons) ? payload.buttons.map(button => ({ ...button })) : [],
+                        sendAt: '',
+                        customData: payload.customData || ''
+                    });
+                    this.notificationTemplateName = template.name;
+                    this.selectedNotificationTemplateId = template.id;
+                },
+
+                async saveCurrentNotificationTemplate() {
+                    const name = this.notificationTemplateName.trim();
+                    if (!name) return alert('Enter a name for this template.');
+                    if (!this.notificationForm.title.trim() || !this.notificationForm.body.trim()) {
+                        return alert('Add a title and message before saving the template.');
+                    }
+                    this.notificationTemplateSaving = true;
+                    try {
+                        const result = await this.notificationRequest('/v1/notification-templates/save', {
+                            id: this.selectedNotificationTemplateId,
+                            name,
+                            template: { ...this.notificationForm, sendAt: '', audience: 'all', clientUid: '' }
+                        });
+                        this.selectedNotificationTemplateId = result.id;
+                        await this.fetchSavedNotificationTemplates();
+                        alert(`Template “${name}” saved.`);
+                    } catch (err) {
+                        alert('Unable to save template: ' + err.message);
+                    } finally {
+                        this.notificationTemplateSaving = false;
+                    }
+                },
+
+                async deleteSavedNotificationTemplate(template) {
+                    if (!confirm(`Delete the “${template.name}” template?`)) return;
+                    try {
+                        await this.notificationRequest('/v1/notification-templates/delete', { id: template.id });
+                        if (this.selectedNotificationTemplateId === template.id) {
+                            this.selectedNotificationTemplateId = '';
+                            this.notificationTemplateName = '';
+                        }
+                        await this.fetchSavedNotificationTemplates();
+                    } catch (err) {
+                        alert('Unable to delete template: ' + err.message);
+                    }
                 },
 
                 async scheduleClientReminder() {
