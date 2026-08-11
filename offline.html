@@ -1,21 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline | Pet Care by Steven</title>
-    <link rel="stylesheet" href="/assets/styles.v5.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4f46e5">
+  <title>Offline | Pet Care by Steven</title>
+  <script>
+    (() => {
+      const preference = localStorage.getItem('themePreference') || 'system';
+      const dark = preference === 'dark' || (preference === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    })();
+  </script>
+  <style>
+    :root { color-scheme: light; --page: #f8fafc; --card: #fff; --text: #111827; --muted: #64748b; --border: #e2e8f0; --soft: #eef2ff; --shadow: #0f172a1f; }
+    :root[data-theme="dark"] { color-scheme: dark; --page: #0d1117; --card: #111827; --text: #f8fafc; --muted: #cbd5e1; --border: #334155; --soft: #1e293b; --shadow: #0008; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--page); color: var(--text); font: 16px/1.5 Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { width: min(100%, 520px); padding: clamp(32px, 7vw, 48px); text-align: center; background: var(--card); border: 1px solid var(--border); border-radius: 30px; box-shadow: 0 24px 60px var(--shadow); }
+    img { width: 84px; height: 84px; border-radius: 50%; box-shadow: 0 12px 28px var(--shadow); }
+    .eyebrow { margin-top: 18px; color: #6366f1; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; font-size: .75rem; }
+    h1 { margin: 10px 0 12px; font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.1; }
+    p { margin: 0 auto 24px; color: var(--muted); }
+    .status { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 22px; color: var(--muted); font-size: .8rem; font-weight: 700; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; }
+    button, a { width: 100%; min-height: 50px; display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; font: inherit; font-weight: 800; cursor: pointer; text-decoration: none; }
+    button { border: 0; color: #fff; background: #4f46e5; }
+    button:hover { background: #4338ca; }
+    a { margin-top: 10px; color: var(--text); background: var(--soft); border: 1px solid var(--border); }
+  </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 flex items-center justify-center min-h-screen p-6">
-    <div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-xl text-center max-w-md border border-gray-100 dark:border-gray-700">
-        <div class="text-6xl mb-4">🐾</div>
-        <h1 class="text-2xl font-black text-gray-900 dark:text-white mb-2">You are currently offline</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
-            It looks like you've lost your internet connection. Please check your network and refresh the page to access your Paw Points dashboard and schedule visits.
-        </p>
-        <button onclick="window.location.reload()" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-2xl transition shadow-md">
-            Try Again
-        </button>
-    </div>
+<body>
+  <main>
+    <img src="/android-chrome-192x192.webp" alt="Pet Care by Steven logo" width="84" height="84">
+    <div class="eyebrow">Pet Care by Steven</div>
+    <h1>You’re currently offline</h1>
+    <p>Your connection dropped, so live bookings, Paw Points, and client updates are temporarily unavailable. Your saved information has not been removed.</p>
+    <div class="status" role="status" aria-live="polite"><span class="dot"></span><span id="connection-status">Waiting for a connection</span></div>
+    <button type="button" id="retry">Try again</button>
+    <a href="/">Return home</a>
+  </main>
+  <script>
+    const statusText = document.getElementById('connection-status');
+    const statusDot = document.querySelector('.dot');
+    const retry = () => window.location.reload();
+    document.getElementById('retry').addEventListener('click', retry);
+    window.addEventListener('online', () => {
+      statusText.textContent = 'Connection restored—reloading…';
+      statusDot.style.background = '#10b981';
+      setTimeout(retry, 500);
+    });
+  </script>
 </body>
 </html>

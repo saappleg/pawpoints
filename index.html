@@ -2272,7 +2272,7 @@
             </div>
         </aside>
 
-        <!-- FLOATING RANDOMIZED SOCIAL PROOF TOAST -->
+        <!-- FLOATING BOOKING AND AVAILABILITY NOTICE -->
         <div 
             x-show="showToast" 
             x-transition:enter="transition ease-out duration-300"
@@ -2285,7 +2285,7 @@
             class="social-proof-toast fixed bottom-6 left-6 bg-slate-900 text-white border border-slate-700 p-3.5 rounded-2xl shadow-xl max-w-xs flex items-center gap-3">
             <div class="text-xl shrink-0">🐾</div>
             <div class="text-xs">
-                <p class="font-bold text-amber-400">Recent Activity</p>
+                <p class="font-bold text-amber-400">Booking tip</p>
                 <p class="text-slate-300 text-[11px]" x-text="toastMessage"></p>
             </div>
             <button @click="showToast = false" aria-label="Close toast notification" class="text-slate-400 hover:text-white text-xs font-bold ml-auto">✕</button>

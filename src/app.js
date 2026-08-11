@@ -308,15 +308,15 @@ function pawApp() {
         scheduledReminders: [],
         inAppAnnouncementForm: { title: '', body: '' },
         pendingReviews: [],
-        toastEvents: [
-            "A client in New Richmond just booked a 3-day sitting!",
-            "A client in Amelia redeemed a $10 Paw Points coupon!",
-            "A client in Batavia registered a new pet profile!",
-            "A client in Anderson scheduled a daily walk sequence!",
-            "A client in Cincinnati booked weekend drop-in visits!",
-            "A client in Pierce Township earned 1,000 Paw Points from a referral!",
-            "A new client requested a free 30-minute Meet & Greet!",
-            "A client in Williamsburg reserved a 5-night sitting package!"
+        bookingNotices: [
+            "Weekend sitting dates are limited and often fill first—request your care plan early.",
+            "Every visit is personally handled by Steven, so multi-day sitting availability is limited.",
+            "Holiday and school-break dates can fill quickly; early requests have the best availability.",
+            "Recurring dog-walk time slots are limited to protect reliable, on-time care.",
+            "New clients can request a free 30-minute Meet & Greet before their first booking.",
+            "Last-minute care may be available when Steven’s existing route allows it.",
+            "Booking ahead helps reserve the visit times that best match your pet’s routine.",
+            "Paw Points can be redeemed for discounts on future walks and sitting visits."
         ],
         photoGrid: [],
         newPhoto: { url: '', caption: '' },
@@ -1559,8 +1559,8 @@ function pawApp() {
         scheduleNextToast() {
             const randomDelay = Math.floor(Math.random() * (30000 - 18000 + 1)) + 18000;
             setTimeout(() => {
-                const randomIndex = Math.floor(Math.random() * this.toastEvents.length);
-                this.toastMessage = this.toastEvents[randomIndex];
+                const randomIndex = Math.floor(Math.random() * this.bookingNotices.length);
+                this.toastMessage = this.bookingNotices[randomIndex];
                 this.showToast = true;
 
                 const displayTime = Math.floor(Math.random() * (4000 - 2500 + 1)) + 2500;

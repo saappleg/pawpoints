@@ -1,4 +1,4 @@
-const CACHE_NAME = 'paw-points-offline-v15';
+const CACHE_NAME = 'paw-points-offline-v16';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
