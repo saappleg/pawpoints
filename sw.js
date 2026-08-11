@@ -1,10 +1,11 @@
-const CACHE_NAME = 'paw-points-offline-v10';
+const CACHE_NAME = 'paw-points-offline-v13';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   OFFLINE_URL,
-  '/output.css',
+  '/assets/styles.v3.min.css',
+  '/assets/app.v3.min.js',
   '/manifest.json',
   '/android-chrome-192x192.png',
   '/android-chrome-512x512.png',
