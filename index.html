@@ -84,7 +84,7 @@
     <meta name="theme-color" content="#4f46e5">
 
     <!-- Compiled Local Tailwind CSS Output -->
-    <link rel="stylesheet" href="assets/styles.v5.min.css">
+    <link rel="stylesheet" href="assets/styles.cc434cd052f5.min.css">
 
     <!-- OneSignal uses a separate, narrow-scope worker so it does not conflict with this PWA's offline worker. -->
     <script>
@@ -126,7 +126,7 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
     <!-- Versioned application bundle; Alpine starts only after pawApp is registered. -->
-    <script defer src="assets/app.v3.min.js"></script>
+    <script defer src="assets/app.85be4f0a900b.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
@@ -263,6 +263,12 @@
         }
         .dark .profile-modal-dialog,
         .dark .app-modal > div { box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 1px 0 rgba(255, 255, 255, 0.04) inset; }
+
+        /* Skip layout and paint work for distant homepage sections until they near the viewport. */
+        .home-view > section:nth-of-type(n + 7) {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 360px;
+        }
 
         :root {
             --top-bar-height: 6px;
@@ -496,7 +502,8 @@
             </div>
 
             <!-- HOME VIEW -->
-            <div x-show="!loading && currentView === 'home'" class="flex flex-col space-y-8">
+            <template x-if="!loading && currentView === 'home'">
+            <div class="home-view flex flex-col space-y-8">
                 <section class="rainbow-frame shadow-xl">
                     <div class="rainbow-frame-inner bg-indigo-600 dark:bg-[#111827] text-white p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8 border border-transparent dark:border-gray-800 transition-colors">
                         <div class="space-y-4 max-w-xl text-center md:text-left z-10">
@@ -936,9 +943,11 @@
                     </button>
                 </section>
             </div>
+            </template>
 
             <!-- LOYALTY VIEW -->
-            <div x-show="!loading && currentView === 'loyalty'" class="space-y-6" x-cloak>
+            <template x-if="!loading && currentView === 'loyalty'">
+            <div class="space-y-6">
                 <div x-show="!user" class="max-w-md mx-auto bg-white dark:bg-[#111827] p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-5">
                     <h2 class="text-xl font-bold text-center text-gray-900 dark:text-white" x-text="authMode === 'login' ? 'Welcome Back' : (authMode === 'signup' ? 'Create Account' : 'Reset Password')"></h2>
 
@@ -1507,9 +1516,11 @@
                     </div>
                 </template>
             </div>
+            </template>
 
             <!-- COMMUNITY DOG WALKING & TRAIL GUIDE VIEW -->
-            <div x-show="!loading && currentView === 'guide'" class="space-y-6" x-cloak>
+            <template x-if="!loading && currentView === 'guide'">
+            <div class="space-y-6">
                 <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b dark:border-gray-800 pb-4">
                         <div>
@@ -1564,10 +1575,12 @@
                     </div>
                 </div>
             </div>
+            </template>
         </main>
 
         <!-- SUBMIT TRAIL MODAL -->
-        <div x-show="showAddTrailModal" x-transition x-cloak class="trail-submission-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <template x-if="showAddTrailModal">
+        <div class="trail-submission-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4">
             <div @click.away="showAddTrailModal = false" class="trail-submission-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <h2 class="font-bold text-lg text-gray-900 dark:text-white">Submit a Walking Trail</h2>
@@ -1642,9 +1655,11 @@
                 </form>
             </div>
         </div>
+        </template>
 
         <!-- TRAIL DISCUSSION MODAL -->
-        <div x-show="showTrailCommentsModal" x-transition x-cloak class="trail-submission-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <template x-if="showTrailCommentsModal">
+        <div class="trail-submission-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4">
             <div @click.away="showTrailCommentsModal = false" class="trail-submission-dialog bg-white dark:bg-[#111827] max-w-lg w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-start border-b dark:border-gray-800 pb-3 gap-3">
                     <div><p class="text-[10px] uppercase font-black tracking-widest text-brand-600 dark:text-brand-400">Trail discussion</p><h2 class="font-bold text-lg text-gray-900 dark:text-white" x-text="selectedTrail?.title || 'Trail comments'"></h2></div>
@@ -1672,9 +1687,11 @@
                 <p x-show="!user" class="text-xs text-gray-500 dark:text-gray-400 text-center border-t dark:border-gray-800 pt-4">Log in to add a comment.</p>
             </div>
         </div>
+        </template>
 
         <!-- TRAIL REPORT MODAL -->
-        <div x-show="showTrailReportModal" x-transition x-cloak class="trail-submission-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <template x-if="showTrailReportModal">
+        <div class="trail-submission-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4">
             <div @click.away="showTrailReportModal = false" class="trail-submission-dialog bg-white dark:bg-[#111827] max-w-md w-full p-6 rounded-3xl shadow-xl space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3"><div><p class="text-[10px] uppercase font-black tracking-widest text-red-500">Trail update</p><h2 class="font-bold text-lg text-gray-900 dark:text-white" x-text="selectedTrail?.title || 'Flag a trail' "></h2></div><button @click="showTrailReportModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl">✕</button></div>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Help keep the guide useful. Steven will review your note.</p>
@@ -1685,9 +1702,11 @@
                 </form>
             </div>
         </div>
+        </template>
 
         <!-- HOUSE CARE & MEDICATION CHECKLIST MODAL -->
-        <div x-show="showChecklistModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-checklist-title">
+        <template x-if="showChecklistModal">
+        <div class="app-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-checklist-title">
             <div @click.away="showChecklistModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
                     <div>
@@ -1737,9 +1756,11 @@
                 </form>
             </div>
         </div>
+        </template>
 
         <!-- VET AUTHORIZATION MODAL -->
-        <div x-show="showVetAuthModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-vetauth-title">
+        <template x-if="showVetAuthModal">
+        <div class="app-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-vetauth-title">
             <div @click.away="showVetAuthModal = false" class="bg-white dark:bg-[#111827] max-w-2xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-start border-b dark:border-gray-800 pb-4">
                     <div>
@@ -1804,9 +1825,11 @@
                 </form>
             </div>
         </div>
+        </template>
 
         <!-- ACCOUNT PROFILE MODAL -->
-        <div x-show="showProfileModal" x-cloak @click.self="closeProfilePanel()" @keydown.escape.window="closeProfilePanel()" class="profile-modal fixed inset-0" role="dialog" aria-modal="false" aria-labelledby="modal-profile-title">
+        <template x-if="showProfileModal">
+        <div @click.self="closeProfilePanel()" @keydown.escape.window="closeProfilePanel()" class="profile-modal fixed inset-0" role="dialog" aria-modal="false" aria-labelledby="modal-profile-title">
             <div @click.stop :style="{ top: profilePanelTop, '--profile-panel-max-height': profilePanelMaxHeight }" class="profile-modal-dialog bg-white dark:bg-[#111827] space-y-4 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 px-1 pb-3">
                     <div>
@@ -1909,9 +1932,11 @@
                 </form>
             </div>
         </div>
+        </template>
 
         <!-- ADMIN PANEL MODAL -->
-        <div x-show="showAdminModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
+        <template x-if="showAdminModal">
+        <div class="app-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-admin-title">
             <div @click.away="showAdminModal = false" class="bg-white dark:bg-[#111827] max-w-3xl w-full p-6 md:p-8 rounded-3xl shadow-xl space-y-6 max-h-[90vh] overflow-y-auto my-8 border dark:border-gray-800">
                 <div class="flex justify-between items-center border-b dark:border-gray-800 pb-3">
                     <div>
@@ -2235,9 +2260,11 @@
                 <button @click="showAdminModal = false" class="w-full py-3 bg-gray-200 dark:bg-gray-800 text-xs font-bold text-gray-800 dark:text-slate-200 rounded-2xl border dark:border-gray-700">Close Admin Panel</button>
             </div>
         </div>
+        </template>
 
         <!-- iOS INSTALL INSTRUCTIONS MODAL -->
-        <div x-show="showIOSInstallModal" x-transition x-cloak class="app-modal fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
+        <template x-if="showIOSInstallModal">
+        <div class="app-modal fixed inset-0 bg-black/75 flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
             <div @click.away="showIOSInstallModal = false" class="bg-white dark:bg-[#111827] max-w-sm w-full p-6 md:p-8 rounded-3xl shadow-xl text-center space-y-5 border dark:border-gray-800">
                 <div class="flex justify-center">
                     <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📱</div>
@@ -2255,6 +2282,7 @@
                 </button>
             </div>
         </div>
+        </template>
 
         <!-- LIGHTWEIGHT PWA INSTALL PROMPT (REPLACES HEADER BUTTON) -->
         <aside x-show="showInstallBanner && !showToast" x-transition x-cloak class="install-prompt fixed rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-[#111827] p-4 shadow-2xl" aria-label="Install app prompt">

@@ -61,6 +61,7 @@ function ensureLeafletLoaded() {
 }
 
 const observedMapElements = new WeakSet();
+const mapResizeObservers = new WeakMap();
 
 function loadMapWhenVisible(elementId, initialize) {
     const element = document.getElementById(elementId);
@@ -78,6 +79,40 @@ function loadMapWhenVisible(elementId, initialize) {
         initialize();
     }, { rootMargin: '300px 0px' });
     observer.observe(element);
+}
+
+function keepLeafletMapSized(map, elementId) {
+    const element = document.getElementById(elementId);
+    if (!map || !element) return;
+
+    if (mapResizeObservers.has(map)) {
+        requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+        return;
+    }
+
+    let frame = 0;
+    const invalidate = () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+            if (element.isConnected && element.offsetWidth > 0 && element.offsetHeight > 0) {
+                map.invalidateSize({ pan: false });
+            }
+        });
+    };
+
+    if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(invalidate);
+        observer.observe(element);
+        mapResizeObservers.set(map, observer);
+    }
+    invalidate();
+}
+
+function disposeLeafletMap(map) {
+    if (!map) return;
+    mapResizeObservers.get(map)?.disconnect();
+    mapResizeObservers.delete(map);
+    map.remove();
 }
 
 const firebaseConfig = {
@@ -470,12 +505,30 @@ function pawApp() {
                 this.$nextTick(() => loadMapWhenVisible('service-area-map', () => this.initServiceAreaMap()));
             }
 
-            this.$watch('currentView', (value) => {
+            this.$watch('currentView', (value, previousValue) => {
+                if (previousValue === 'home' && this.serviceAreaMap) {
+                    disposeLeafletMap(this.serviceAreaMap);
+                    this.serviceAreaMap = null;
+                    this.serviceAreaLayers = null;
+                }
+                if (previousValue === 'guide' && this.trailMap) {
+                    disposeLeafletMap(this.trailMap);
+                    this.trailMap = null;
+                    this.trailMapMarkers = null;
+                }
                 const url = new URL(window.location);
                 url.searchParams.set('view', value);
                 window.history.pushState({}, '', url);
                 if (value === 'guide') this.$nextTick(() => loadMapWhenVisible('trail-map', () => this.initTrailMap()));
                 if (value === 'home') this.$nextTick(() => loadMapWhenVisible('service-area-map', () => this.initServiceAreaMap()));
+            });
+
+            this.$watch('showAddTrailModal', (visible) => {
+                if (visible || !this.trailPickerMap) return;
+                disposeLeafletMap(this.trailPickerMap);
+                this.trailPickerMap = null;
+                this.trailPickerMarker = null;
+                this.showTrailMapPicker = false;
             });
 
             window.addEventListener('popstate', () => {
@@ -763,7 +816,7 @@ function pawApp() {
                 if (latLng) window.L.circleMarker(latLng, { radius: 6, color: '#059669', fillColor: '#10b981', fillOpacity: 1, weight: 2 })
                     .bindPopup(`<strong>${area.city}</strong><br>Primary coverage area`).addTo(this.serviceAreaLayers);
             });
-            [100, 400, 900, 1600].forEach(delay => setTimeout(() => this.serviceAreaMap?.invalidateSize({ pan: false }), delay));
+            keepLeafletMapSized(this.serviceAreaMap, 'service-area-map');
         },
 
         async initTrailMap() {
@@ -776,7 +829,7 @@ function pawApp() {
             }).addTo(this.trailMap);
             this.trailMapMarkers = window.L.layerGroup().addTo(this.trailMap);
             this.refreshTrailMapPins();
-            [100, 400, 900].forEach(delay => setTimeout(() => this.trailMap?.invalidateSize({ pan: false }), delay));
+            keepLeafletMapSized(this.trailMap, 'trail-map');
         },
 
         refreshTrailMapPins() {
@@ -824,7 +877,7 @@ function pawApp() {
                     else this.trailPickerMarker = window.L.marker(event.latlng).addTo(this.trailPickerMap);
                 });
             }
-            [100, 400].forEach(delay => setTimeout(() => this.trailPickerMap?.invalidateSize({ pan: false }), delay));
+            keepLeafletMapSized(this.trailPickerMap, 'trail-picker-map');
         },
 
         async findTrailLocation(force = false) {

@@ -54,9 +54,8 @@ Available build commands:
 
 ```sh
 npm run build       # Build minified CSS and JavaScript
-npm run build:css   # Build Tailwind only
-npm run build:js    # Bundle the modular Firebase app only
-npm run watch       # Watch Tailwind source changes
+npm run build:css   # Build and fingerprint Tailwind only
+npm run build:js    # Bundle and fingerprint the modular Firebase app only
 ```
 
 Generated files in `assets/` must be committed because GitHub Pages serves the
@@ -115,7 +114,7 @@ application relies on the current OneSignal → app bundle → Alpine script ord
 
 Before publishing a significant change:
 
-1. Run `npm run build` and check for build errors.
+1. Run `npm run build` and check for build errors. The build fingerprints CSS and JavaScript filenames and updates `index.html` and `sw.js` automatically.
 2. Test home, PawPoints, trails, sign-in, admin, and notification flows.
 3. Verify `sw.js` contains the current generated asset names.
 4. Confirm the GitHub Pages deployment succeeds.
