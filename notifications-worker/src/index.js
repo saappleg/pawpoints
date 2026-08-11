@@ -173,8 +173,9 @@ async function sendOneSignal(env, { title, body, url, externalIds, data = {}, op
   if (externalIds?.length) {
     payload.include_aliases = { external_id: externalIds };
   } else {
-    // "Subscribed Users" is OneSignal's built-in segment for an all-client push.
-    payload.included_segments = ['Subscribed Users'];
+    // This app's current OneSignal default segment is "Total Subscriptions".
+    // OneSignal still excludes opted-out subscriptions when delivering push.
+    payload.included_segments = [env.ONESIGNAL_BROADCAST_SEGMENT || 'Total Subscriptions'];
   }
 
   const response = await fetch('https://api.onesignal.com/notifications?c=push', {
