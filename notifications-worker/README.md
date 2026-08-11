@@ -4,18 +4,18 @@ This free Cloudflare Worker sends OneSignal pushes without exposing the OneSigna
 
 ## One-time Cloudflare setup
 
-1. Create a Cloudflare account and install Wrangler: `npm install -g wrangler`.
-2. In this folder, copy `wrangler.toml.example` to `wrangler.toml` and replace the D1 database ID after step 3.
-3. Create the database: `wrangler d1 create petcare-notifications`.
+1. Create a Cloudflare account and authenticate Wrangler with `npx wrangler login`.
+2. Create the database if it does not already exist: `npx wrangler d1 create petcare-notifications`.
+3. Confirm the returned database ID matches the active binding in `wrangler.jsonc`.
 4. Apply the schema locally and remotely:
-   - `wrangler d1 execute petcare-notifications --local --file=./schema.sql`
-   - `wrangler d1 execute petcare-notifications --remote --file=./schema.sql`
+   - `npx wrangler d1 execute petcare-notifications --local --file=./schema.sql`
+   - `npx wrangler d1 execute petcare-notifications --remote --file=./schema.sql`
 5. Add secrets (never commit these):
-   - `wrangler secret put ONESIGNAL_APP_API_KEY`
-   - `wrangler secret put ADMIN_EMAILS`
+   - `npx wrangler secret put ONESIGNAL_APP_API_KEY`
+   - `npx wrangler secret put ADMIN_EMAILS`
      - Use a comma-separated list, such as `saappleg@gmail.com,support@petcarebysteven.me`.
-6. Add the OneSignal app ID as a plain Worker variable in the Cloudflare dashboard, or use `wrangler secret put ONESIGNAL_APP_ID`.
-7. Deploy: `wrangler deploy`.
+6. Add the OneSignal app ID as a plain Worker variable in the Cloudflare dashboard, or use `npx wrangler secret put ONESIGNAL_APP_ID`.
+7. Deploy: `npx wrangler deploy`.
 8. Copy the Worker URL (for example `https://petcare-notifications.your-account.workers.dev`) into `window.PET_CARE_NOTIFICATIONS_URL` in the site root `index.html`.
 
 Once connected, eligible point changes, referral-driven status upgrades, and the annual status rollover automatically send a OneSignal push to that specific client. Push delivery while the PWA is closed still requires that client to have opted in to notifications on their device.
