@@ -20,6 +20,19 @@ This free Cloudflare Worker sends OneSignal pushes without exposing the OneSigna
 
 Once connected, eligible point changes, referral-driven status upgrades, and the annual status rollover automatically send a OneSignal push to that specific client. Push delivery while the PWA is closed still requires that client to have opted in to notifications on their device.
 
+## PawPoints Notification Studio
+
+The website admin panel includes a rich notification composer backed by `POST /v1/notifications/send`. In addition to a title and message, an admin can configure:
+
+- a large HTTPS image and notification icon;
+- up to two Chrome web-push action buttons;
+- a destination URL and custom JSON data;
+- normal or high priority, expiration time, and a collapse/replacement key;
+- immediate delivery or a future OneSignal `send_after` time;
+- all subscribed users or one client identified by Firebase/OneSignal external ID.
+
+OneSignal and the receiving browser decide which rich fields are displayed. Chrome supports web action buttons and large images; Firefox and Safari expose fewer visual controls. The API validates every advanced field before forwarding it, and the OneSignal API key remains server-side.
+
 ## Security model
 
 - The portal sends the current Firebase ID token with every request.

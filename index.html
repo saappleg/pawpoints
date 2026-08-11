@@ -2138,19 +2138,47 @@
 
                 <!-- TAB 6: ONESIGNAL PUSH AND IN-APP ANNOUNCEMENTS -->
                 <div x-show="adminTab === 'broadcast'" class="space-y-4 text-xs" x-cloak>
-                    <div class="bg-indigo-950/30 border border-indigo-400/40 rounded-2xl p-4 space-y-3">
-                        <div>
-                            <p class="font-bold text-indigo-100">🔔 OneSignal Push Center</p>
-                            <p class="text-[11px] text-slate-200 mt-1">Create, schedule, personalize, and review delivery of real push notifications directly in OneSignal.</p>
+                    <div class="bg-indigo-950 border border-indigo-400/40 rounded-2xl p-4 space-y-4 text-slate-100">
+                        <div class="flex items-start justify-between gap-3">
+                            <div><p class="font-extrabold text-indigo-100">🔔 PawPoints Notification Studio</p><p class="text-[11px] text-slate-300 mt-1">Build rich, interactive OneSignal pushes without leaving your admin workspace.</p></div>
+                            <a href="https://dashboard.onesignal.com/" target="_blank" rel="noopener noreferrer" class="shrink-0 text-[10px] font-bold text-indigo-200 hover:text-white">Reports ↗</a>
                         </div>
-                        <a href="https://dashboard.onesignal.com/" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Open OneSignal Dashboard ↗</a>
-                        <div class="text-[11px] leading-relaxed text-slate-200 bg-slate-950/35 border border-indigo-300/25 rounded-xl p-3">
-                            <p class="font-bold text-indigo-100 mb-1">Best workflow</p>
-                            <p>Use <strong>New message</strong> for broadcasts and scheduling, then use OneSignal’s audience builder and delivery report. Clients must first allow notifications in the portal before they can receive a push.</p>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" @click="applyNotificationTemplate('appointment')" class="rounded-xl border border-indigo-400/30 bg-white/5 p-2 hover:bg-white/10">📅 Appointment</button>
+                            <button type="button" @click="applyNotificationTemplate('medication')" class="rounded-xl border border-indigo-400/30 bg-white/5 p-2 hover:bg-white/10">💊 Medication</button>
+                            <button type="button" @click="applyNotificationTemplate('weather')" class="rounded-xl border border-indigo-400/30 bg-white/5 p-2 hover:bg-white/10">⚠️ Urgent</button>
                         </div>
-                        <div class="rounded-xl border border-indigo-300/25 bg-white/5 p-3 text-[11px] text-slate-200">
-                            <p class="font-bold text-indigo-100 mb-2">Simple campaign ideas</p>
-                            <ul class="space-y-1.5 leading-relaxed"><li>• Welcome to Paw Points — send once after a client subscribes.</li><li>• Holiday availability — schedule 2–3 weeks before a busy period.</li><li>• Seasonal care tip — one useful trail, weather, or routine reminder each month.</li></ul>
+
+                        <div class="space-y-3 rounded-2xl bg-white p-4 text-gray-800 dark:bg-gray-900 dark:text-slate-100">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div><label class="block font-bold mb-1">Audience</label><select x-model="notificationForm.audience" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="all">All subscribed clients</option><option value="client">One client</option></select></div>
+                                <div x-show="notificationForm.audience === 'client'"><label class="block font-bold mb-1">Client</label><select x-model="notificationForm.clientUid" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="">Choose a client</option><template x-for="c in clientList" :key="c.id"><option :value="c.id" x-text="c.name || c.email || c.id"></option></template></select></div>
+                            </div>
+                            <div><label class="block font-bold mb-1">Title <span class="font-normal text-gray-400" x-text="`${notificationForm.title.length}/80`"></span></label><input type="text" x-model="notificationForm.title" maxlength="80" placeholder="A useful update for pet parents" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"></div>
+                            <div><label class="block font-bold mb-1">Message <span class="font-normal text-gray-400" x-text="`${notificationForm.body.length}/240`"></span></label><textarea x-model="notificationForm.body" maxlength="240" rows="3" placeholder="What should the pet parent know?" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"></textarea></div>
+                            <div><label class="block font-bold mb-1">Open when tapped</label><input type="text" x-model="notificationForm.url" placeholder="/?view=home" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800 font-mono text-[11px]"></div>
+                            <div><label class="block font-bold mb-1">Large image URL</label><input type="url" x-model="notificationForm.imageUrl" placeholder="https://…/pet-update.jpg" class="w-full px-3 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><p class="mt-1 text-[10px] text-gray-500">Public HTTPS image; best at 1024 × 512.</p></div>
+
+                            <details class="rounded-xl border dark:border-gray-700 p-3">
+                                <summary class="cursor-pointer font-bold">Advanced controls</summary>
+                                <div class="mt-3 space-y-3">
+                                    <div><label class="block font-bold mb-1">Small icon URL</label><input type="url" x-model="notificationForm.iconUrl" placeholder="https://…/icon.png" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800"></div>
+                                    <div class="grid grid-cols-2 gap-2"><div><label class="block font-bold mb-1">Priority</label><select x-model="notificationForm.priority" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option value="normal">Normal</option><option value="high">High</option></select></div><div><label class="block font-bold mb-1">Expires after</label><select x-model.number="notificationForm.ttlHours" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><option :value="1">1 hour</option><option :value="24">1 day</option><option :value="72">3 days</option><option :value="168">7 days</option></select></div></div>
+                                    <div><label class="block font-bold mb-1">Replace/group key</label><input type="text" x-model="notificationForm.collapseId" maxlength="64" placeholder="weather-alert or appointment-update" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800"><p class="mt-1 text-[10px] text-gray-500">New pushes with the same key replace older undelivered ones.</p></div>
+                                    <div><label class="block font-bold mb-1">Schedule (optional)</label><input type="datetime-local" x-model="notificationForm.sendAt" class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800"></div>
+                                    <div class="space-y-2"><div class="flex items-center justify-between"><label class="font-bold">Action buttons</label><button type="button" @click="addNotificationButton()" x-show="notificationForm.buttons.length < 2" class="text-indigo-600 dark:text-indigo-300 font-bold">+ Add button</button></div><template x-for="(button, index) in notificationForm.buttons" :key="index"><div class="grid grid-cols-[1fr_1.5fr_auto] gap-2"><input type="text" x-model="button.text" maxlength="30" placeholder="Button label" class="min-w-0 px-2 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800"><input type="text" x-model="button.url" placeholder="/?view=loyalty" class="min-w-0 px-2 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800"><button type="button" @click="notificationForm.buttons.splice(index, 1)" aria-label="Remove action button" class="px-2 text-red-500">✕</button></div></template></div>
+                                    <div><label class="block font-bold mb-1">Custom data (JSON)</label><textarea x-model="notificationForm.customData" rows="2" placeholder='{"petId":"…","event":"visit_ready"}' class="w-full px-3 py-2 rounded-xl border dark:border-gray-700 dark:bg-gray-800 font-mono text-[11px]"></textarea></div>
+                                </div>
+                            </details>
+
+                            <div class="rounded-2xl bg-slate-100 dark:bg-slate-800 p-3" aria-label="Notification preview">
+                                <p class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">Live preview</p>
+                                <img x-show="notificationForm.imageUrl" :src="notificationForm.imageUrl" alt="Notification artwork preview" class="mb-3 max-h-32 w-full rounded-xl object-cover">
+                                <div class="flex gap-3"><div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-indigo-600 text-lg"><img x-show="notificationForm.iconUrl" :src="notificationForm.iconUrl" alt="" class="h-full w-full object-cover"><span x-show="!notificationForm.iconUrl">🐾</span></div><div class="min-w-0"><p class="font-extrabold" x-text="notificationForm.title || 'Pet Care by Steven'"></p><p class="mt-0.5 text-[11px] text-gray-600 dark:text-gray-300" x-text="notificationForm.body || 'Your message preview appears here.'"></p><div x-show="notificationForm.buttons.length" class="mt-2 flex gap-2"><template x-for="button in notificationForm.buttons"><span class="rounded-lg bg-white px-2 py-1 font-bold text-indigo-700 dark:bg-gray-700 dark:text-indigo-200" x-text="button.text || 'Action'"></span></template></div></div></div>
+                            </div>
+
+                            <button type="button" @click="sendRemoteNotification()" :disabled="notificationSending" class="w-full rounded-2xl bg-indigo-600 py-3 font-extrabold text-white hover:bg-indigo-700 disabled:opacity-50" x-text="notificationSending ? 'Sending…' : (notificationForm.sendAt ? 'Schedule rich notification' : 'Send rich notification')"></button>
                         </div>
                     </div>
 
@@ -2595,7 +2623,12 @@
                 petBirthdayAlert: false,
                 isFirstVisitCompleted: false,
                 clientReviewForm: { stars: 5, comment: '' },
-                notificationForm: { audience: 'all', clientUid: '', title: '', body: '' },
+                notificationForm: {
+                    audience: 'all', clientUid: '', title: '', body: '', url: '/?view=home',
+                    imageUrl: '', iconUrl: '', priority: 'normal', ttlHours: 72,
+                    collapseId: '', sendAt: '', buttons: [], customData: '', notificationType: 'admin_message'
+                },
+                notificationSending: false,
                 reminderForm: { clientUid: '', sendAt: '', title: 'Pet Care by Steven reminder', body: '', url: '/?view=home' },
                 scheduledReminders: [],
                 inAppAnnouncementForm: { title: '', body: '' },
@@ -3669,14 +3702,70 @@
                     const form = this.notificationForm;
                     if (!form.title.trim() || !form.body.trim()) return alert('Please enter both a title and message.');
                     if (form.audience === 'client' && !form.clientUid) return alert('Choose a client.');
-                    if (!confirm(`Send this push notification to ${form.audience === 'all' ? 'all subscribed clients' : 'the selected client'}?`)) return;
+                    if (form.customData.trim()) {
+                        try {
+                            const parsed = JSON.parse(form.customData);
+                            if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') throw new Error();
+                        } catch {
+                            return alert('Custom data must be a valid JSON object.');
+                        }
+                    }
+                    const action = form.sendAt ? 'Schedule' : 'Send';
+                    const target = form.audience === 'all' ? 'all subscribed clients' : 'the selected client';
+                    if (!confirm(`${action} this rich push notification for ${target}?`)) return;
+                    this.notificationSending = true;
                     try {
-                        const result = await this.notificationRequest('/v1/notifications/send', form);
-                        this.notificationForm = { audience: 'all', clientUid: '', title: '', body: '' };
-                        alert(`Push queued successfully${result.recipients ? ` for ${result.recipients} subscription(s)` : ''}.`);
+                        const payload = { ...form, sendAt: form.sendAt ? new Date(form.sendAt).toISOString() : '' };
+                        const result = await this.notificationRequest('/v1/notifications/send', payload);
+                        this.resetNotificationForm();
+                        alert(result.scheduledFor
+                            ? `Rich notification scheduled for ${new Date(result.scheduledFor).toLocaleString()}.`
+                            : `Rich push queued successfully${result.recipients ? ` for ${result.recipients} subscription(s)` : ''}.`);
                     } catch (err) {
                         alert('Unable to send push: ' + err.message);
+                    } finally {
+                        this.notificationSending = false;
                     }
+                },
+
+                resetNotificationForm() {
+                    this.notificationForm = {
+                        audience: 'all', clientUid: '', title: '', body: '', url: '/?view=home',
+                        imageUrl: '', iconUrl: '', priority: 'normal', ttlHours: 72,
+                        collapseId: '', sendAt: '', buttons: [], customData: '', notificationType: 'admin_message'
+                    };
+                },
+
+                addNotificationButton() {
+                    if (this.notificationForm.buttons.length >= 2) return;
+                    const number = this.notificationForm.buttons.length + 1;
+                    this.notificationForm.buttons.push({ id: `action_${number}`, text: '', url: '/?view=home' });
+                },
+
+                applyNotificationTemplate(template) {
+                    const templates = {
+                        appointment: {
+                            title: '📅 Upcoming pet-care visit',
+                            body: 'A friendly reminder that your scheduled pet-care visit is coming up. Tap to review your details.',
+                            url: '/?view=home', collapseId: 'appointment-reminder', notificationType: 'appointment', priority: 'normal',
+                            buttons: [{ id: 'view_visit', text: 'View details', url: '/?view=home' }]
+                        },
+                        medication: {
+                            title: '💊 Medication update',
+                            body: 'Your pet’s medication update is ready. Tap to review the latest care information.',
+                            url: '/?view=home', collapseId: 'medication-update', notificationType: 'medication', priority: 'high',
+                            buttons: [{ id: 'review_update', text: 'Review update', url: '/?view=home' }]
+                        },
+                        weather: {
+                            title: '⚠️ Pet-care weather alert',
+                            body: 'Weather may affect today’s pet-care schedule. Tap for the latest update and next steps.',
+                            url: '/?view=home', collapseId: 'weather-alert', notificationType: 'weather_alert', priority: 'high', ttlHours: 24,
+                            buttons: [{ id: 'view_alert', text: 'View update', url: '/?view=home' }]
+                        }
+                    };
+                    const selected = templates[template];
+                    if (!selected) return;
+                    Object.assign(this.notificationForm, selected, { buttons: selected.buttons.map(button => ({ ...button })) });
                 },
 
                 async scheduleClientReminder() {

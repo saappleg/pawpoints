@@ -12,6 +12,8 @@ const FIREBASE_PUBLIC_KEYS_URL = 'https://www.googleapis.com/service_accounts/v1
 const MAX_TITLE_LENGTH = 80;
 const MAX_BODY_LENGTH = 240;
 const MAX_URL_LENGTH = 500;
+const MAX_IMAGE_URL_LENGTH = 1000;
+const MAX_CUSTOM_DATA_BYTES = 1800;
 
 function corsHeaders() {
   return {
@@ -34,8 +36,55 @@ function cleanText(value, limit) {
 }
 
 function cleanUrl(value) {
-  const url = cleanText(value, MAX_URL_LENGTH);
-  return url.startsWith('/') ? `https://petcarebysteven.me${url}` : url;
+  const raw = cleanText(value, MAX_URL_LENGTH);
+  if (raw.startsWith('/')) return `https://petcarebysteven.me${raw}`;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:') throw new Error();
+    return url.toString();
+  } catch {
+    throw new Error('Notification destinations must be a site path or HTTPS URL.');
+  }
+}
+
+function cleanHttpsUrl(value, fieldName) {
+  const raw = cleanText(value, MAX_IMAGE_URL_LENGTH);
+  if (!raw) return '';
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:') throw new Error();
+    return url.toString();
+  } catch {
+    throw new Error(`${fieldName} must be a public HTTPS URL.`);
+  }
+}
+
+function cleanButtons(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 2).map((button, index) => {
+    const text = cleanText(button?.text, 30);
+    if (!text) throw new Error(`Button ${index + 1} needs a label.`);
+    return {
+      id: cleanText(button?.id, 40) || `action_${index + 1}`,
+      text,
+      url: cleanUrl(button?.url || '/?view=home'),
+      ...(button?.icon ? { icon: cleanHttpsUrl(button.icon, `Button ${index + 1} icon`) } : {})
+    };
+  });
+}
+
+function cleanCustomData(value) {
+  if (value == null || value === '') return {};
+  let data = value;
+  if (typeof value === 'string') {
+    try { data = JSON.parse(value); } catch { throw new Error('Custom data must be valid JSON.'); }
+  }
+  if (!data || Array.isArray(data) || typeof data !== 'object') throw new Error('Custom data must be a JSON object.');
+  const encoded = JSON.stringify(data);
+  if (new TextEncoder().encode(encoded).length > MAX_CUSTOM_DATA_BYTES) {
+    throw new Error('Custom data is too large. Keep it under 1.8 KB.');
+  }
+  return data;
 }
 
 async function readJson(request) {
@@ -102,14 +151,23 @@ async function requireAdmin(request, env) {
   return user;
 }
 
-async function sendOneSignal(env, { title, body, url, externalIds, data = {} }) {
+async function sendOneSignal(env, { title, body, url, externalIds, data = {}, options = {} }) {
   const payload = {
     app_id: env.ONESIGNAL_APP_ID,
     headings: { en: title },
     contents: { en: body },
     url: cleanUrl(url || '/?view=home'),
-    data: { source: 'pet-care-portal', ...data }
+    data: { ...data, source: 'pet-care-portal' }
   };
+
+  if (options.imageUrl) payload.chrome_web_image = options.imageUrl;
+  if (options.iconUrl) payload.chrome_web_icon = options.iconUrl;
+  if (options.buttons?.length) payload.web_buttons = options.buttons;
+  if (options.collapseId) payload.collapse_id = options.collapseId;
+  if (options.ttl) payload.ttl = options.ttl;
+  if (options.priority === 'high') payload.priority = 10;
+  if (options.sendAfter) payload.send_after = options.sendAfter;
+  payload.idempotency_key = crypto.randomUUID();
 
   if (externalIds?.length) {
     payload.include_aliases = { external_id: externalIds };
@@ -142,6 +200,33 @@ function notificationFields(body) {
   return { title, body: message, url: cleanUrl(body.url || '/?view=home') };
 }
 
+function notificationOptions(body) {
+  const imageUrl = cleanHttpsUrl(body.imageUrl, 'Large image');
+  const iconUrl = cleanHttpsUrl(body.iconUrl, 'Notification icon');
+  const collapseId = cleanText(body.collapseId, 64).replace(/[^a-zA-Z0-9._-]/g, '-');
+  const ttlHours = Number(body.ttlHours || 72);
+  if (!Number.isFinite(ttlHours) || ttlHours < 1 || ttlHours > 720) {
+    throw new Error('Expiration must be between 1 and 720 hours.');
+  }
+  let sendAfter = '';
+  if (body.sendAt) {
+    const date = new Date(body.sendAt);
+    if (Number.isNaN(date.getTime()) || date.getTime() < Date.now() + 60 * 1000) {
+      throw new Error('Choose a future delivery time.');
+    }
+    sendAfter = date.toISOString();
+  }
+  return {
+    imageUrl,
+    iconUrl,
+    buttons: cleanButtons(body.buttons),
+    collapseId,
+    ttl: Math.round(ttlHours * 60 * 60),
+    priority: body.priority === 'high' ? 'high' : 'normal',
+    sendAfter
+  };
+}
+
 async function audit(env, values) {
   await env.DB.prepare(
     'INSERT INTO notification_audit (id, actor_uid, audience, title, created_at, onesignal_id) VALUES (?, ?, ?, ?, ?, ?)'
@@ -152,6 +237,7 @@ async function sendImmediate(request, env) {
   const admin = await requireAdmin(request, env);
   const body = await readJson(request);
   const message = notificationFields(body);
+  const options = notificationOptions(body);
   const audience = body.audience === 'client' ? 'client' : 'all';
   const clientUid = cleanText(body.clientUid, 128);
   if (audience === 'client' && !clientUid) throw new Error('Choose a client.');
@@ -159,10 +245,11 @@ async function sendImmediate(request, env) {
   const result = await sendOneSignal(env, {
     ...message,
     externalIds: audience === 'client' ? [clientUid] : undefined,
-    data: { type: 'admin_message' }
+    data: { ...cleanCustomData(body.customData), type: cleanText(body.notificationType, 40) || 'admin_message' },
+    options
   });
   await audit(env, { actorUid: admin.uid, audience, title: message.title, oneSignalId: result.id });
-  return json({ ok: true, id: result.id, recipients: result.recipients || 0 });
+  return json({ ok: true, id: result.id, recipients: result.recipients || 0, scheduledFor: options.sendAfter || null });
 }
 
 async function scheduleReminder(request, env) {
